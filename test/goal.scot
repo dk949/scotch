@@ -1,0 +1,51 @@
+// a is copied, because it is trivially coplyable
+def foo(a: int, b: int): int{
+    return a + b;
+}
+
+def bar(a: &int, b: int): int{
+    return a += b;
+}
+
+/* Erorr, a points to non mutable int
+def baz(a: *int, b: int): int{
+    return a += b;
+}
+*/
+
+
+// str taen by reference
+def helloRef(msg: *str){
+    print("hello", msg);
+}
+
+def helloMove(msg: str){
+    print("hello", msg);
+}
+
+// str copied
+def helloVal(msg: +str) {
+    print("hello", msg);
+}
+
+def main() {
+    const hello = "hello";
+    const world = "world";
+
+    print(hello, world);
+
+    for (let i = 0; i < 3; i++) {
+        print(i);
+    }
+
+    let i: int = 3;
+    foo(i, 5); // returns 8
+    i.foo(5);  // same as above
+
+    bar(i, 3) // i is 8
+    i.bar(3) // i is 8
+
+    const j: float = 3.0;
+    const k: *float = j;
+
+}
