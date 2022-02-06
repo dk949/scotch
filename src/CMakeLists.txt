@@ -4,14 +4,14 @@ link_compile_commands()
 set(EXE_NAME scotch)
 
 file(
-    GLOB
+    GLOB_RECURSE
     SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/src"
     "*.cpp"
 )
 
 file(
-    GLOB
+    GLOB_RECURSE
     HEADER_FILES
     "${CMAKE_SOURCE_DIR}/src"
     "*.hpp"

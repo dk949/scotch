@@ -4,15 +4,10 @@
 #include "types.hpp"
 
 
-struct args {
+struct Args {
     static Vector<StringView> positionals;
-    static void parse(char **argv) {
-        for (const char *arg = *(++argv); arg; arg = *(++argv)) {
-            positionals.push_back(arg);
-        }
-    }
+    static void parse(char **argv);
 };
 
-std::vector<StringView> args::positionals = {};
 
 #endif  // ARGS_HPP

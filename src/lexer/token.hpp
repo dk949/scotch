@@ -94,7 +94,7 @@ public:
 
 
     constexpr static IdentifierHashT hash(std::string_view sv) {
-        return CTHash::fnv_1a<IdentifierHashT>(sv);
+        return CTHash::fnv_1a(sv);
     }
 
 #undef ENUM_DO

@@ -24,8 +24,8 @@ int main(int, dev char **argv) {
     // auto program = MakePtr<Ast::Program>();
     // program->append(scotchMain);
 
-    args::parse(argv);
-    Vector<StringView> positionals = args::positionals;
+    Args::parse(argv);
+    Vector<StringView> positionals = Args::positionals;
     if (positionals.empty()) {
         crash("{}", "Expected file, got nothing");
     }
@@ -40,8 +40,6 @@ int main(int, dev char **argv) {
 
     Parser p {tokens};
     dev const auto ast = p.makeNode();
-
-
 
     return 0;
 }
