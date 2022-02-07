@@ -4,9 +4,9 @@
 
 General commit shape is:
 
-    area: [subarea]: short sentence describing the change.
+area: \[subarea\]: short sentence describing the change.
 
-    Longer description. Reasons, implications, etc...
+Longer description. Reasons, implications, etc...
 
 * `subarea` is optional and does not include the square brackets.
 * Every line must not exceed 80 columns.
@@ -19,15 +19,14 @@ General commit shape is:
 * List of areas and subareas for this project
   * build
   * ci
-  * docs:
-    * code
-    * readme
-    * changelog
+  * doxygen
+  * readme
+  * changelog
   * Lexer/AST/Parser
     * feat
     * fix
     * perf
-    * refactor
+    * ref
   * test
 
 ## Changelog
