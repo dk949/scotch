@@ -13,6 +13,7 @@ log_init();
 #include <vector>
 
 
+dev Builtins b;
 int main(int, dev char **argv) {
     // auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {0}));
 

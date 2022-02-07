@@ -44,7 +44,7 @@ private:
             return parseNumber();
         }
 
-        if (isopstart(*m_current)) {
+        if (Builtins::isopstart(*m_current)) {
             return parseOperator();
         }
 
@@ -80,12 +80,12 @@ private:
             m_current = std::next(m_current);
         }
 
-        if (kwMap.contains(word)) {
-            return Token {kwMap[word]};
+        if (Builtins::kwMap.contains(word)) {
+            return Token {Builtins::kwMap.at(word)};
         }
 
-        if (typeMap.contains(word)) {
-            return Token {typeMap[word]};
+        if (Builtins::typeMap.contains(word)) {
+            return Token {Builtins::typeMap.at(word)};
         }
 
         // TODO: return identifier token
@@ -113,14 +113,14 @@ private:
         String op = {*m_current};
 
         m_current = std::next(m_current);
-        while (!isEOF() && isopstart(*m_current)) {
+        while (!isEOF() && Builtins::isopstart(*m_current)) {
             op.push_back(*m_current);
             m_current = std::next(m_current);
         }
 
 
-        if (opMap.contains(op)) {
-            return Token {opMap[op]};
+        if (Builtins::opMap.contains(op)) {
+            return Token {Builtins::opMap.at(op)};
         }
         crash("Unknown operator {} (hex: {:#x})", op, *m_current);
     }

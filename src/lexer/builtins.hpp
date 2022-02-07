@@ -3,57 +3,29 @@
 #include "token.hpp"
 #include "types.hpp"
 
-Map<StringView, Token::Keyword> kwMap {
-    { "const",  Token::CONST},
-    {   "def",    Token::DEF},
-    {  "main",   Token::MAIN},
-    {"return", Token::RETURN},
-};
 
-namespace {
-dev static auto kwCheck = []() {
-    verify(kwMap.size() == to<size_t>(Token::KW_COUNT));
-    return 0;
-}();
-}
+struct Builtins {
+private:
+    static bool m_i;
+public:
 
-Map<StringView, Token::BuiltinType> typeMap {
-    {"int", Token::INT},
-};
+    const static Map<StringView, Token::BuiltinType> typeMap;
+    const static Map<StringView, Token::Keyword> kwMap;
+    const static Map<StringView, Token::Operator> opMap;
 
-namespace {
-dev static auto typeCheck = []() {
-    verify(typeMap.size() == to<size_t>(Token::TYPE_COUNT));
-    return 0;
-}();
-}
-
-
-Map<StringView, Token::Operator> opMap {
-    {"+",      Token::PLUS},
-    {"-",     Token::MINUS},
-    {":",     Token::COLON},
-    {";", Token::SEMICOLON},
-    {"{",    Token::LCURLY},
-    {"}",    Token::RCURLY},
-};
-
-bool isopstart(char c) {
-    for (dev const auto &op : opMap) {
-        if (c == op.first[0]) {
-            return true;
+    Builtins() {
+        if (m_i) {
+            crash("{}",
+                "Builtins needs to be instantiated exactly once,"
+                " before entering main");
         }
+        verify(kwMap.size() == to<size_t>(Token::KW_COUNT));
+        verify(opMap.size() == to<size_t>(Token::OP_COUNT));
+        verify(typeMap.size() == to<size_t>(Token::TYPE_COUNT));
+        m_i = true;
     }
-    return false;
-}
 
-namespace {
-dev static auto opCheck = []() {
-    verify(opMap.size() == to<size_t>(Token::OP_COUNT));
-    return 0;
-}();
-}
-
-
+    static bool isopstart(char c);
+};
 
 #endif  // BUILTINS_HPP
