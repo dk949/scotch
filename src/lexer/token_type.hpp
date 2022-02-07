@@ -39,15 +39,6 @@ enum class TokenType {
 #undef ENUM_DO
 #define ENUM_DO(TOK) name = #TOK;
 
-template<>
-struct fmt::formatter<TokenType> : formatter<std::string_view> {
-    template<typename FormatContext>
-    auto format(TokenType t, FormatContext &ctx) {
-        std::string name = "Invalid token";
-        FOREACH_TOKEN(t);
-        return formatter<string_view>::format(name, ctx);
-    }
-};
 
 
 #endif  // TOKEN_TYPE_HPP
