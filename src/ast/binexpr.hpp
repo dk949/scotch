@@ -1,7 +1,8 @@
 #ifndef BINEXPR_HPP
 #define BINEXPR_HPP
-#include "expression.hpp"
-#include "types.hpp"
+#include "ast/node.hpp"    // for addClassName
+#include "expression.hpp"  // for Expression
+#include "types.hpp"       // for ExpressionPtr, BinOp, StringView
 
 namespace Ast {
 

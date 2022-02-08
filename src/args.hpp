@@ -1,7 +1,6 @@
 #ifndef ARGS_HPP
 #define ARGS_HPP
-#include "tools.hpp"
-#include "types.hpp"
+#include "types.hpp"  // for StringView, Vector
 
 
 struct Args {

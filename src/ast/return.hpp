@@ -1,6 +1,7 @@
 #ifndef RETURN_HPP
 #define RETURN_HPP
-#include "expression.hpp"
+#include "ast/node.hpp"  // for Node, addClassName
+#include "types.hpp"     // for ExpressionPtr, StringView
 
 namespace Ast {
 class Return : public Node {

@@ -3,7 +3,6 @@
 
 #include "tools.hpp"
 
-#include <iostream>
 #include <spdlog/spdlog.h>
 
 enum class TokenType {

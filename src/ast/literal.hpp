@@ -1,7 +1,10 @@
 #ifndef LITERAL_HPP
 #define LITERAL_HPP
 
-#include "expression.hpp"
+#include "ast/node.hpp"    // for addClassName
+#include "ast/value.hpp"   // for Value
+#include "expression.hpp"  // for Expression
+#include "types.hpp"       // for StringView
 
 namespace Ast {
 class Literal : public Expression {

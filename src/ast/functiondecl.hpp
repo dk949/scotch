@@ -1,7 +1,10 @@
 #ifndef FUNCTIONDECL_HPP
 #define FUNCTIONDECL_HPP
 
-#include "node.hpp"
+#include "node.hpp"   // for Node, addClassName
+#include "types.hpp"  // for ValueType, String, ScopePtr, Vector, StringView
+
+
 namespace Ast {
 class FunctionDecl : public Node {
 protected:
