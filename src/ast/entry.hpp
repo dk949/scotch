@@ -8,9 +8,7 @@ class Entry : public FunctionDecl {
 private:
 
 public:
-    Entry(ScopePtr body)
-            : FunctionDecl("main", {}, ValueType::INT, body) { }
-
+    Entry(ScopePtr body);
 
 private:
     addClassName(Entry);

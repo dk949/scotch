@@ -8,8 +8,7 @@ private:
     ExpressionPtr m_argument;
 
 public:
-    explicit Return(ExpressionPtr argument)
-            : m_argument(std::move(argument)) { }
+    explicit Return(ExpressionPtr argument);
 
     const inline ExpressionPtr argument() const {
         return m_argument;

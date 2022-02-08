@@ -4,6 +4,7 @@
 #include "types.hpp"
 
 namespace Ast {
+
 class BinExpr : public Expression {
 private:
     BinOp m_op;
@@ -11,14 +12,12 @@ private:
     ExpressionPtr m_rhs;
 
 public:
-    explicit BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs)
-            : m_op(std::move(op))
-            , m_lhs(std::move(lhs))
-            , m_rhs(std::move(rhs)) { }
+    explicit BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs);
 
 private:
     addClassName(BinExpr);
 };
-}  // namespace Ast
+
+}
 
 #endif  // BINEXPR_HPP

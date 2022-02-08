@@ -16,24 +16,11 @@ private:
 
 public:
 
-    explicit Value(ValueType type)
-            : m_type(type) { }
+    explicit Value(ValueType type);
+    explicit Value(Int64 val);
 
-    explicit Value(Int64 val)
-            : m_type(ValueType::INT) {
-        m_value.as_int = val;
-    }
-
-    Int64 as_int() {
-        verify(m_type == ValueType::INT);
-        return m_value.as_int;
-    }
-
-    ValueType as_type() {
-        verify(m_type == ValueType::TYPE);
-        return m_value.as_type;
-    }
-
+    Int64 as_int();
+    ValueType as_type();
     ValueType inline type() const {
         return m_type;
     }

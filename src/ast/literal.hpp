@@ -9,9 +9,7 @@ class Literal : public Expression {
 private:
     Value m_value;
 public:
-    Literal(Value value)
-            : m_value(value) { }
-
+    Literal(Value value);
 
 private:
     addClassName(Literal);
