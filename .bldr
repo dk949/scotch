@@ -1,9 +1,10 @@
 {
+  "config": "nvim .bldr",
   "reset": "rm -rf build",
   "clean": "make -C build clean",
   "setup": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
-  "setup:debug": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
-  "setup:release": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
+  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
+  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
   "build": "cmake --build build",
   "run": "./build/bin/scotch"
 }
