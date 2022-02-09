@@ -15,26 +15,6 @@ Ast::NodePtr Parser::makeNode() {
 Ast::FunctionDeclPtr Parser::makeFunction() {
     m_current = std::next(m_current);
 
-    if (m_current->type() == TokenType::T_KEYWORD && m_current->get<Token::Keyword>() == Token::MAIN) {
-        m_current = std::next(m_current);
-
-
-        // Ignored, as long as it exists on entry point
-        // makes you wander why we need it on the enty point
-        makeTypeAnnotation();
-
-        verify(isScopeBegin());
-
-        auto block = MakePtr<Ast::Block>();
-
-        m_current = std::next(m_current);
-        while (!isScopeEnd()) {
-            verify(!isLast());
-            block->append(makeNode());
-            m_current = std::next(m_current);
-        }
-        auto func = MakePtr<Ast::Entry>(block);
-    }
     todo();
 }
 
