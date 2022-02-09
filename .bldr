@@ -1,10 +1,11 @@
 {
-  "config": "nvim .bldr",
-  "reset": "rm -rf build",
+  "build": "cmake --build build",
   "clean": "make -C build clean",
+  "cleanbuild": "bldr reset setup build",
+  "config": "$EDITOR .bldr",
+  "reset": "rm -rf build",
+  "run": "./build/bin/scotch test/shortterm_goal.scot",
   "setup": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
   "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
-  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
-  "build": "cmake --build build",
-  "run": "./build/bin/scotch"
+  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release"
 }
