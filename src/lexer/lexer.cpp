@@ -81,6 +81,7 @@ Token Lexer::parseNumber() {
     m_current = std::next(m_current);
     while (!isEOF() && std::isdigit(*m_current)) {
         number.push_back(*m_current);
+        m_current = std::next(m_current);
     }
     if (std::isalpha(*m_current)) {
         crash("integer suffixes are not supported, expected number, got {}", *m_current);
