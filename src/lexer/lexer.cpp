@@ -73,12 +73,7 @@ Token Lexer::parseWord() {
         return Token {Builtins::typeMap.at(word)};
     }
 
-    // TODO: return identifier token
-    todo();
-
-
-
-    crash("Unknonw word {}", word);
+    return Token {to<const char *>(word.c_str())};
 }
 
 Token Lexer::parseNumber() {
