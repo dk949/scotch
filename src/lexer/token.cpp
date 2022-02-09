@@ -149,6 +149,104 @@ bool Token::isEOF() const {
     return m_type == TokenType::T_EOF;
 }
 
+Token::Order Token::operator<=>(Int64 i) const {
+    if (m_type == TokenType::T_INT)
+        return m_val.num <=> i;
+    return Order::unordered;
+}
+
+Token::Order Token::operator<=>(Keyword k) const {
+    if (m_type == TokenType::T_KEYWORD)
+        return m_val.kw <=> k;
+    return Order::unordered;
+}
+
+Token::Order Token::operator<=>(Operator o) const {
+    if (m_type == TokenType::T_OP)
+        return m_val.op <=> o;
+    return Order::unordered;
+}
+
+Token::Order Token::operator<=>(StringView id) const {
+    if (m_type == TokenType::T_IDENTIFIER)
+        return StringView {m_val.id} <=> id;
+    return Order::unordered;
+}
+
+Token::Order Token::operator<=>(BuiltinType t) const {
+    if (m_type == TokenType::T_BUILTIN_TYPE)
+        return t <=> m_val.type;
+    return Order::unordered;
+}
+
+Token::Order Token::operator<=>(const Token &t) const {
+    if (m_type != t.m_type)
+        return Order::unordered;
+
+    switch (t.m_type) {
+        case (TokenType::T_BUILTIN_TYPE):
+            return *this <=> t.m_val.type;
+        case (TokenType::T_OP):
+            return *this <=> t.m_val.op;
+        case (TokenType::T_EOF):
+            return Order::equivalent;
+        case (TokenType::T_INT):
+            return *this <=> t.m_val.num;
+        case (TokenType::T_STR):
+            todo();
+        case (TokenType::T_KEYWORD):
+            return *this <=> t.m_val.kw;
+        case (TokenType::T_IDENTIFIER):
+            return *this <=> t.m_val.id;
+    }
+    return Order::unordered;
+}
+
+bool Token::operator==(Int64 i) const {
+    return (m_type == TokenType::T_INT) && m_val.num == i;
+}
+
+bool Token::operator==(Keyword k) const {
+    return (m_type == TokenType::T_KEYWORD) && m_val.kw == k;
+}
+
+bool Token::operator==(Operator o) const {
+    return (m_type == TokenType::T_OP) && m_val.op == o;
+}
+
+bool Token::operator==(StringView id) const {
+    return (m_type == TokenType::T_IDENTIFIER) && StringView {m_val.id} == id;
+}
+
+bool Token::operator==(BuiltinType t) const {
+    return (m_type == TokenType::T_BUILTIN_TYPE) && t == m_val.type;
+}
+
+bool Token::operator==(const Token &t) const {
+    if (m_type != t.m_type)
+        return false;
+
+    switch (t.m_type) {
+        case (TokenType::T_BUILTIN_TYPE):
+            return *this == t.m_val.type;
+        case (TokenType::T_OP):
+            return *this == t.m_val.op;
+        case (TokenType::T_EOF):
+            return true;
+        case (TokenType::T_INT):
+            return *this == t.m_val.num;
+        case (TokenType::T_STR):
+            todo();
+        case (TokenType::T_KEYWORD):
+            return *this == t.m_val.kw;
+        case (TokenType::T_IDENTIFIER):
+            return *this == t.m_val.id;
+    }
+    return false;
+}
+
+
+
 TokenType Token::type() const {
     return m_type;
 }

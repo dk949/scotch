@@ -5,10 +5,13 @@
 #include "tools.hpp"
 #include "types.hpp"
 
+#include <compare>
+
 struct Token {
 public:
     using IdentifierHashT = uint64_t;
-    //using IdentifierPtr = char *;
+    using Order = std::partial_ordering;
+    // using IdentifierPtr = char *;
 
     enum class Keyword {
         CONST,
@@ -69,13 +72,27 @@ public:
 
     ~Token();
 
-    bool isEOF() const;
     TokenType type() const;
 
     template<typename T>
     T get() const {
         static_assert(sizeof(T) < 0, "get used with an invalid type");
     }
+
+    Order operator<=>(Int64 i) const;
+    Order operator<=>(Keyword k) const;
+    Order operator<=>(Operator o) const;
+    Order operator<=>(StringView id) const;
+    Order operator<=>(BuiltinType t) const;
+    Order operator<=>(const Token &t) const;
+
+    bool operator==(Int64 i) const;
+    bool operator==(Keyword k) const;
+    bool operator==(Operator o) const;
+    bool operator==(StringView id) const;
+    bool operator==(BuiltinType t) const;
+    bool operator==(const Token &t) const;
+    bool isEOF() const;
 
     constexpr static IdentifierHashT hash(std::string_view sv) {
         return CTHash::fnv_1a(sv);
