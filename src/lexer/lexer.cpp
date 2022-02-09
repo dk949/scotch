@@ -18,8 +18,8 @@ Vector<Token> Lexer::parseAll() {
 }
 
 Token Lexer::parseToken() {
-    skipSpace();
-    skipComment();
+    while (skipComment() || skipSpace()) { }
+
     if (std::isalpha(*m_current)) {
         return parseWord();
     }
@@ -34,26 +34,33 @@ Token Lexer::parseToken() {
     if (isEOF()) {
         return Token {};
     }
-    crash("Unrecognised token on character {}", *m_current);
+
+    crash("Unrecognised token on character {} (hex: {:#x})", *m_current, *m_current);
 }
 
 
-void Lexer::skipSpace() {
+bool Lexer::skipSpace() {
+    bool found = false;
     while (!isEOF() && std::isspace(*m_current)) {
+        found = true;
         m_current = std::next(m_current);
     }
+    return found;
 }
 
-void Lexer::skipComment() {
+bool Lexer::skipComment() {
+    bool found = false;
     if (!isEOF(m_current)                            //
         && *m_current == '/'                         //
         && !isEOF(m_current = std::next(m_current))  //
         && *m_current == '/') {
         m_current = std::next(m_current);
         while (!isEOF() && !isEOL()) {
+            found = true;
             m_current = std::next(m_current);
         }
     }
+    return found;
 }
 
 

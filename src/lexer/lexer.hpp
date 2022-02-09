@@ -22,8 +22,8 @@ public:
 
 private:
     Token parseToken();
-    void skipSpace();
-    void skipComment();
+    bool skipSpace();
+    bool skipComment();
     Token parseWord();
     Token parseNumber();
     Token parseOperator();
