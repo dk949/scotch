@@ -1,8 +1,8 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
-#include "value.hpp"
 #include "types.hpp"
+#include "value.hpp"
 
 #include <compare>
 
