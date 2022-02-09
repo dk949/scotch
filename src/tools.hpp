@@ -101,6 +101,18 @@ constexpr bool always_false_v = false;
         exit(1);                                                \
     } while (0)
 
+#define verify_msg(X, MSG, ...)                                          \
+    do {                                                                 \
+        if((X)) break;                                                   \
+        const auto loc = sloc::current();                                \
+        critical("{}:{}:{}: Assertion failed: (" #X ") is false\n\t" MSG,\
+            tools::filename(loc.file_name()),                            \
+            loc.line(),                                                  \
+            loc.column(),                                                \
+            __VA_ARGS__);                                                \
+        exit(1);                                                         \
+    } while (0)
+
 
 // clang-format on
 
