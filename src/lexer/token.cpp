@@ -4,7 +4,7 @@
 
 template<>
 Int64 Token::get<Int64>() const {
-    if (m_type == TokenType::T_NUM) {
+    if (m_type == TokenType::T_INT) {
         return m_val.num;
     }
     crash("cannot extract Int64 value of token type {}", m_type);
@@ -28,7 +28,7 @@ Token::Operator Token::get<Token::Operator>() const {
 
 
 template<>
-Token::IdentifierPtr Token::get<Token::IdentifierPtr>() const {
+const char *Token::get<const char *>() const {
     [[likely]] if (m_type == TokenType::T_IDENTIFIER) {
         return m_val.id;
     }
@@ -55,7 +55,7 @@ void Token::get<void>() const {
 
 
 Token::Token(Int64 val)
-        : m_type(TokenType::T_NUM) {
+        : m_type(TokenType::T_INT) {
     m_val.num = val;
 }
 Token::Token(Keyword val)
@@ -67,12 +67,11 @@ Token::Token(Operator val)
     m_val.op = val;
 }
 
-Token::Token(IdentifierPtr val)
+Token::Token(const char *val)
         : m_type(TokenType::T_IDENTIFIER) {
-    const auto len = std::char_traits<char>::length(val);
-    auto *str      = new char[len]();
-    std::char_traits<char>::copy(str, val, len);
-    m_val.id = str;
+    const auto len = std::char_traits<char>::length(val) + 1;
+    m_val.id = new char[len]();
+    std::char_traits<char>::copy(m_val.id, val, len);
 }
 
 Token::Token(BuiltinType val)
@@ -84,15 +83,14 @@ Token::Token()
 
 
 Token::Token(const Token &other)
-        : m_type(other.m_type)
-        , m_val(other.m_val) {
-    debug("Copy construction: token");
+        : m_type(other.m_type) {
     if (other.m_type == TokenType::T_IDENTIFIER) {
-        const auto len = std::char_traits<char>::length(other.m_val.id);
-        auto *str      = new char[len]();
-        std::char_traits<char>::copy(str, other.m_val.id, len);
-        m_val.id = str;
+        const auto len = std::char_traits<char>::length(other.m_val.id) + 1;  // + null terminator
+        m_val.id = new char[len]();
+        std::char_traits<char>::copy(m_val.id, other.m_val.id, len);
+        return;
     }
+    m_val = other.m_val;
 }
 
 Token &Token::operator=(const Token &other) {
@@ -100,12 +98,11 @@ Token &Token::operator=(const Token &other) {
         return *this;
     }
 
-    debug("Copy assignment: token");
     m_type = other.m_type;
     if (other.m_type == TokenType::T_IDENTIFIER) {
         delete[] m_val.id;
-        const auto len = std::char_traits<char>::length(other.m_val.id);
-        auto *str      = new char[len]();
+        const auto len = std::char_traits<char>::length(other.m_val.id) + 1;
+        auto *str = new char[len]();
         std::char_traits<char>::copy(str, other.m_val.id, len);
         m_val.id = str;
         return *this;
@@ -133,7 +130,7 @@ Token &Token::operator=(Token &&other) {
 
     if (other.m_type == TokenType::T_IDENTIFIER) {
         delete[] m_val.id;
-        m_val          = other.m_val;
+        m_val = other.m_val;
         other.m_val.id = nullptr;
         return *this;
     }

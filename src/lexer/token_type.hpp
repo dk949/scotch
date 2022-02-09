@@ -9,7 +9,7 @@ enum class TokenType {
     T_KEYWORD,
     T_IDENTIFIER,
 
-    T_NUM,
+    T_INT,
     T_STR,
 
     T_OP,
@@ -32,7 +32,7 @@ struct fmt::formatter<TokenType> : formatter<std::string_view> {
             ENUM_CASE(TokenType::T_KEYWORD);
             ENUM_CASE(TokenType::T_IDENTIFIER);
 
-            ENUM_CASE(TokenType::T_NUM);
+            ENUM_CASE(TokenType::T_INT);
             ENUM_CASE(TokenType::T_STR);
 
             ENUM_CASE(TokenType::T_OP);

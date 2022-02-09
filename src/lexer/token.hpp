@@ -8,7 +8,7 @@
 struct Token {
 public:
     using IdentifierHashT = uint64_t;
-    using IdentifierPtr   = const char *;
+    //using IdentifierPtr = char *;
 
     enum class Keyword {
         CONST,
@@ -42,7 +42,7 @@ public:
         Keyword kw;
         Operator op;
         BuiltinType type;
-        IdentifierPtr id;
+        char *id;
     };
 
 private:
@@ -55,7 +55,7 @@ public:
     explicit Token(Int64 val);
     explicit Token(Keyword val);
     explicit Token(Operator val);
-    explicit Token(IdentifierPtr val);
+    explicit Token(const char *val);
     explicit Token(BuiltinType val);
     explicit Token();
 
@@ -91,7 +91,7 @@ template<> Token::Operator Token::get<Token::Operator>() const;
 template<> Int64 Token::get<Int64>() const;
 template<> Token::Keyword Token::get<Token::Keyword>() const;
 template<> Token::Operator Token::get<Token::Operator>() const;
-template<> Token::IdentifierPtr Token::get<Token::IdentifierPtr>() const;
+template<> const char * Token::get<const char *>() const;
 template<> Token::BuiltinType Token::get<Token::BuiltinType>() const;
 template<> void Token::get<void>() const;
 // clang-format on
@@ -108,10 +108,10 @@ struct fmt::formatter<Token> : formatter<std::string> {
             bcase TokenType::T_EOF:
                 name = fmt::format("{}()",   t.type());
             bcase TokenType::T_IDENTIFIER:
-                name = fmt::format("{}({})", t.type(), t.get<Token::IdentifierPtr>());
+                name = fmt::format("{}({})", t.type(), t.get<const char *>());
             bcase TokenType::T_KEYWORD:
                 name = fmt::format("{}({})", t.type(), Token::kwToStr(t.get<Token::Keyword>()));
-            bcase TokenType::T_NUM:
+            bcase TokenType::T_INT:
                 name = fmt::format("{}({})", t.type(), t.get<Int64>());
             bcase TokenType::T_BUILTIN_TYPE:
                 name = fmt::format("{}({})", t.type(), Token::typeToStr(t.get<Token::BuiltinType>()));
