@@ -5,7 +5,6 @@ bool Builtins::m_i = false;
 const Map<StringView, Token::Keyword> Builtins::kwMap {
     { "const",  Token::CONST},
     {   "def",    Token::DEF},
-    {  "main",   Token::MAIN},
     {"return", Token::RETURN},
 };
 

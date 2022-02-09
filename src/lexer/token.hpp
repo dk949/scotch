@@ -8,10 +8,11 @@
 struct Token {
 public:
     using IdentifierHashT = uint64_t;
+    using IdentifierPtr   = const char *;
+
     enum class Keyword {
         CONST,
         DEF,
-        MAIN,
         RETURN,
 
         KW_COUNT,
@@ -41,7 +42,7 @@ public:
         Keyword kw;
         Operator op;
         BuiltinType type;
-        IdentifierHashT id;
+        IdentifierPtr id;
     };
 
 private:
@@ -50,12 +51,23 @@ private:
     Value m_val;
 
 public:
+
     explicit Token(Int64 val);
     explicit Token(Keyword val);
     explicit Token(Operator val);
-    explicit Token(IdentifierHashT val);
+    explicit Token(IdentifierPtr val);
     explicit Token(BuiltinType val);
     explicit Token();
+
+
+    Token(const Token &);
+    Token &operator=(const Token &);
+
+    Token(Token &&);
+    Token &operator=(Token &&);
+
+
+    ~Token();
 
     bool isEOF() const;
     TokenType type() const;
@@ -79,7 +91,7 @@ template<> Token::Operator Token::get<Token::Operator>() const;
 template<> Int64 Token::get<Int64>() const;
 template<> Token::Keyword Token::get<Token::Keyword>() const;
 template<> Token::Operator Token::get<Token::Operator>() const;
-template<> Token::IdentifierHashT Token::get<Token::IdentifierHashT>() const;
+template<> Token::IdentifierPtr Token::get<Token::IdentifierPtr>() const;
 template<> Token::BuiltinType Token::get<Token::BuiltinType>() const;
 template<> void Token::get<void>() const;
 // clang-format on
@@ -96,7 +108,7 @@ struct fmt::formatter<Token> : formatter<std::string> {
             bcase TokenType::T_EOF:
                 name = fmt::format("{}()",   t.type());
             bcase TokenType::T_IDENTIFIER:
-                name = fmt::format("{}({})", t.type(), t.get<Token::IdentifierHashT>());
+                name = fmt::format("{}({})", t.type(), t.get<Token::IdentifierPtr>());
             bcase TokenType::T_KEYWORD:
                 name = fmt::format("{}({})", t.type(), Token::kwToStr(t.get<Token::Keyword>()));
             bcase TokenType::T_NUM:

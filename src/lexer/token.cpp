@@ -1,5 +1,7 @@
 #include "token.hpp"
 
+#include <string>
+
 template<>
 Int64 Token::get<Int64>() const {
     if (m_type == TokenType::T_NUM) {
@@ -26,7 +28,7 @@ Token::Operator Token::get<Token::Operator>() const {
 
 
 template<>
-Token::IdentifierHashT Token::get<Token::IdentifierHashT>() const {
+Token::IdentifierPtr Token::get<Token::IdentifierPtr>() const {
     [[likely]] if (m_type == TokenType::T_IDENTIFIER) {
         return m_val.id;
     }
@@ -64,16 +66,86 @@ Token::Token(Operator val)
         : m_type(TokenType::T_OP) {
     m_val.op = val;
 }
-Token::Token(IdentifierHashT val)
+
+Token::Token(IdentifierPtr val)
         : m_type(TokenType::T_IDENTIFIER) {
-    m_val.id = val;
+    const auto len = std::char_traits<char>::length(val);
+    auto *str      = new char[len]();
+    std::char_traits<char>::copy(str, val, len);
+    m_val.id = str;
 }
+
 Token::Token(BuiltinType val)
         : m_type(TokenType::T_BUILTIN_TYPE) {
     m_val.type = val;
 }
 Token::Token()
         : m_type(TokenType::T_EOF) { }
+
+
+Token::Token(const Token &other)
+        : m_type(other.m_type)
+        , m_val(other.m_val) {
+    debug("Copy construction: token");
+    if (other.m_type == TokenType::T_IDENTIFIER) {
+        const auto len = std::char_traits<char>::length(other.m_val.id);
+        auto *str      = new char[len]();
+        std::char_traits<char>::copy(str, other.m_val.id, len);
+        m_val.id = str;
+    }
+}
+
+Token &Token::operator=(const Token &other) {
+    if (&other == this) {
+        return *this;
+    }
+
+    debug("Copy assignment: token");
+    m_type = other.m_type;
+    if (other.m_type == TokenType::T_IDENTIFIER) {
+        delete[] m_val.id;
+        const auto len = std::char_traits<char>::length(other.m_val.id);
+        auto *str      = new char[len]();
+        std::char_traits<char>::copy(str, other.m_val.id, len);
+        m_val.id = str;
+        return *this;
+    }
+
+    m_val = other.m_val;
+
+    return *this;
+}
+
+Token::Token(Token &&other)
+        : m_type(other.m_type)
+        , m_val(other.m_val) {
+    if (other.m_type == TokenType::T_IDENTIFIER) {
+        other.m_val.id = nullptr;
+    }
+}
+
+Token &Token::operator=(Token &&other) {
+    if (&other == this) {
+        return *this;
+    }
+
+    m_type = other.m_type;
+
+    if (other.m_type == TokenType::T_IDENTIFIER) {
+        delete[] m_val.id;
+        m_val          = other.m_val;
+        other.m_val.id = nullptr;
+        return *this;
+    }
+    m_val = other.m_val;
+    return *this;
+}
+
+Token::~Token() {
+    if (m_type == TokenType::T_IDENTIFIER) {
+        delete[] m_val.id;
+    }
+}
 
 
 bool Token::isEOF() const {
@@ -105,7 +177,6 @@ const char *Token::kwToStr(Token::Keyword k) {
     switch (k) {
         ENUM_CASE(Token::CONST);
         ENUM_CASE(Token::DEF);
-        ENUM_CASE(Token::MAIN);
         ENUM_CASE(Token::RETURN);
         BAD_ENUM_CASE(Token::KW_COUNT);
     }
