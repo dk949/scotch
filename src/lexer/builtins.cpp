@@ -19,6 +19,8 @@ const Map<StringView, Token::Operator> Builtins::opMap {
     {";", Token::SEMICOLON},
     {"{",    Token::LCURLY},
     {"}",    Token::RCURLY},
+    {"(",  Token::LBRACKET},
+    {")",  Token::RBRACKET},
 };
 
 bool Builtins::isopstart(char c) {

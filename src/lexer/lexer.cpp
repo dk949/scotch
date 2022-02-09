@@ -102,17 +102,10 @@ Token Lexer::parseNumber() {
 
 
 Token Lexer::parseOperator() {
-    // m_current can be converted to char* by dereferencing and taking it's address.
-    String op = {*m_current};
-
-    m_current = std::next(m_current);
-    while (!isEOF() && Builtins::isopstart(*m_current)) {
-        op.push_back(*m_current);
-        m_current = std::next(m_current);
-    }
-
-
+    const StringView op {&*m_current, 1};
+    // FIXME: doesn't handle multi=character operators like `==`
     if (Builtins::opMap.contains(op)) {
+        m_current = std::next(m_current);
         return Token {Builtins::opMap.at(op)};
     }
     crash("Unknown operator {} (hex: {:#x})", op, *m_current);

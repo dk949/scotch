@@ -27,6 +27,8 @@ public:
         SEMICOLON,
         LCURLY,
         RCURLY,
+        LBRACKET,
+        RBRACKET,
 
         OP_COUNT,
     };

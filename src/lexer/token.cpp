@@ -264,6 +264,8 @@ const char *Token::opToStr(Token::Operator b) {
         ENUM_CASE(Token::SEMICOLON);
         ENUM_CASE(Token::LCURLY);
         ENUM_CASE(Token::RCURLY);
+        ENUM_CASE(Token::LBRACKET);
+        ENUM_CASE(Token::RBRACKET);
         BAD_ENUM_CASE(Token::OP_COUNT);
     }
     crash("Unsuppirted operator {}", b);
