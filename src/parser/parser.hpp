@@ -13,8 +13,10 @@ public:
 
     Ast::NodePtr makeNode();
     Ast::FunctionDeclPtr makeFunction();
+    Ast::BlockPtr makeBlock();
 
     Ast::ValueType makeTypeAnnotation();
+    Vector<Ast::ValueType> makeArgs();
 
     bool isLast();
 
@@ -25,6 +27,8 @@ public:
     bool isScopeBegin();
 
     bool isScopeEnd();
+
+    Iter next() const;
 };
 
 #endif  // PARSER_HPP

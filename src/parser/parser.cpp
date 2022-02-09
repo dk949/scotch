@@ -6,34 +6,87 @@ Parser::Parser(Vector<Token> tokens)
 
 
 Ast::NodePtr Parser::makeNode() {
-    if (m_current->type() == TokenType::T_KEYWORD && m_current->get<Token::Keyword>() == Token::DEF) {
+    if (*m_current == Token::DEF) {
         return makeFunction();
     }
+    crash("cannot parse token {}", *m_current);
     todo();
 }
 
 Ast::FunctionDeclPtr Parser::makeFunction() {
-    m_current = std::next(m_current);
+    m_current = next();
+    verify_msg(!isLast(), "Expected function declaration after {} in function declaration. Found nothing", *std::prev(m_current));
+    verify_msg(m_current->type() == TokenType::T_IDENTIFIER,  //
+        "Expected function name after {} in function declaration. Found {}",
+        *std::prev(m_current),
+        *m_current);
+    const StringView id = m_current->get<const char *>();
+    m_current = next();
+    const auto args = makeArgs();
 
-    todo();
+    m_current = next();
+    Ast::ValueType ret = makeTypeAnnotation();
+    m_current = next();
+    Ast::ScopePtr body = makeBlock();
+    auto func = MakePtr<Ast::FunctionDecl>(String {id}, args, ret, body);
+
+    return func;
+}
+
+
+Ast::BlockPtr Parser::makeBlock() {
+    verify_msg(*m_current == Token::LCURLY, "Expected left curly brace at the start of a scope, found {}", *m_current);
+    auto body = MakePtr<Ast::Block>();
+    while (true) {
+        m_current = next();
+        verify_msg(!isLast(), "Expected expression after {} in function body. Found nothing", *std::prev(m_current));
+        if (*m_current == Token::RCURLY) {
+            body->append(makeBlock());
+        }
+        if (*m_current == Token::LCURLY) {
+            break;
+        }
+        body->append(makeNode());
+    }
+    return body;
+}
+
+Vector<Ast::ValueType> Parser::makeArgs() {
+    // FIXME: functions do not take arguments yet
+    verify_msg(*m_current == Token::LBRACKET,
+        "Expected right bracket after {} in function argument declaration. Found {}",
+        *std::prev(m_current),
+        *m_current);
+
+    m_current = next();
+    verify_msg(*m_current == Token::RBRACKET,
+        "Expected left bracket after {} in function argument declaration. Found {}",
+        *std::prev(m_current),
+        *m_current);
+    return {};
 }
 
 Ast::ValueType Parser::makeTypeAnnotation() {
-    if (!isLast() && m_current->type() == TokenType::T_OP && m_current->get<Token::Operator>() == Token::COLON) {
-        m_current = std::next(m_current);
-        if (!isLast() && m_current->type() == TokenType::T_BUILTIN_TYPE) {
+    verify_msg(!isLast(), "Expected type annotation after {}. Found nothing", *std::prev(m_current));
+
+    if (*m_current == Token::COLON) {
+        m_current = next();
+        verify_msg(!isLast(), "Expected a type after {} in type annotation declaration, got nothing", *std::prev(m_current));
+
+        // Handling builtin types
+        if (m_current->type() == TokenType::T_BUILTIN_TYPE) {
             switch (m_current->get<Token::BuiltinType>()) {
                 bcase Token::INT : {
-                    m_current = std::next(m_current);
+                    m_current = next();
                     return Ast::ValueType::INT;
                 }
                 BAD_ENUM_CASE(Token::TYPE_COUNT);
             }
         }
-        // handle user defined types
+        // TODO: handle user defined types
         todo();
     }
-    // handle implicit types
+    // TODO: handle implicit types
     todo();
 }
 
@@ -43,7 +96,7 @@ bool Parser::isLast() {
 }
 
 bool Parser::isLast(Iter i) {
-    return i != m_tokens.end();
+    return i == m_tokens.end();
 }
 
 bool Parser::isReturn() {
@@ -51,9 +104,22 @@ bool Parser::isReturn() {
 }
 
 bool Parser::isScopeBegin() {
-    return m_current->type() == TokenType::T_OP && m_current->get<Token::Operator>() == Token::LCURLY;
+    if (*m_current == Token::LCURLY) {
+        m_current = next();
+        return true;
+    }
+    return false;
 }
 
 bool Parser::isScopeEnd() {
-    return m_current->type() == TokenType::T_OP && m_current->get<Token::Operator>() == Token::RCURLY;
+    if (*m_current == Token::RCURLY) {
+        m_current = next();
+        return true;
+    }
+    return false;
+}
+
+Parser::Iter Parser::next() const {
+    debug("next token is {}", *std::next(m_current));
+    return std::next(m_current);
 }

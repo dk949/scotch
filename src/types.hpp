@@ -28,21 +28,22 @@ using Map = std::unordered_map<U, T>;
 
 // Strings
 using StringView = std::string_view;
-using String     = std::string;
+using String = std::string;
 
 // other
 using Int64 = int64_t;
-using Hash  = int64_t;
+using Hash = int64_t;
 
 namespace Ast {
 
 // Pointers
-using NodePtr         = Ptr<Node>;
-using ExpressionPtr   = Ptr<Expression>;
-using ScopePtr        = Ptr<Scope>;
-using ValuePtr        = Ptr<Value>;
-using ProgramPtr      = Ptr<Program>;
+using NodePtr = Ptr<Node>;
+using ExpressionPtr = Ptr<Expression>;
+using ScopePtr = Ptr<Scope>;
+using ValuePtr = Ptr<Value>;
+using ProgramPtr = Ptr<Program>;
 using FunctionDeclPtr = Ptr<FunctionDecl>;
+using BlockPtr = Ptr<Block>;
 
 // Containers of things
 using NodePtrVector = Vector<Ptr<Node>>;
