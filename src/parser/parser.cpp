@@ -12,14 +12,18 @@ Ast::NodePtr Parser::makeNode() {
     if (*m_current == Token::DEF) {
         return makeFunction();
     }
+    if (*m_current == Token::RETURN) {
+        todo();
+    }
     crash("cannot parse token {}", *m_current);
-    todo();
 }
 
 Ast::FunctionDeclPtr Parser::makeFunction() {
     trace();
     m_current = next();
-    verify_msg(!isLast(), "Expected function declaration after {} in function declaration. Found nothing", *std::prev(m_current));
+    verify_msg(!isLast(),  //
+        "Expected function declaration after {} in function declaration. Found nothing",
+        *std::prev(m_current));
     verify_msg(m_current->type() == TokenType::T_IDENTIFIER,  //
         "Expected function name after {} in function declaration. Found {}",
         *std::prev(m_current),
@@ -30,7 +34,7 @@ Ast::FunctionDeclPtr Parser::makeFunction() {
 
     m_current = next();
     Ast::ValueType ret = makeTypeAnnotation();
-    m_current = next();
+    debug("about to enter block. next toke = {}", *m_current);
     Ast::ScopePtr body = makeBlock();
     auto func = MakePtr<Ast::FunctionDecl>(String {id}, args, ret, body);
 
@@ -43,8 +47,11 @@ Ast::BlockPtr Parser::makeBlock() {
     verify_msg(*m_current == Token::LCURLY, "Expected left curly brace at the start of a scope, found {}", *m_current);
     auto body = MakePtr<Ast::Block>();
     while (true) {
+        debug("in makeBlock. current token = {}", *m_current);
         m_current = next();
-        verify_msg(!isLast(), "Expected expression after {} in function body. Found nothing", *std::prev(m_current));
+        verify_msg(!isLast(),  //
+            "Expected expression after {} in function body. Found nothing",
+            *std::prev(m_current));
         if (*m_current == Token::RCURLY) {
             body->append(makeBlock());
         }
