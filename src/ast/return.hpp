@@ -12,6 +12,7 @@ public:
     explicit Return(ExpressionPtr argument);
 
     const inline ExpressionPtr argument() const {
+        trace();
         return m_argument;
     }
 

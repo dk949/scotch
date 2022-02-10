@@ -4,4 +4,6 @@
 
 
 Ast::Entry::Entry(ScopePtr body)
-        : FunctionDecl("main", {}, ValueType::INT, body) { }
+        : FunctionDecl("main", {}, ValueType::INT, body) {
+    trace();
+}

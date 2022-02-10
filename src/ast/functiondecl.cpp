@@ -7,4 +7,6 @@ Ast::FunctionDecl::FunctionDecl(String name, Vector<ValueType> args, ValueType r
         : m_name(std::move(name))
         , m_args(std::move(args))
         , m_return(std::move(ret))
-        , m_body(std::move(body)) { }
+        , m_body(std::move(body)) {
+    trace();
+}

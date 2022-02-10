@@ -22,6 +22,7 @@ public:
     Int64 as_int();
     ValueType as_type();
     ValueType inline type() const {
+        trace();
         return m_type;
     }
 };

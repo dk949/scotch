@@ -9,11 +9,13 @@ private:
 
 public:
     const inline NodePtrVector &children() const {
+        trace();
         return m_children;
     }
 
     template<typename T>
     void append(Ptr<T> child) {
+        trace();
         m_children.emplace_back(child);
     }
 

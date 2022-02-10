@@ -10,6 +10,7 @@
 
 #define addClassName(CLASS)                         \
     virtual StringView className() const override { \
+        trace();                                    \
         return #CLASS;                              \
     }
 
@@ -23,6 +24,7 @@ public:
     virtual ~Node() = default;
 
     virtual std::partial_ordering operator<=>(const Node &rhs) const {
+        trace();
         return this <=> &rhs;
     }
 

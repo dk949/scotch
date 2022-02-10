@@ -18,6 +18,7 @@ public:
     FunctionDecl(String name, Vector<ValueType> args, ValueType ret, ScopePtr body);
 
     const inline String &name() const {
+        trace();
         return m_name;
     }
 

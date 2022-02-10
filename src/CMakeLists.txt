@@ -30,3 +30,5 @@ target_link_libraries(
             CONAN_PKG::ms-gsl
             ${BOOST_PKG}
 )
+
+target_compile_definitions(${EXE_NAME} PRIVATE TRACE)

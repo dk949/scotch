@@ -19,8 +19,10 @@ struct sloc {
 #endif
 
 #include "hash.hpp"
+#include "trace.hpp"
 
 #include <spdlog/spdlog.h>
+#include <spdlog/stopwatch.h>
 #include <string_view>
 
 namespace tools {
@@ -40,11 +42,17 @@ template<typename>
 constexpr bool always_false_v = false;
 }  // namespace tools
 
+#ifdef TRACE
+#define SET_LOG_LEVEL() spdlog::set_level(spdlog::level::trace)
+#else
+#define SET_LOG_LEVEL() spdlog::set_level(spdlog::level::debug)
+#endif  // TRACE
+
 #define log_init()                                         \
     namespace tools {                                      \
         [[maybe_unused]] static const auto setLog = []() { \
             spdlog::set_pattern("%^[%l]%$: %v");           \
-            spdlog::set_level(spdlog::level::debug);       \
+            SET_LOG_LEVEL();                               \
             return 0;                                      \
         }();                                               \
     }
@@ -60,33 +68,44 @@ constexpr bool always_false_v = false;
     do {                                               \
         const auto loc = sloc::current();              \
         critical("{}:{}:{}: `{}` not yet implemented", \
-            tools::filename(loc.file_name()),                 \
+            tools::filename(loc.file_name()),          \
             loc.line(),                                \
             loc.column(),                              \
             loc.function_name());                      \
         exit(1);                                       \
     } while (0)
 
-#define unreachable(MSG, ...)             \
-    do {                                  \
-        const auto loc = sloc::current(); \
-        critical("{}:{}:{}: Unreachable: " MSG,        \
-            tools::filename(loc.file_name()),    \
-            loc.line(),                   \
-            loc.column(),                 \
-            __VA_ARGS__);                 \
-        exit(1);                          \
+
+#ifdef TRACE
+#define trace()                                 \
+        const auto trace_loc = sloc::current(); \
+        tools::Trace trace_trace{trace_loc.function_name()}
+#else
+#define trace()
+#endif // TRACE
+
+
+
+#define unreachable(MSG, ...)                   \
+    do {                                        \
+        const auto loc = sloc::current();       \
+        critical("{}:{}:{}: Unreachable: " MSG, \
+            tools::filename(loc.file_name()),   \
+            loc.line(),                         \
+            loc.column(),                       \
+            __VA_ARGS__);                       \
+        exit(1);                                \
     } while (0)
 
-#define crash(MSG, ...)                   \
-    do {                                  \
-        const auto loc = sloc::current(); \
-        critical("{}:{}:{}: Fatal error: " MSG,        \
-            tools::filename(loc.file_name()),    \
-            loc.line(),                   \
-            loc.column(),                 \
-            __VA_ARGS__);                 \
-        exit(1);                          \
+#define crash(MSG, ...)                         \
+    do {                                        \
+        const auto loc = sloc::current();       \
+        critical("{}:{}:{}: Fatal error: " MSG, \
+            tools::filename(loc.file_name()),   \
+            loc.line(),                         \
+            loc.column(),                       \
+            __VA_ARGS__);                       \
+        exit(1);                                \
     } while (0)
 
 
@@ -95,7 +114,7 @@ constexpr bool always_false_v = false;
         if((X)) break;                                          \
         const auto loc = sloc::current();                       \
         critical("{}:{}:{}: Assertion failed: " #X " is false", \
-            tools::filename(loc.file_name()),                          \
+            tools::filename(loc.file_name()),                   \
             loc.line(),                                         \
             loc.column());                                      \
         exit(1);                                                \

@@ -2,10 +2,13 @@
 
 Parser::Parser(Vector<Token> tokens)
         : m_tokens(std::move(tokens))
-        , m_current(m_tokens.begin()) { }
+        , m_current(m_tokens.begin()) {
+    trace();
+}
 
 
 Ast::NodePtr Parser::makeNode() {
+    trace();
     if (*m_current == Token::DEF) {
         return makeFunction();
     }
@@ -14,6 +17,7 @@ Ast::NodePtr Parser::makeNode() {
 }
 
 Ast::FunctionDeclPtr Parser::makeFunction() {
+    trace();
     m_current = next();
     verify_msg(!isLast(), "Expected function declaration after {} in function declaration. Found nothing", *std::prev(m_current));
     verify_msg(m_current->type() == TokenType::T_IDENTIFIER,  //
@@ -35,6 +39,7 @@ Ast::FunctionDeclPtr Parser::makeFunction() {
 
 
 Ast::BlockPtr Parser::makeBlock() {
+    trace();
     verify_msg(*m_current == Token::LCURLY, "Expected left curly brace at the start of a scope, found {}", *m_current);
     auto body = MakePtr<Ast::Block>();
     while (true) {
@@ -52,6 +57,7 @@ Ast::BlockPtr Parser::makeBlock() {
 }
 
 Vector<Ast::ValueType> Parser::makeArgs() {
+    trace();
     // FIXME: functions do not take arguments yet
     verify_msg(*m_current == Token::LBRACKET,
         "Expected right bracket after {} in function argument declaration. Found {}",
@@ -67,6 +73,7 @@ Vector<Ast::ValueType> Parser::makeArgs() {
 }
 
 Ast::ValueType Parser::makeTypeAnnotation() {
+    trace();
     verify_msg(!isLast(), "Expected type annotation after {}. Found nothing", *std::prev(m_current));
 
     if (*m_current == Token::COLON) {
@@ -92,18 +99,22 @@ Ast::ValueType Parser::makeTypeAnnotation() {
 
 
 bool Parser::isLast() {
+    trace();
     return isLast(m_current);
 }
 
 bool Parser::isLast(Iter i) {
+    trace();
     return i == m_tokens.end();
 }
 
 bool Parser::isReturn() {
+    trace();
     return m_current->type() == TokenType::T_KEYWORD && m_current->get<Token::Keyword>() == Token::RETURN;
 }
 
 bool Parser::isScopeBegin() {
+    trace();
     if (*m_current == Token::LCURLY) {
         m_current = next();
         return true;
@@ -112,6 +123,7 @@ bool Parser::isScopeBegin() {
 }
 
 bool Parser::isScopeEnd() {
+    trace();
     if (*m_current == Token::RCURLY) {
         m_current = next();
         return true;
@@ -120,6 +132,7 @@ bool Parser::isScopeEnd() {
 }
 
 Parser::Iter Parser::next() const {
+    trace();
     debug("next token is {}", *std::next(m_current));
     return std::next(m_current);
 }

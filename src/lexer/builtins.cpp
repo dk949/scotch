@@ -24,6 +24,7 @@ const Map<StringView, Token::Operator> Builtins::opMap {
 };
 
 bool Builtins::isopstart(char c) {
+    trace();
     for (dev const auto &op : opMap) {
         if (c == op.first[0]) {
             return true;

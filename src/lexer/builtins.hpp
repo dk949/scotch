@@ -14,6 +14,7 @@ public:
     const static Map<StringView, Token::Operator> opMap;
 
     Builtins() {
+        trace();
         if (m_i) {
             crash("{}",
                 "Builtins needs to be instantiated exactly once,"

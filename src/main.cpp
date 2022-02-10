@@ -15,6 +15,7 @@ log_init();
 
 dev Builtins b;
 int main(int, dev char **argv) {
+    trace();
     // auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {0}));
 
     // auto mainContents = MakePtr<Ast::Block>();
