@@ -1,5 +1,5 @@
 {
-  "build": "cmake --build build",
+  "build": "cmake --build build -j 4",
   "clean": "make -C build clean",
   "cleanbuild": "bldr reset setup build",
   "config": "$EDITOR .bldr",
