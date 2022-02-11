@@ -1,5 +1,6 @@
 #ifndef BUILTINS_HPP
 #define BUILTINS_HPP
+#include "conv.hpp"
 #include "token.hpp"
 #include "types.hpp"
 

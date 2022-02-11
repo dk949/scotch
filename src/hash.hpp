@@ -1,6 +1,8 @@
 #ifndef HASH_HPP
 #define HASH_HPP
 
+#include "conv.hpp"
+
 #include <string_view>
 namespace CTHash {
 
@@ -10,7 +12,7 @@ constexpr uint64_t fnv_1a(std::string_view data) {
     constexpr uint64_t prime = 0x00000100000001B3;
 
     for (const auto ch : data) {
-        hash ^= static_cast<uint64_t>(ch);
+        hash ^= to<uint64_t>(ch);
         hash *= prime;
     }
     return hash;

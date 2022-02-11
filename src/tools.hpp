@@ -135,7 +135,6 @@ constexpr bool always_false_v = false;
 
 // clang-format on
 
-#define to static_cast
 
 #define bcase \
     break;    \

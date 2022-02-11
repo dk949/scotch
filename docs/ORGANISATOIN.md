@@ -22,7 +22,7 @@ Longer description. Reasons, implications, etc...
   * doxygen
   * readme
   * changelog
-  * Lexer/AST/Parser
+  * lexer/ast/parser/tools
     * feat
     * fix
     * perf
