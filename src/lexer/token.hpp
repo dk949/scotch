@@ -97,7 +97,7 @@ public:
     bool isEOF() const;
 
     constexpr static IdentifierHashT hash(std::string_view sv) {
-        return CTHash::fnv_1a(sv);
+        return tools::fnv_1a(sv);
     }
 
     static const char *opToStr(Token::Operator b);

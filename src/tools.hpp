@@ -142,8 +142,8 @@ constexpr bool always_false_v = false;
 
 #define dev [[maybe_unused]]
 
-#define str_switch(STR) switch (CTHash::fnv_1a((STR)))
-#define str_case(STR)   case CTHash::fnv_1a((STR))
+#define str_switch(STR) switch (tools::fnv_1a((STR)))
+#define str_case(STR)   case tools::fnv_1a((STR))
 
 
 
