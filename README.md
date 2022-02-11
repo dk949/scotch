@@ -1,7 +1,6 @@
 # Scotch
 
 Scotch is a compiled statically typed language.
-
 <p align="center">
   <img src="./logo/logo_export.svg" alt="Logo" width=25% />
 </p>
@@ -12,3 +11,9 @@ Scotch is a compiled statically typed language.
 * [Installation instructions](./docs/INSTALL.md)
 * [Want to contribute?](./docs/CONTRIBUTING.md)
 * [Repository structure](./docs/ORGANISATOIN.md)
+
+## Goals
+[ ] Generate WebAssembly from source code
+[ ] Turing completeness
+[ ] JavaScript integration
+[ ] TypeScript integration
