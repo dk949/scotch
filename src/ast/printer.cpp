@@ -50,11 +50,15 @@ String Ast::printNode(NodePtr node) {
     if (auto *scope = is<Scope>(node); scope) {
         String out {fmt::format("{: >{}}{}(", "", indent, node->className())};
         indent += offs<1>;
-        for (dev const auto &child : scope->m_children) {
-            fmt::format_to(std::back_inserter(out), "\n{}", child);
+        if (!scope->m_children.empty()) {
+            for (dev const auto &child : scope->m_children) {
+                fmt::format_to(std::back_inserter(out), "\n{}", child);
+            }
+            indent -= offs<1>;
+            fmt::format_to(std::back_inserter(out), "\n{: >{}})", "", indent);
+        } else {
+            out.push_back(')');
         }
-        indent -= offs<1>;
-        fmt::format_to(std::back_inserter(out), "\n{: >{}})", "", indent);
         return out;
     }
 
