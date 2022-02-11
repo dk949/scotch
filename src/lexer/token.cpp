@@ -1,10 +1,12 @@
 #include "token.hpp"
 
-#include <string>
+#include "ftrace.hpp"
+#include "log.hpp"
+
 
 template<>
 Int64 Token::get<Int64>() const {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_INT) {
         return m_val.num;
     }
@@ -13,7 +15,7 @@ Int64 Token::get<Int64>() const {
 
 template<>
 Token::Keyword Token::get<Token::Keyword>() const {
-    trace();
+    ftrace();
     [[likely]] if (m_type == TokenType::T_KEYWORD) {
         return m_val.kw;
     }
@@ -22,7 +24,7 @@ Token::Keyword Token::get<Token::Keyword>() const {
 
 template<>
 Token::Operator Token::get<Token::Operator>() const {
-    trace();
+    ftrace();
     [[likely]] if (m_type == TokenType::T_OP) {
         return m_val.op;
     }
@@ -32,7 +34,7 @@ Token::Operator Token::get<Token::Operator>() const {
 
 template<>
 const char *Token::get<const char *>() const {
-    trace();
+    ftrace();
     [[likely]] if (m_type == TokenType::T_IDENTIFIER) {
         return m_val.id;
     }
@@ -41,7 +43,7 @@ const char *Token::get<const char *>() const {
 
 template<>
 Token::BuiltinType Token::get<Token::BuiltinType>() const {
-    trace();
+    ftrace();
     [[likely]] if (m_type == TokenType::T_BUILTIN_TYPE) {
         return m_val.type;
     }
@@ -52,7 +54,7 @@ Token::BuiltinType Token::get<Token::BuiltinType>() const {
 
 template<>
 void Token::get<void>() const {
-    trace();
+    ftrace();
     [[likely]] if (m_type == TokenType::T_EOF) {
         return;
     }
@@ -66,18 +68,18 @@ Token::Token(Int64 val)
 }
 Token::Token(Keyword val)
         : m_type(TokenType::T_KEYWORD) {
-    trace();
+    ftrace();
     m_val.kw = val;
 }
 Token::Token(Operator val)
         : m_type(TokenType::T_OP) {
-    trace();
+    ftrace();
     m_val.op = val;
 }
 
 Token::Token(const char *val)
         : m_type(TokenType::T_IDENTIFIER) {
-    trace();
+    ftrace();
     const auto len = std::char_traits<char>::length(val) + 1;
     m_val.id = new char[len]();
     std::char_traits<char>::copy(m_val.id, val, len);
@@ -85,18 +87,18 @@ Token::Token(const char *val)
 
 Token::Token(BuiltinType val)
         : m_type(TokenType::T_BUILTIN_TYPE) {
-    trace();
+    ftrace();
     m_val.type = val;
 }
 Token::Token()
         : m_type(TokenType::T_EOF) {
-    trace();
+    ftrace();
 }
 
 
 Token::Token(const Token &other)
         : m_type(other.m_type) {
-    trace();
+    ftrace();
     if (other.m_type == TokenType::T_IDENTIFIER) {
         const auto len = std::char_traits<char>::length(other.m_val.id) + 1;  // + null terminator
         m_val.id = new char[len]();
@@ -107,7 +109,7 @@ Token::Token(const Token &other)
 }
 
 Token &Token::operator=(const Token &other) {
-    trace();
+    ftrace();
     if (&other == this) {
         return *this;
     }
@@ -130,14 +132,14 @@ Token &Token::operator=(const Token &other) {
 Token::Token(Token &&other)
         : m_type(other.m_type)
         , m_val(other.m_val) {
-    trace();
+    ftrace();
     if (other.m_type == TokenType::T_IDENTIFIER) {
         other.m_val.id = nullptr;
     }
 }
 
 Token &Token::operator=(Token &&other) {
-    trace();
+    ftrace();
     if (&other == this) {
         return *this;
     }
@@ -155,7 +157,7 @@ Token &Token::operator=(Token &&other) {
 }
 
 Token::~Token() {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_IDENTIFIER) {
         delete[] m_val.id;
     }
@@ -163,47 +165,47 @@ Token::~Token() {
 
 
 bool Token::isEOF() const {
-    trace();
+    ftrace();
     return m_type == TokenType::T_EOF;
 }
 
 Token::Order Token::operator<=>(Int64 i) const {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_INT)
         return m_val.num <=> i;
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(Keyword k) const {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_KEYWORD)
         return m_val.kw <=> k;
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(Operator o) const {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_OP)
         return m_val.op <=> o;
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(StringView id) const {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_IDENTIFIER)
         return StringView {m_val.id} <=> id;
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(BuiltinType t) const {
-    trace();
+    ftrace();
     if (m_type == TokenType::T_BUILTIN_TYPE)
         return t <=> m_val.type;
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(const Token &t) const {
-    trace();
+    ftrace();
     if (m_type != t.m_type)
         return Order::unordered;
 
@@ -227,32 +229,32 @@ Token::Order Token::operator<=>(const Token &t) const {
 }
 
 bool Token::operator==(Int64 i) const {
-    trace();
+    ftrace();
     return (m_type == TokenType::T_INT) && m_val.num == i;
 }
 
 bool Token::operator==(Keyword k) const {
-    trace();
+    ftrace();
     return (m_type == TokenType::T_KEYWORD) && m_val.kw == k;
 }
 
 bool Token::operator==(Operator o) const {
-    trace();
+    ftrace();
     return (m_type == TokenType::T_OP) && m_val.op == o;
 }
 
 bool Token::operator==(StringView id) const {
-    trace();
+    ftrace();
     return (m_type == TokenType::T_IDENTIFIER) && StringView {m_val.id} == id;
 }
 
 bool Token::operator==(BuiltinType t) const {
-    trace();
+    ftrace();
     return (m_type == TokenType::T_BUILTIN_TYPE) && t == m_val.type;
 }
 
 bool Token::operator==(const Token &t) const {
-    trace();
+    ftrace();
     if (m_type != t.m_type)
         return false;
 
@@ -278,7 +280,7 @@ bool Token::operator==(const Token &t) const {
 
 
 TokenType Token::type() const {
-    trace();
+    ftrace();
     return m_type;
 }
 
@@ -288,7 +290,7 @@ TokenType Token::type() const {
 #define ENUM_DO(E) return #E
 
 const char *Token::opToStr(Token::Operator b) {
-    trace();
+    ftrace();
     switch (b) {
         ENUM_CASE(Token::MINUS);
         ENUM_CASE(Token::PLUS);
@@ -303,7 +305,7 @@ const char *Token::opToStr(Token::Operator b) {
     crash("Unsuppirted operator {}", b);
 }
 const char *Token::kwToStr(Token::Keyword k) {
-    trace();
+    ftrace();
     switch (k) {
         ENUM_CASE(Token::CONST);
         ENUM_CASE(Token::DEF);
@@ -314,7 +316,7 @@ const char *Token::kwToStr(Token::Keyword k) {
 };
 
 const char *Token::typeToStr(Token::BuiltinType t) {
-    trace();
+    ftrace();
     switch (t) {
         ENUM_CASE(Token::INT);
         BAD_ENUM_CASE(Token::TYPE_COUNT);

@@ -1,8 +1,9 @@
-#include "tools.hpp"
+#include "log.hpp"
 log_init();
 
 #include "args.hpp"
 #include "ast.hpp"
+#include "common.hpp"
 #include "file.hpp"
 #include "parse.hpp"
 #include "tokenize.hpp"
@@ -15,24 +16,25 @@ log_init();
 
 dev Builtins b;
 int main(int, dev char **argv) {
-    trace();
+    ftrace();
     auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {10}));
 
     auto mainContents = MakePtr<Ast::Block>();
     mainContents->append(child);
 
-    auto scotchMain = MakePtr<Ast::FunctionDecl>("main", Vector<Ast::ValueType>{}, Ast::ValueType::INT, mainContents);
+    auto scotchMain = MakePtr<Ast::FunctionDecl>("main", Vector<Ast::ValueType> {}, Ast::ValueType::INT, mainContents);
 
     auto program = MakePtr<Ast::Program>();
     program->append(scotchMain);
-    info("test print:\n{}", to<Ast::NodePtr>(program));
 
-    Args::parse(argv);
-    Vector<StringView> positionals = Args::positionals;
+    info("target ast = \n{}", to<Ast::NodePtr>(program));
+
+    Tools::Args::parse(argv);
+    Vector<StringView> positionals = Tools::Args::positionals;
     if (positionals.empty()) {
         crash("{}", "Expected file, got nothing");
     }
-    String input = loadFile(positionals.back());
+    String input = Tools::loadFile(positionals.back());
     info("input = \n{}", input);
 
     Lexer l {input};
@@ -41,8 +43,10 @@ int main(int, dev char **argv) {
         info(tok);
     }
 
-    // Parser p {tokens};
-    // dev const auto ast = p.makeNode();
+    Parser p {tokens};
+    const auto ast = p.makeProgram();
+
+    info("generated ast = \n{}", to<Ast::NodePtr>(ast));
 
     return 0;
 }

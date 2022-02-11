@@ -1,7 +1,7 @@
 #ifndef RETURN_HPP
 #define RETURN_HPP
-#include "ast/node.hpp"  // for Node, addClassName
-#include "types.hpp"     // for ExpressionPtr, StringView
+#include "ast/node.hpp"
+#include "types.hpp"
 
 namespace Ast {
 class Return : public Node {
@@ -12,7 +12,6 @@ public:
     explicit Return(ExpressionPtr argument);
 
     const inline ExpressionPtr argument() const {
-        trace();
         return m_argument;
     }
 

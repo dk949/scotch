@@ -1,8 +1,8 @@
 #ifndef LEXER_HPP
 #define LEXER_HPP
-#include "builtins.hpp"
 #include "token.hpp"
 #include "types.hpp"
+#include "class_tools.hpp"
 
 #include <charconv>
 

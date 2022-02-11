@@ -1,15 +1,14 @@
-#ifndef TOOLS_HPP
-#define TOOLS_HPP
-
+#ifndef LOGGING_HPP
+#define LOGGING_HPP
 #include "hash.hpp"
 #include "source_location_fix.hpp"
-#include "trace.hpp"
+#include "warncahce.hpp"
 
+#include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/stopwatch.h>
 #include <string_view>
 
-namespace tools {
+namespace Tools {
 constexpr static std::string_view filename(std::string_view sv) {
     for (auto it = sv.rbegin(); it != sv.rend(); it++) {
 #ifdef _WIN32
@@ -21,19 +20,26 @@ constexpr static std::string_view filename(std::string_view sv) {
     }
     return sv;
 }
+}
 
-template<typename>
-constexpr bool always_false_v = false;
-}  // namespace tools
+static std::shared_ptr<spdlog::logger> ftraceLogger;
 
 #ifdef TRACE
 #define SET_LOG_LEVEL() spdlog::set_level(spdlog::level::trace)
+#define trace_init()                                                             \
+    if (ftraceLogger == nullptr) {                                               \
+        ftraceLogger = spdlog::basic_logger_mt("trace", "logs/trace.log", true); \
+        ftraceLogger->set_pattern("[%T.%f] %v");                                 \
+    }
+
 #else
 #define SET_LOG_LEVEL() spdlog::set_level(spdlog::level::debug)
+#define trcae_init()
 #endif  // TRACE
 
+
 #define log_init()                                         \
-    namespace tools {                                      \
+    namespace Tools {                                      \
         [[maybe_unused]] static const auto setLog = []() { \
             spdlog::set_pattern("%^[%l]%$: %v");           \
             SET_LOG_LEVEL();                               \
@@ -52,7 +58,7 @@ constexpr bool always_false_v = false;
     do {                                               \
         const auto loc = sloc::current();              \
         critical("{}:{}:{}: `{}` not yet implemented", \
-            tools::filename(loc.file_name()),          \
+            Tools::filename(loc.file_name()),          \
             loc.line(),                                \
             loc.column(),                              \
             loc.function_name());                      \
@@ -60,13 +66,6 @@ constexpr bool always_false_v = false;
     } while (0)
 
 
-#ifdef TRACE
-#define trace()                                 \
-        const auto trace_loc = sloc::current(); \
-        tools::Trace trace_trace{trace_loc.function_name()}
-#else
-#define trace()
-#endif // TRACE
 
 
 
@@ -74,28 +73,28 @@ constexpr bool always_false_v = false;
     do {                                        \
         const auto loc = sloc::current();       \
         critical("{}:{}:{}: Unreachable: " MSG, \
-            tools::filename(loc.file_name()),   \
+            Tools::filename(loc.file_name()),   \
             loc.line(),                         \
             loc.column(),                       \
             __VA_ARGS__);                       \
         exit(1);                                \
     } while (0)
 
-#define fixme(MSG, ...)                   \
-    do {                                        \
-        const auto loc = sloc::current();       \
-        warn("{}:{}:{}: FIXME: " MSG, \
-            tools::filename(loc.file_name()),   \
-            loc.line(),                         \
-            loc.column(),                       \
-            __VA_ARGS__);                       \
+#define fixme(MSG, ...)                                                 \
+    do {                                                                \
+        const auto loc = sloc::current();                               \
+        const auto file = Tools::filename(loc.file_name());             \
+        const auto line = loc.line();                                   \
+        const auto col = loc.column();                                  \
+        if(!WarnCache::isCached(Tools::fnv_1a(file) ^ line ^ ~col))     \
+            warn("{}:{}:{}: FIXME: " MSG, file, line, col, __VA_ARGS__);\
     } while (0)
 
 #define crash(MSG, ...)                         \
     do {                                        \
         const auto loc = sloc::current();       \
         critical("{}:{}:{}: Fatal error: " MSG, \
-            tools::filename(loc.file_name()),   \
+            Tools::filename(loc.file_name()),   \
             loc.line(),                         \
             loc.column(),                       \
             __VA_ARGS__);                       \
@@ -108,7 +107,7 @@ constexpr bool always_false_v = false;
         if((X)) break;                                          \
         const auto loc = sloc::current();                       \
         critical("{}:{}:{}: Assertion failed: " #X " is false", \
-            tools::filename(loc.file_name()),                   \
+            Tools::filename(loc.file_name()),                   \
             loc.line(),                                         \
             loc.column());                                      \
         exit(1);                                                \
@@ -119,70 +118,12 @@ constexpr bool always_false_v = false;
         if((X)) break;                                                   \
         const auto loc = sloc::current();                                \
         critical("{}:{}:{}: Assertion failed: (" #X ") is false\n\t" MSG,\
-            tools::filename(loc.file_name()),                            \
+            Tools::filename(loc.file_name()),                            \
             loc.line(),                                                  \
             loc.column(),                                                \
             __VA_ARGS__);                                                \
         exit(1);                                                         \
     } while (0)
 
-
 // clang-format on
-
-
-#define bcase \
-    break;    \
-    case
-
-#define dev [[maybe_unused]]
-
-#define str_switch(STR) switch (tools::fnv_1a((STR)))
-#define str_case(STR)   case tools::fnv_1a((STR))
-
-
-
-#define DEF_MOVE(CLASS)        \
-    CLASS(CLASS &&) = default; \
-    CLASS &operator=(CLASS &&) = default
-
-#define DEF_COPY(CLASS)             \
-    CLASS(const CLASS &) = default; \
-    CLASS &operator=(const CLASS &) = default
-
-#define NO_MOVE(CLASS)        \
-    CLASS(CLASS &&) = delete; \
-    CLASS &operator=(CLASS &&) = delete
-
-#define NO_COPY(CLASS)             \
-    CLASS(const CLASS &) = delete; \
-    CLASS &operator=(const CLASS &) = delete
-
-#define MOVE_BUT_NO_COPY(CLASS) \
-    NO_COPY(CLASS);             \
-    DEF_MOVE(CLASS)
-
-#define COPY_BUT_NO_MOVE(CLASS) \
-    DEF_COPY(CLASS);            \
-    NO_MOVE(CLASS)
-
-#define NO_MOVE_OR_COPY(CLASS) \
-    NO_MOVE(CLASS);            \
-    NO_COPY(CLASS)
-
-#define DEF_MOVE_AND_COPY(CLASS) \
-    DEF_MOVE(CLASS);             \
-    DEF_COPY(CLASS)
-
-
-
-#define ENUM_DO(E)
-
-#define ENUM_CASE(E) \
-    case E:          \
-        ENUM_DO(E);  \
-        break
-#define BAD_ENUM_CASE(E) \
-    case E:              \
-        unreachable("case {} should never happen", #E);
-
-#endif  // TOOLS_HPP
+#endif  // LOGGING_HPP

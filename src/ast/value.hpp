@@ -1,7 +1,9 @@
 #ifndef VALUE_HPP
 #define VALUE_HPP
-#include "tools.hpp"
+#include "switch_tools.hpp"
 #include "types.hpp"
+
+#include <fmt/format.h>
 
 namespace Ast {
 
@@ -22,10 +24,8 @@ public:
     Int64 as_int();
     ValueType as_type();
     ValueType inline type() const {
-        trace();
         return m_type;
     }
-
 };
 }
 

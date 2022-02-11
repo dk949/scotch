@@ -2,7 +2,7 @@
 #define HASH_HPP
 
 #include <string_view>
-namespace tools {
+namespace Tools {
 
 constexpr uint64_t fnv_1a(std::string_view data) {
     uint64_t hash = 0xcbf29ce484222325;

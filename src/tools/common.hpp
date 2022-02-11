@@ -1,6 +1,11 @@
-#ifndef CONV_HPP
-#define CONV_HPP
+#ifndef COMMON_HPP
+#define COMMON_HPP
 #include "types.hpp"
+
+namespace Tools {
+template<typename>
+constexpr bool always_false_v = false;
+}
 
 template<typename T>
 constexpr T to(auto o) {
@@ -19,4 +24,6 @@ constexpr T as(auto o) {
     return reinterpret_cast<T>(o);
 }
 
-#endif  // CONV_HPP
+#define dev [[maybe_unused]]
+
+#endif  // COMMON_HPP

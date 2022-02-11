@@ -1,7 +1,6 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
 #include "ast_fwd.hpp"
-#include "tools.hpp"
 
 #include <memory>
 #include <optional>

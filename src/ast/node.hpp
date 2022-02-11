@@ -1,6 +1,7 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
+#include "ftrace.hpp"
 #include "types.hpp"
 #include "value.hpp"
 
@@ -10,7 +11,7 @@
 
 #define addClassName(CLASS)                         \
     virtual StringView className() const override { \
-        trace();                                    \
+        ftrace();                                   \
         return #CLASS;                              \
     }
 
@@ -25,7 +26,7 @@ public:
     virtual ~Node() = default;
 
     virtual std::partial_ordering operator<=>(const Node &rhs) const {
-        trace();
+        ftrace();
         return this <=> &rhs;
     }
 

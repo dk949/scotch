@@ -1,8 +1,8 @@
 #ifndef FUNCTIONDECL_HPP
 #define FUNCTIONDECL_HPP
 
-#include "node.hpp"   // for Node, addClassName
-#include "types.hpp"  // for ValueType, String, ScopePtr, Vector, StringView
+#include "node.hpp"
+#include "types.hpp"
 
 
 namespace Ast {
@@ -18,7 +18,6 @@ public:
     FunctionDecl(String name, Vector<ValueType> args, ValueType ret, ScopePtr body);
 
     const inline String &name() const {
-        trace();
         return m_name;
     }
 

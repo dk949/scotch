@@ -1,9 +1,9 @@
 #ifndef TOKEN_TYPE_HPP
 #define TOKEN_TYPE_HPP
 
-#include "tools.hpp"
+#include "switch_tools.hpp"
 
-#include <spdlog/spdlog.h>
+#include <fmt/format.h>
 
 enum class TokenType {
     T_KEYWORD,

@@ -1,8 +1,8 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 #include "hash.hpp"
+#include "log.hpp"
 #include "token_type.hpp"
-#include "tools.hpp"
 #include "types.hpp"
 
 #include <compare>
@@ -97,7 +97,7 @@ public:
     bool isEOF() const;
 
     constexpr static IdentifierHashT hash(std::string_view sv) {
-        return tools::fnv_1a(sv);
+        return Tools::fnv_1a(sv);
     }
 
     static const char *opToStr(Token::Operator b);

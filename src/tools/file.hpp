@@ -1,7 +1,6 @@
 #ifndef FILE_HPP
 #define FILE_HPP
 
-#include "tools.hpp"
 #include "types.hpp"
 
 #include <cerrno>
@@ -9,6 +8,8 @@
 #include <fstream>
 #include <sstream>
 
+namespace Tools {
 String loadFile(StringView filename);
+}
 
 #endif  // FILE_HPP

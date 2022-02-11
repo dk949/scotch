@@ -20,7 +20,12 @@ file(
 add_executable(${EXE_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
 target_include_directories(
-    ${EXE_NAME} SYSTEM PRIVATE ${CONAN_INCLUDE_DIRS_SPDLOG} ${CONAN_INCLUDE_DIRS_MS-GSL} ${CONAN_INCLUDE_DIRS_BOOST} ${CMAKE_SOURCE_DIR}/src
+    ${EXE_NAME} SYSTEM
+    PRIVATE ${CONAN_INCLUDE_DIRS_SPDLOG}
+            ${CONAN_INCLUDE_DIRS_MS-GSL}
+            ${CONAN_INCLUDE_DIRS_BOOST}
+            ${CMAKE_SOURCE_DIR}/src
+            ${CMAKE_SOURCE_DIR}/src/tools
 )
 target_link_libraries(
     ${EXE_NAME}

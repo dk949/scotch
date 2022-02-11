@@ -10,10 +10,10 @@ using sloc = std::source_location;
 // clang-format off
 struct sloc {
     static sloc current() {return sloc {};}
-    const char *file_name() const {return "0";}
-    const char *function_name() const {return file_name();}
-    const char *column() const {return file_name();}
-    const char *line() const {return file_name();}
+    const char *file_name() const {return "file.?";}
+    const char *function_name() const {return "funciton.?";}
+    unsigned long long column() const {return 0;}
+    unsigned long long line() const {return 0;}
 };
 // clang-format on
 #endif
