@@ -7,13 +7,21 @@ Parser::Parser(Vector<Token> tokens)
 }
 
 
+Ast::ProgramPtr Parser::makeProgram() {
+    auto program = MakePtr<Ast::Program>();
+    while (!isLast()) {
+        program->append(makeNode());
+    }
+    return program;
+}
+
 Ast::NodePtr Parser::makeNode() {
     trace();
     if (*m_current == Token::DEF) {
         return makeFunction();
     }
     if (*m_current == Token::RETURN) {
-        todo();
+        fixme("Need to parse {}", *m_current);
     }
     crash("cannot parse token {}", *m_current);
 }

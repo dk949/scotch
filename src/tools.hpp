@@ -97,6 +97,16 @@ constexpr bool always_false_v = false;
         exit(1);                                \
     } while (0)
 
+#define fixme(MSG, ...)                   \
+    do {                                        \
+        const auto loc = sloc::current();       \
+        warn("{}:{}:{}: FIXME: " MSG, \
+            tools::filename(loc.file_name()),   \
+            loc.line(),                         \
+            loc.column(),                       \
+            __VA_ARGS__);                       \
+    } while (0)
+
 #define crash(MSG, ...)                         \
     do {                                        \
         const auto loc = sloc::current();       \
