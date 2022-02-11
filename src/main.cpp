@@ -16,15 +16,16 @@ log_init();
 dev Builtins b;
 int main(int, dev char **argv) {
     trace();
-    // auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {0}));
+    auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {10}));
 
-    // auto mainContents = MakePtr<Ast::Block>();
-    // mainContents->append(child);
+    auto mainContents = MakePtr<Ast::Block>();
+    mainContents->append(child);
 
-    // auto scotchMain = MakePtr<Ast::Entry>(mainContents);
+    auto scotchMain = MakePtr<Ast::FunctionDecl>("main", Vector<Ast::ValueType>{}, Ast::ValueType::INT, mainContents);
 
-    // auto program = MakePtr<Ast::Program>();
-    // program->append(scotchMain);
+    auto program = MakePtr<Ast::Program>();
+    program->append(scotchMain);
+    info("test print:\n{}", to<Ast::NodePtr>(program));
 
     Args::parse(argv);
     Vector<StringView> positionals = Args::positionals;
@@ -40,8 +41,8 @@ int main(int, dev char **argv) {
         info(tok);
     }
 
-    Parser p {tokens};
-    dev const auto ast = p.makeNode();
+    // Parser p {tokens};
+    // dev const auto ast = p.makeNode();
 
     return 0;
 }

@@ -1,9 +1,8 @@
 #ifndef AST_HPP
 #define AST_HPP
 
-// includes functiondecl->node
-#include "ast/entry.hpp"
-
+// Includes node
+#include "ast/functiondecl.hpp"
 
 // Includes scope->node
 #include "ast/block.hpp"

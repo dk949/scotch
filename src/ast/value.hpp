@@ -25,6 +25,7 @@ public:
         trace();
         return m_type;
     }
+
 };
 }
 
@@ -34,7 +35,7 @@ struct fmt::formatter<Ast::Value> : formatter<std::string> {
     auto format(Ast::Value t, FormatContext &ctx) {
         std::string name = "Invalid value";
         switch (t.type()) {  //
-            bcase Ast::ValueType::INT : name  = fmt::format("Int({})", t.as_int());
+            bcase Ast::ValueType::INT : name = fmt::format("Int({})", t.as_int());
             bcase Ast::ValueType::TYPE : name = fmt::format("Type({})", t.as_type());
         }
 

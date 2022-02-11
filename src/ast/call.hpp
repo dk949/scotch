@@ -5,6 +5,8 @@
 namespace Ast {
 
 class Call : public Expression {
+    public:
+    friend String Ast::printNode(NodePtr node);
 private:
     addClassName(Call);
 };

@@ -22,6 +22,8 @@ public:
         return m_name;
     }
 
+    friend String Ast::printNode(NodePtr node);
+
 private:
     addClassName(FunctionDecl);
 };

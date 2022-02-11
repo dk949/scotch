@@ -4,6 +4,8 @@
 #include "node.hpp"
 namespace Ast {
 class Expression : public Node {
+public:
+    friend String Ast::printNode(NodePtr node);
 private:
     addClassName(Expression);
 };

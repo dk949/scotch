@@ -14,6 +14,8 @@ private:
 public:
     Literal(Value value);
 
+    friend String Ast::printNode(NodePtr node);
+
 private:
     addClassName(Literal);
 };

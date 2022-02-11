@@ -16,6 +16,8 @@ public:
         return m_argument;
     }
 
+    friend String Ast::printNode(NodePtr node);
+
 private:
     addClassName(Return);
 };

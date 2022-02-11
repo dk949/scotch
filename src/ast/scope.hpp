@@ -19,6 +19,8 @@ public:
         m_children.emplace_back(child);
     }
 
+    friend String Ast::printNode(NodePtr node);
+
 protected:
     Scope() = default;
 };

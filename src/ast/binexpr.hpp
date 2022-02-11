@@ -4,6 +4,8 @@
 #include "expression.hpp"  // for Expression
 #include "types.hpp"       // for ExpressionPtr, BinOp, StringView
 
+#include <fmt/format.h>
+
 namespace Ast {
 
 class BinExpr : public Expression {
@@ -14,6 +16,8 @@ private:
 
 public:
     explicit BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs);
+
+    friend String Ast::printNode(NodePtr node);
 
 private:
     addClassName(BinExpr);
