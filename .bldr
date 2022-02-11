@@ -3,6 +3,7 @@
   "clean": "make -C build clean",
   "cleanbuild": "bldr reset setup build",
   "config": "$EDITOR .bldr",
+  "docs": "cmake --build build --target doxygen-docs",
   "reset": "rm -rf build",
   "run": "./build/bin/scotch test/shortterm_goal.scot",
   "setup": "cmake -B build -DCMAKE_BUILD_TYPE=Debug",
