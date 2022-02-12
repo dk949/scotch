@@ -169,6 +169,27 @@ bool Token::isEOF() const {
     return m_type == TokenType::T_EOF;
 }
 
+bool Token::isBinExpr() const {
+    ftrace();
+    if (m_type != TokenType::T_OP)
+        return false;
+    switch (m_val.op) {
+        case PLUS:
+        case MINUS:
+            return true;
+        case COLON:
+        case SEMICOLON:
+        case LCURLY:
+        case RCURLY:
+        case LBRACKET:
+        case RBRACKET:
+            return false;
+        BAD_ENUM_CASE(OP_COUNT);
+    }
+    unreachable("{}", "exhaustive enum");
+    // return false;
+}
+
 Token::Order Token::operator<=>(Int64 i) const {
     ftrace();
     if (m_type == TokenType::T_INT)

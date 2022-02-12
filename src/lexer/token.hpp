@@ -95,6 +95,7 @@ public:
     bool operator==(BuiltinType t) const;
     bool operator==(const Token &t) const;
     bool isEOF() const;
+    bool isBinExpr() const;
 
     constexpr static IdentifierHashT hash(std::string_view sv) {
         return Tools::fnv_1a(sv);
