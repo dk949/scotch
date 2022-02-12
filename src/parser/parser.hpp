@@ -11,10 +11,13 @@ class Parser {
 public:
     explicit Parser(Vector<Token> tokens);
 
-    Ast::ProgramPtr makeProgram();
-    Ast::NodePtr makeNode();
-    Ast::FunctionDeclPtr makeFunction();
     Ast::BlockPtr makeBlock();
+    Ast::ExpressionPtr makeExpr();
+    Ast::FunctionDeclPtr makeFunction();
+    Ast::LiteralPtr makeLiteral();
+    Ast::NodePtr makeNode();
+    Ast::ProgramPtr makeProgram();
+    Ast::ReturnPtr makeReturn();
 
     Ast::ValueType makeTypeAnnotation();
     Vector<Ast::ValueType> makeArgs();

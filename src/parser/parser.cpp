@@ -11,6 +11,7 @@ Parser::Parser(Vector<Token> tokens)
 
 
 Ast::ProgramPtr Parser::makeProgram() {
+    ftrace();
     auto program = MakePtr<Ast::Program>();
     while (!isLast()) {
         program->append(makeNode());
@@ -21,12 +22,66 @@ Ast::ProgramPtr Parser::makeProgram() {
 Ast::NodePtr Parser::makeNode() {
     ftrace();
     if (*m_current == Token::DEF) {
-        return makeFunction();
+        const auto func =  makeFunction();
+        return func;
     }
     if (*m_current == Token::RETURN) {
-        fixme("Need to parse {}", *m_current);
+        return makeReturn();
     }
     crash("cannot parse token {}", *m_current);
+}
+
+Ast::ReturnPtr Parser::makeReturn() {
+    ftrace();
+    verify_msg(*m_current == Token::RETURN, "Expected return keyword in the return statement, got {}", *m_current);
+    m_current = std::next(m_current);
+    verify_msg(!isLast(),  //
+        "Expected expression or semicolon after {} in return statement. Found nothing",
+        *std::prev(m_current));
+    auto ret = MakePtr<Ast::Return>(makeExpr());
+    m_current = std::next(m_current);
+    return ret;
+}
+
+Ast::ExpressionPtr Parser::makeExpr() {
+    ftrace();
+    switch (m_current->type()) {
+        case TokenType::T_INT:
+        case TokenType::T_STR:
+            return makeLiteral();
+        case TokenType::T_KEYWORD:
+            todo();
+        case TokenType::T_IDENTIFIER:
+            todo();
+        case TokenType::T_OP:
+            if (m_current->isBinExpr()) {
+                fixme("Not parsing binary expression {}", *m_current);
+                todo();
+            }
+            if (*m_current == Token::SEMICOLON) {
+                fixme("{}", "Reached semicolon in expression");
+                todo();
+            }
+            fixme("{}", "Not handeling any operator other then binary operators in expressions");
+            todo();
+        case TokenType::T_BUILTIN_TYPE:
+            crash("unexpected BUILTIN_TYPE after {} in expression", *std::prev(m_current));
+        case TokenType::T_EOF:
+            crash("unexpected EOF after {} in expression", *std::prev(m_current));
+    }
+    unreachable("{}", "exhaustive enum handleing");
+}
+
+Ast::LiteralPtr Parser::makeLiteral() {
+    ftrace();
+    switch (m_current->type()) {
+        case TokenType::T_INT:
+            return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Int64>()});
+        case TokenType::T_STR:
+            todo();
+        default:
+            crash("Unexpected {} in literal", m_current->type());
+    }
 }
 
 Ast::FunctionDeclPtr Parser::makeFunction() {
@@ -64,10 +119,11 @@ Ast::BlockPtr Parser::makeBlock() {
             "Expected expression after {} in function body. Found nothing",
             *std::prev(m_current));
         if (*m_current == Token::RCURLY) {
-            body->append(makeBlock());
+            m_current = std::next(m_current);
+            break;
         }
         if (*m_current == Token::LCURLY) {
-            break;
+            body->append(makeBlock());
         }
         body->append(makeNode());
     }
@@ -123,7 +179,8 @@ bool Parser::isLast() {
 
 bool Parser::isLast(Iter i) {
     ftrace();
-    return i == m_tokens.end();
+    verify(i != m_tokens.end());
+    return i->type() == TokenType::T_EOF;
 }
 
 bool Parser::isReturn() {
