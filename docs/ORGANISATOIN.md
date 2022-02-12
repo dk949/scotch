@@ -4,9 +4,9 @@
 
 General commit shape is:
 
-area: \[subarea\]: short sentence describing the change.
+    area: \[subarea\]: short sentence describing the change.
 
-Longer description. Reasons, implications, etc...
+    Longer description. Reasons, implications, etc...
 
 * `subarea` is optional and does not include the square brackets.
 * Every line must not exceed 80 columns.
