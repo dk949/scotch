@@ -5,7 +5,6 @@ project(Scotch CXX)
 include(cmake/CompileCommands.cmake)
 add_compile_definitions(NOT_CCLS)
 include(cmake/StandardProjectSettings.cmake)
-include(cmake/PreventInSourceBuilds.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested
 add_library(project_options INTERFACE)
