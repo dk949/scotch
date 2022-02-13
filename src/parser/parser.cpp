@@ -59,17 +59,17 @@ Ast::ExpressionPtr Parse::Parser::makeExpr() {
                 todo();
             }
             if (*m_current == Lex::Token::SEMICOLON) {
-                fixme("{}", "Reached semicolon in expression");
+                fixme("Reached semicolon in expression");
                 todo();
             }
-            fixme("{}", "Not handling any operator other then binary operators in expressions");
+            fixme("Not handling any operator other then binary operators in expressions");
             todo();
         case Lex::TokenType::T_BUILTIN_TYPE:
             crash("unexpected BUILTIN_TYPE after {} in expression", *std::prev(m_current));
         case Lex::TokenType::T_EOF:
             crash("unexpected EOF after {} in expression", *std::prev(m_current));
     }
-    unreachable("{}", "exhaustive enum handling");
+    unreachable("exhaustive enum handling");
 }
 
 Ast::LiteralPtr Parse::Parser::makeLiteral() {
@@ -132,7 +132,7 @@ Ast::BlockPtr Parse::Parser::makeBlock() {
 
 Vector<Ast::ValueType> Parse::Parser::makeArgs() {
     ftrace();
-    fixme("{}", "functions do not take any arguments yet");
+    fixme("functions do not take any arguments yet");
     verify_msg(*m_current == Lex::Token::LBRACKET,
         "Expected right bracket after {} in function argument declaration. Found {}",
         *std::prev(m_current),

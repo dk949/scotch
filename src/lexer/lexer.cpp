@@ -117,7 +117,7 @@ Lex::Token Lex::Lexer::parseNumber() {
 Lex::Token Lex::Lexer::parseOperator() {
     ftrace();
     const StringView op {&*m_current, 1};
-    fixme("{}", "operator parser doesn't handle multi-character operators like `==`");
+    fixme("operator parser doesn't handle multi-character operators like `==`");
     if (Builtins::opMap.contains(op)) {
         m_current = std::next(m_current);
         return Lex::Token {Builtins::opMap.at(op)};

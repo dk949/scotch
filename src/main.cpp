@@ -27,7 +27,7 @@ int main(int, dev char **argv) {
     Tools::Args::parse(argv);
     Vector<StringView> positionals = Tools::Args::positionals;
     if (positionals.empty()) {
-        crash("{}", "Expected file, got nothing");
+        crash("Expected file, got nothing");
     }
     String input = Tools::loadFile(positionals.back());
     info("input = \n{}", input);
