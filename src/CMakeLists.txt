@@ -21,11 +21,12 @@ add_executable(${EXE_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
 target_include_directories(
     ${EXE_NAME} SYSTEM
-    PRIVATE ${CONAN_INCLUDE_DIRS_SPDLOG}
-            ${CONAN_INCLUDE_DIRS_MS-GSL}
-            ${CONAN_INCLUDE_DIRS_BOOST}
-            ${CMAKE_SOURCE_DIR}/src
-            ${CMAKE_SOURCE_DIR}/src/tools
+    PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_SPDLOG}
+    PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_FMT}
+    PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_MS-GSL}
+    PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_BOOST}
+           PRIVATE ${CMAKE_SOURCE_DIR}/src
+           PRIVATE ${CMAKE_SOURCE_DIR}/src/tools
 )
 target_link_libraries(
     ${EXE_NAME}
@@ -37,3 +38,5 @@ target_link_libraries(
 )
 
 target_compile_definitions(${EXE_NAME} PRIVATE TRACE)
+
+target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>)
