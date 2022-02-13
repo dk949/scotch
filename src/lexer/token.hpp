@@ -140,7 +140,7 @@ struct fmt::formatter<Lex::Token> : formatter<std::string> {
             bcase Lex::TokenType::T_BUILTIN_TYPE:
                 name = fmt::format("{}({})", t.type(), Lex::Token::typeToStr(t.get<Lex::Token::BuiltinType>()));
             bcase Lex::TokenType::T_STR:
-                fixme("{}", "string literals are not being handled");
+                fixme("string literals are not being handled");
                 todo();
         }
         // clang-format on

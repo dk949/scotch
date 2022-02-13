@@ -49,10 +49,10 @@ Ast::ExpressionPtr Parse::Parser::makeExpr() {
         case Lex::TokenType::T_STR:
             return makeLiteral();
         case Lex::TokenType::T_KEYWORD:
-            fixme("{}", "keywords are not handled in expressions");
+            fixme("keywords are not handled in expressions");
             todo();
         case Lex::TokenType::T_IDENTIFIER:
-            fixme("{}", "identifiers are not handled in expressions");
+            fixme("identifiers are not handled in expressions");
             todo();
         case Lex::TokenType::T_OP:
             if (m_current->isBinExpr()) {
@@ -79,7 +79,7 @@ Ast::LiteralPtr Parse::Parser::makeLiteral() {
         case Lex::TokenType::T_INT:
             return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Int64>()});
         case Lex::TokenType::T_STR:
-            fixme("{}", "string literals are not handled");
+            fixme("string literals are not handled");
             todo();
         default:
             crash("Unexpected {} in literal", m_current->type());
@@ -164,10 +164,10 @@ Ast::ValueType Parse::Parser::makeTypeAnnotation() {
                 BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
             }
         }
-        fixme("{}", "user defined types are not handled");
+        fixme("user defined types are not handled");
         todo();
     }
-    fixme("{}", "implicit types are not handled");
+    fixme("implicit types are not handled");
     todo();
 }
 

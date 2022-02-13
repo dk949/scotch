@@ -250,7 +250,7 @@ Lex::Token::Order Lex::Token::operator<=>(const Token &t) const {
         case (Lex::TokenType::T_INT):
             return *this <=> t.m_val.num;
         case (Lex::TokenType::T_STR):
-            fixme("{}", "string literals are not being handled");
+            fixme("string literals are not being handled");
             todo();
         case (Lex::TokenType::T_KEYWORD):
             return *this <=> t.m_val.kw;
@@ -301,7 +301,7 @@ bool Lex::Token::operator==(const Token &t) const {
         case (Lex::TokenType::T_INT):
             return *this == t.m_val.num;
         case (Lex::TokenType::T_STR):
-            fixme("{}", "string literals are not being handled");
+            fixme("string literals are not being handled");
             todo();
         case (Lex::TokenType::T_KEYWORD):
             return *this == t.m_val.kw;
