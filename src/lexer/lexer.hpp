@@ -1,8 +1,8 @@
 #ifndef LEXER_HPP
 #define LEXER_HPP
+#include "class_tools.hpp"
 #include "token.hpp"
 #include "types.hpp"
-#include "class_tools.hpp"
 
 #include <charconv>
 
@@ -17,6 +17,7 @@ public:
     NO_MOVE_OR_COPY(Lexer);
 
     explicit Lexer(String input);
+    ~Lexer() = default;
 
     Vector<Token> parseAll();
 
