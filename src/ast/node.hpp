@@ -44,7 +44,7 @@ template<>
 struct fmt::formatter<Ast::NodePtr> : formatter<std::string> {
     template<typename FormatContext>
     auto format(Ast::NodePtr n, FormatContext &ctx) {
-        return formatter<std::string>::format(Ast::printNode(n), ctx);
+        return formatter<std::string>::format(Ast::printNode(std::move(n)), ctx);
     }
 };
 
