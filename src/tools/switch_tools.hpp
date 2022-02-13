@@ -23,5 +23,4 @@
     case E:              \
         unreachable("case {} should never happen", #E);
 
-#endif // SWITCH_TOOLS_HPP
-
+#endif  // SWITCH_TOOLS_HPP

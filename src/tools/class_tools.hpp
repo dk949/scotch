@@ -33,5 +33,4 @@
     DEF_MOVE(CLASS);             \
     DEF_COPY(CLASS)
 
-#endif // CLASS_TOOLS_HPP
-
+#endif  // CLASS_TOOLS_HPP

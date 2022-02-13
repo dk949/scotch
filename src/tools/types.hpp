@@ -36,15 +36,15 @@ using Hash = int64_t;
 namespace Ast {
 
 // Pointers
-using BlockPtr        = Ptr<Block>;
-using ExpressionPtr   = Ptr<Expression>;
+using BlockPtr = Ptr<Block>;
+using ExpressionPtr = Ptr<Expression>;
 using FunctionDeclPtr = Ptr<FunctionDecl>;
-using LiteralPtr      = Ptr<Literal>;
-using NodePtr         = Ptr<Node>;
-using ProgramPtr      = Ptr<Program>;
-using ReturnPtr       = Ptr<Return>;
-using ScopePtr        = Ptr<Scope>;
-using ValuePtr        = Ptr<Value>;
+using LiteralPtr = Ptr<Literal>;
+using NodePtr = Ptr<Node>;
+using ProgramPtr = Ptr<Program>;
+using ReturnPtr = Ptr<Return>;
+using ScopePtr = Ptr<Scope>;
+using ValuePtr = Ptr<Value>;
 
 // Containers of things
 using NodePtrVector = Vector<Ptr<Node>>;
