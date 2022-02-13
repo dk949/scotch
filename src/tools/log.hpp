@@ -34,7 +34,7 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
 
 #else
 #define SET_LOG_LEVEL() spdlog::set_level(spdlog::level::debug)
-#define trcae_init()
+#define trace_init()
 #endif  // TRACE
 
 
