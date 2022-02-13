@@ -5,6 +5,8 @@
 
 #include <fmt/format.h>
 
+namespace Lex {
+
 enum class TokenType {
     T_KEYWORD,
     T_IDENTIFIER,
@@ -19,27 +21,28 @@ enum class TokenType {
     T_EOF,
 };
 
+}
 
 #undef ENUM_DO
 #define ENUM_DO(TOK) name = #TOK;
 
 template<>
-struct fmt::formatter<TokenType> : formatter<std::string_view> {
+struct fmt::formatter<Lex::TokenType> : formatter<std::string_view> {
     template<typename FormatContext>
-    auto format(TokenType t, FormatContext &ctx) {
+    auto format(Lex::TokenType t, FormatContext &ctx) {
         std::string name = "Invalid token";
         switch (t) {
-            ENUM_CASE(TokenType::T_KEYWORD);
-            ENUM_CASE(TokenType::T_IDENTIFIER);
+            ENUM_CASE(Lex::TokenType::T_KEYWORD);
+            ENUM_CASE(Lex::TokenType::T_IDENTIFIER);
 
-            ENUM_CASE(TokenType::T_INT);
-            ENUM_CASE(TokenType::T_STR);
+            ENUM_CASE(Lex::TokenType::T_INT);
+            ENUM_CASE(Lex::TokenType::T_STR);
 
-            ENUM_CASE(TokenType::T_OP);
+            ENUM_CASE(Lex::TokenType::T_OP);
 
-            ENUM_CASE(TokenType::T_BUILTIN_TYPE);
+            ENUM_CASE(Lex::TokenType::T_BUILTIN_TYPE);
 
-            ENUM_CASE(TokenType::T_EOF);
+            ENUM_CASE(Lex::TokenType::T_EOF);
         }
         return formatter<string_view>::format(name, ctx);
     }

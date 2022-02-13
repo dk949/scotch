@@ -3,7 +3,7 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
-Parser::Parser(Vector<Token> tokens)
+Parser::Parser(Vector<Lex::Token> tokens)
         : m_tokens(std::move(tokens))
         , m_current(m_tokens.begin()) {
     ftrace();
@@ -21,11 +21,11 @@ Ast::ProgramPtr Parser::makeProgram() {
 
 Ast::NodePtr Parser::makeNode() {
     ftrace();
-    if (*m_current == Token::DEF) {
+    if (*m_current == Lex::Token::DEF) {
         const auto func = makeFunction();
         return func;
     }
-    if (*m_current == Token::RETURN) {
+    if (*m_current == Lex::Token::RETURN) {
         return makeReturn();
     }
     crash("cannot parse token {}", *m_current);
@@ -33,7 +33,7 @@ Ast::NodePtr Parser::makeNode() {
 
 Ast::ReturnPtr Parser::makeReturn() {
     ftrace();
-    verify_msg(*m_current == Token::RETURN, "Expected return keyword in the return statement, got {}", *m_current);
+    verify_msg(*m_current == Lex::Token::RETURN, "Expected return keyword in the return statement, got {}", *m_current);
     m_current = std::next(m_current);
     verify_msg(!isLast(),  //
         "Expected expression or semicolon after {} in return statement. Found nothing",
@@ -46,27 +46,27 @@ Ast::ReturnPtr Parser::makeReturn() {
 Ast::ExpressionPtr Parser::makeExpr() {
     ftrace();
     switch (m_current->type()) {
-        case TokenType::T_INT:
-        case TokenType::T_STR:
+        case Lex::TokenType::T_INT:
+        case Lex::TokenType::T_STR:
             return makeLiteral();
-        case TokenType::T_KEYWORD:
+        case Lex::TokenType::T_KEYWORD:
             todo();
-        case TokenType::T_IDENTIFIER:
+        case Lex::TokenType::T_IDENTIFIER:
             todo();
-        case TokenType::T_OP:
+        case Lex::TokenType::T_OP:
             if (m_current->isBinExpr()) {
                 fixme("Not parsing binary expression {}", *m_current);
                 todo();
             }
-            if (*m_current == Token::SEMICOLON) {
+            if (*m_current == Lex::Token::SEMICOLON) {
                 fixme("{}", "Reached semicolon in expression");
                 todo();
             }
             fixme("{}", "Not handling any operator other then binary operators in expressions");
             todo();
-        case TokenType::T_BUILTIN_TYPE:
+        case Lex::TokenType::T_BUILTIN_TYPE:
             crash("unexpected BUILTIN_TYPE after {} in expression", *std::prev(m_current));
-        case TokenType::T_EOF:
+        case Lex::TokenType::T_EOF:
             crash("unexpected EOF after {} in expression", *std::prev(m_current));
     }
     unreachable("{}", "exhaustive enum handling");
@@ -75,9 +75,9 @@ Ast::ExpressionPtr Parser::makeExpr() {
 Ast::LiteralPtr Parser::makeLiteral() {
     ftrace();
     switch (m_current->type()) {
-        case TokenType::T_INT:
+        case Lex::TokenType::T_INT:
             return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Int64>()});
-        case TokenType::T_STR:
+        case Lex::TokenType::T_STR:
             todo();
         default:
             crash("Unexpected {} in literal", m_current->type());
@@ -90,7 +90,7 @@ Ast::FunctionDeclPtr Parser::makeFunction() {
     verify_msg(!isLast(),  //
         "Expected function declaration after {} in function declaration. Found nothing",
         *std::prev(m_current));
-    verify_msg(m_current->type() == TokenType::T_IDENTIFIER,  //
+    verify_msg(m_current->type() == Lex::TokenType::T_IDENTIFIER,  //
         "Expected function name after {} in function declaration. Found {}",
         *std::prev(m_current),
         *m_current);
@@ -110,7 +110,7 @@ Ast::FunctionDeclPtr Parser::makeFunction() {
 
 Ast::BlockPtr Parser::makeBlock() {
     ftrace();
-    verify_msg(*m_current == Token::LCURLY, "Expected left curly brace at the start of a scope, found {}", *m_current);
+    verify_msg(*m_current == Lex::Token::LCURLY, "Expected left curly brace at the start of a scope, found {}", *m_current);
     auto body = MakePtr<Ast::Block>();
     while (true) {
         debug("in makeBlock. current token = {}", *m_current);
@@ -118,11 +118,11 @@ Ast::BlockPtr Parser::makeBlock() {
         verify_msg(!isLast(),  //
             "Expected expression after {} in function body. Found nothing",
             *std::prev(m_current));
-        if (*m_current == Token::RCURLY) {
+        if (*m_current == Lex::Token::RCURLY) {
             m_current = std::next(m_current);
             break;
         }
-        if (*m_current == Token::LCURLY) {
+        if (*m_current == Lex::Token::LCURLY) {
             body->append(makeBlock());
         }
         body->append(makeNode());
@@ -133,13 +133,13 @@ Ast::BlockPtr Parser::makeBlock() {
 Vector<Ast::ValueType> Parser::makeArgs() {
     ftrace();
     fixme("{}", "functions do not take any arguments yet");
-    verify_msg(*m_current == Token::LBRACKET,
+    verify_msg(*m_current == Lex::Token::LBRACKET,
         "Expected right bracket after {} in function argument declaration. Found {}",
         *std::prev(m_current),
         *m_current);
 
     m_current = next();
-    verify_msg(*m_current == Token::RBRACKET,
+    verify_msg(*m_current == Lex::Token::RBRACKET,
         "Expected left bracket after {} in function argument declaration. Found {}",
         *std::prev(m_current),
         *m_current);
@@ -150,18 +150,18 @@ Ast::ValueType Parser::makeTypeAnnotation() {
     ftrace();
     verify_msg(!isLast(), "Expected type annotation after {}. Found nothing", *std::prev(m_current));
 
-    if (*m_current == Token::COLON) {
+    if (*m_current == Lex::Token::COLON) {
         m_current = next();
         verify_msg(!isLast(), "Expected a type after {} in type annotation declaration, got nothing", *std::prev(m_current));
 
         // Handling builtin types
-        if (m_current->type() == TokenType::T_BUILTIN_TYPE) {
-            switch (m_current->get<Token::BuiltinType>()) {
-                bcase Token::INT : {
+        if (m_current->type() == Lex::TokenType::T_BUILTIN_TYPE) {
+            switch (m_current->get<Lex::Token::BuiltinType>()) {
+                bcase Lex::Token::INT : {
                     m_current = next();
                     return Ast::ValueType::INT;
                 }
-                BAD_ENUM_CASE(Token::TYPE_COUNT);
+                BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
             }
         }
         // TODO: handle user defined types
@@ -180,17 +180,17 @@ bool Parser::isLast() {
 bool Parser::isLast(Iter i) {
     ftrace();
     verify(i != m_tokens.end());
-    return i->type() == TokenType::T_EOF;
+    return i->type() == Lex::TokenType::T_EOF;
 }
 
 bool Parser::isReturn() {
     ftrace();
-    return m_current->type() == TokenType::T_KEYWORD && m_current->get<Token::Keyword>() == Token::RETURN;
+    return m_current->type() == Lex::TokenType::T_KEYWORD && m_current->get<Lex::Token::Keyword>() == Lex::Token::RETURN;
 }
 
 bool Parser::isScopeBegin() {
     ftrace();
-    if (*m_current == Token::LCURLY) {
+    if (*m_current == Lex::Token::LCURLY) {
         m_current = next();
         return true;
     }
@@ -199,7 +199,7 @@ bool Parser::isScopeBegin() {
 
 bool Parser::isScopeEnd() {
     ftrace();
-    if (*m_current == Token::RCURLY) {
+    if (*m_current == Lex::Token::RCURLY) {
         m_current = next();
         return true;
     }

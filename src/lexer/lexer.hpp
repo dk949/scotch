@@ -6,6 +6,8 @@
 
 #include <charconv>
 
+namespace Lex {
+
 class Lexer {
 private:
     using Iter = String::iterator;
@@ -33,5 +35,7 @@ private:
     bool isEOF();
     bool isEOL();
 };
+
+}
 
 #endif  // LEXER_HPP

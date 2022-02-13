@@ -4,6 +4,8 @@
 #include "types.hpp"
 
 
+namespace Lex {
+
 struct Builtins {
 private:
     static bool m_i;
@@ -17,5 +19,7 @@ public:
 
     static bool isopstart(char c);
 };
+
+}
 
 #endif  // BUILTINS_HPP

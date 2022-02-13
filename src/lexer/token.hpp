@@ -8,6 +8,8 @@
 
 #include <compare>
 
+namespace Lex {
+
 struct Token {
 public:
     using IdentifierHashT = uint64_t;
@@ -116,26 +118,28 @@ template<> [[nodiscard]] Token::BuiltinType Token::get<Token::BuiltinType>() con
 template<> void Token::get<void>() const;
 // clang-format on
 
+}  // namespace Lex
+
 template<>
-struct fmt::formatter<Token> : formatter<std::string> {
+struct fmt::formatter<Lex::Token> : formatter<std::string> {
     template<typename FormatContext>
-    auto format(const Token &t, FormatContext &ctx) {
+    auto format(const Lex::Token &t, FormatContext &ctx) {
         std::string name = "Invalid token";
         // clang-format off
         switch (t.type()) {
-            bcase TokenType::T_OP:
-                name = fmt::format("{}({})", t.type(), Token::opToStr(t.get<Token::Operator>()));
-            bcase TokenType::T_EOF:
+            bcase Lex::TokenType::T_OP:
+                name = fmt::format("{}({})", t.type(), Lex::Token::opToStr(t.get<Lex::Token::Operator>()));
+            bcase Lex::TokenType::T_EOF:
                 name = fmt::format("{}()",   t.type());
-            bcase TokenType::T_IDENTIFIER:
+            bcase Lex::TokenType::T_IDENTIFIER:
                 name = fmt::format("{}({})", t.type(), t.get<const char *>());
-            bcase TokenType::T_KEYWORD:
-                name = fmt::format("{}({})", t.type(), Token::kwToStr(t.get<Token::Keyword>()));
-            bcase TokenType::T_INT:
+            bcase Lex::TokenType::T_KEYWORD:
+                name = fmt::format("{}({})", t.type(), Lex::Token::kwToStr(t.get<Lex::Token::Keyword>()));
+            bcase Lex::TokenType::T_INT:
                 name = fmt::format("{}({})", t.type(), t.get<Int64>());
-            bcase TokenType::T_BUILTIN_TYPE:
-                name = fmt::format("{}({})", t.type(), Token::typeToStr(t.get<Token::BuiltinType>()));
-            bcase TokenType::T_STR:
+            bcase Lex::TokenType::T_BUILTIN_TYPE:
+                name = fmt::format("{}({})", t.type(), Lex::Token::typeToStr(t.get<Lex::Token::BuiltinType>()));
+            bcase Lex::TokenType::T_STR:
                 todo();
         }
         // clang-format on

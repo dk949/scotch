@@ -9,7 +9,7 @@ log_init();
 
 
 
-dev const Builtins blt;
+dev const Lex::Builtins blt;
 int main(int, dev char **argv) {
     ftrace();
     auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {10}));
@@ -32,7 +32,7 @@ int main(int, dev char **argv) {
     String input = Tools::loadFile(positionals.back());
     info("input = \n{}", input);
 
-    Lexer l {input};
+    Lex::Lexer l {input};
     const auto tokens = l.parseAll();
     for (const auto &tok : tokens) {
         info(tok);

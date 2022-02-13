@@ -5,16 +5,16 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
-Lexer::Lexer(String input)
+Lex::Lexer::Lexer(String input)
         : m_input(std::move(input))
         , m_current(m_input.begin()) {
     ftrace();
     verify(!m_input.empty());
 }
 
-Vector<Token> Lexer::parseAll() {
+Vector<Lex::Token> Lex::Lexer::parseAll() {
     ftrace();
-    Vector<Token> out;
+    Vector<Lex::Token> out;
     do {
         const auto tok = parseToken();
 
@@ -24,12 +24,12 @@ Vector<Token> Lexer::parseAll() {
     return out;
 }
 
-Token Lexer::parseToken() {
+Lex::Token Lex::Lexer::parseToken() {
     ftrace();
     while (skipComment() || skipSpace()) { }
 
     if (isEOF()) {
-        return Token {};
+        return Lex::Token {};
     }
 
     if (std::isalpha(*m_current)) {
@@ -48,7 +48,7 @@ Token Lexer::parseToken() {
 }
 
 
-bool Lexer::skipSpace() {
+bool Lex::Lexer::skipSpace() {
     ftrace();
     bool found = false;
     while (!isEOF() && std::isspace(*m_current)) {
@@ -58,7 +58,7 @@ bool Lexer::skipSpace() {
     return found;
 }
 
-bool Lexer::skipComment() {
+bool Lex::Lexer::skipComment() {
     ftrace();
     bool found = false;
     if (!isEOF(m_current)                            //
@@ -75,7 +75,7 @@ bool Lexer::skipComment() {
 }
 
 
-Token Lexer::parseWord() {
+Lex::Token Lex::Lexer::parseWord() {
     ftrace();
     String word {*m_current};
     m_current = std::next(m_current);
@@ -85,17 +85,17 @@ Token Lexer::parseWord() {
     }
 
     if (Builtins::kwMap.contains(word)) {
-        return Token {Builtins::kwMap.at(word)};
+        return Lex::Token {Builtins::kwMap.at(word)};
     }
 
     if (Builtins::typeMap.contains(word)) {
-        return Token {Builtins::typeMap.at(word)};
+        return Lex::Token {Builtins::typeMap.at(word)};
     }
 
-    return Token {to<const char *>(word.c_str())};
+    return Lex::Token {to<const char *>(word.c_str())};
 }
 
-Token Lexer::parseNumber() {
+Lex::Token Lex::Lexer::parseNumber() {
     ftrace();
     String number {*m_current};
     m_current = std::next(m_current);
@@ -110,22 +110,22 @@ Token Lexer::parseNumber() {
         crash("floating point numbers are not supported, expected number, got {}", *m_current);
     }
 
-    return Token {Int64 {std::stoi(number)}};
+    return Lex::Token {Int64 {std::stoi(number)}};
 }
 
 
-Token Lexer::parseOperator() {
+Lex::Token Lex::Lexer::parseOperator() {
     ftrace();
     const StringView op {&*m_current, 1};
     fixme("{}", "operator parser doesn't handle multi-character operators like `==`");
     if (Builtins::opMap.contains(op)) {
         m_current = std::next(m_current);
-        return Token {Builtins::opMap.at(op)};
+        return Lex::Token {Builtins::opMap.at(op)};
     }
     crash("Unknown operator {} (hex: {:#x})", op, *m_current);
 }
 
-bool Lexer::isEOF(Iter i) {
+bool Lex::Lexer::isEOF(Iter i) {
     ftrace();
     // avoids short-circuiting
     if (i == m_input.end()) {
@@ -137,12 +137,12 @@ bool Lexer::isEOF(Iter i) {
     return false;
 }
 
-bool Lexer::isEOF() {
+bool Lex::Lexer::isEOF() {
     ftrace();
     return isEOF(m_current);
 }
 
-bool Lexer::isEOL() {
+bool Lex::Lexer::isEOL() {
     ftrace();
     return *m_current == '\n' || (*m_current == '\r' && *(m_current = std::next(m_current)) == '\n');
 }

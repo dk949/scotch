@@ -5,11 +5,11 @@
 #include "types.hpp"
 
 class Parser {
-    using Iter = Vector<Token>::iterator;
-    Vector<Token> m_tokens;
+    using Iter = Vector<Lex::Token>::iterator;
+    Vector<Lex::Token> m_tokens;
     Iter m_current;
 public:
-    explicit Parser(Vector<Token> tokens);
+    explicit Parser(Vector<Lex::Token> tokens);
 
     Ast::BlockPtr makeBlock();
     Ast::ExpressionPtr makeExpr();

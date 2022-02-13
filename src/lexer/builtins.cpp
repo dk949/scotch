@@ -4,43 +4,43 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
-bool Builtins::m_i = false;
+bool Lex::Builtins::m_i = false;
 
-const Map<StringView, Token::Keyword> Builtins::kwMap {
-    { "const",  Token::CONST},
-    {   "def",    Token::DEF},
-    {"return", Token::RETURN},
+const Map<StringView, Lex::Token::Keyword> Lex::Builtins::kwMap {
+    { "const",  Lex::Token::CONST},
+    {   "def",    Lex::Token::DEF},
+    {"return", Lex::Token::RETURN},
 };
 
-const Map<StringView, Token::BuiltinType> Builtins::typeMap {
-    {"int", Token::INT},
+const Map<StringView, Lex::Token::BuiltinType> Lex::Builtins::typeMap {
+    {"int", Lex::Token::INT},
 };
 
-const Map<StringView, Token::Operator> Builtins::opMap {
-    {"+",      Token::PLUS},
-    {"-",     Token::MINUS},
-    {":",     Token::COLON},
-    {";", Token::SEMICOLON},
-    {"{",    Token::LCURLY},
-    {"}",    Token::RCURLY},
-    {"(",  Token::LBRACKET},
-    {")",  Token::RBRACKET},
+const Map<StringView, Lex::Token::Operator> Lex::Builtins::opMap {
+    {"+",      Lex::Token::PLUS},
+    {"-",     Lex::Token::MINUS},
+    {":",     Lex::Token::COLON},
+    {";", Lex::Token::SEMICOLON},
+    {"{",    Lex::Token::LCURLY},
+    {"}",    Lex::Token::RCURLY},
+    {"(",  Lex::Token::LBRACKET},
+    {")",  Lex::Token::RBRACKET},
 };
 
-Builtins::Builtins() {
+Lex::Builtins::Builtins() {
     ftrace();
     if (m_i) {
         crash("{}",
-            "Builtins needs to be instantiated exactly once,"
+            "Lex::Builtins needs to be instantiated exactly once,"
             " before entering main");
     }
-    verify(kwMap.size() == to<size_t>(Token::KW_COUNT));
-    verify(opMap.size() == to<size_t>(Token::OP_COUNT));
-    verify(typeMap.size() == to<size_t>(Token::TYPE_COUNT));
+    verify(kwMap.size() == to<size_t>(Lex::Token::KW_COUNT));
+    verify(opMap.size() == to<size_t>(Lex::Token::OP_COUNT));
+    verify(typeMap.size() == to<size_t>(Lex::Token::TYPE_COUNT));
     m_i = true;
 }
 
-bool Builtins::isopstart(char c) {
+bool Lex::Builtins::isopstart(char c) {
     ftrace();
     for (const auto &op : opMap) {
         if (c == op.first[0]) {
