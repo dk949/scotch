@@ -81,7 +81,7 @@ public:
 
     template<typename T>
     T get() const {
-        static_assert(sizeof(T) < 0, "get used with an invalid type");
+        static_assert(Tools::always_false_v<T>, "get used with an invalid type");
     }
 
     Order operator<=>(Int64 i) const;
