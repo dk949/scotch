@@ -28,6 +28,10 @@ Token Lexer::parseToken() {
     ftrace();
     while (skipComment() || skipSpace()) { }
 
+    if (isEOF()) {
+        return Token {};
+    }
+
     if (std::isalpha(*m_current)) {
         return parseWord();
     }
@@ -39,9 +43,6 @@ Token Lexer::parseToken() {
         return parseOperator();
     }
 
-    if (isEOF()) {
-        return Token {};
-    }
 
     crash("Unrecognised token on character {} (hex: {:#x})", *m_current, *m_current);
 }
@@ -106,7 +107,7 @@ Token Lexer::parseNumber() {
         crash("integer suffixes are not supported, expected number, got {}", *m_current);
     }
     if (*m_current == '.') {
-        crash("floating point numbers are not suppoterd, expected number, got {}", *m_current);
+        crash("floating point numbers are not supported, expected number, got {}", *m_current);
     }
 
     return Token {Int64 {std::stoi(number)}};
@@ -116,7 +117,7 @@ Token Lexer::parseNumber() {
 Token Lexer::parseOperator() {
     ftrace();
     const StringView op {&*m_current, 1};
-    fixme("{}", "operator prrser doesn't handle multi-character operators like `==`");
+    fixme("{}", "operator parser doesn't handle multi-character operators like `==`");
     if (Builtins::opMap.contains(op)) {
         m_current = std::next(m_current);
         return Token {Builtins::opMap.at(op)};
@@ -126,8 +127,14 @@ Token Lexer::parseOperator() {
 
 bool Lexer::isEOF(Iter i) {
     ftrace();
-    // avoids short circuiting
-    return !(i != m_input.end() && *i != '\0');
+    // avoids short-circuiting
+    if (i == m_input.end()) {
+        return true;
+    }
+    if (*i == '\0') {
+        return true;
+    }
+    return false;
 }
 
 bool Lexer::isEOF() {
