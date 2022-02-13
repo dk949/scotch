@@ -6,15 +6,13 @@ set(EXE_NAME scotch)
 file(
     GLOB_RECURSE
     SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/src"
-    "*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
 
 file(
     GLOB_RECURSE
     HEADER_FILES
-    "${CMAKE_SOURCE_DIR}/src"
-    "*.hpp"
+    "${CMAKE_SOURCE_DIR}/src/*.hpp"
 )
 
 add_executable(${EXE_NAME} ${SOURCE_FILES} ${HEADER_FILES})
