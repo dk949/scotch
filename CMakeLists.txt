@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.20)
 # Set the project name to your project name, my project isn't very descriptive
 project(Scotch CXX)
 include(cmake/CompileCommands.cmake)
-add_compile_definitions(NOT_CCLS)
 include(cmake/StandardProjectSettings.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested
