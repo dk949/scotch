@@ -9,6 +9,6 @@ std::vector<StringView> Tools::Args::positionals = {};
 void Tools::Args::parse(char **argv) {
     ftrace();
     for (const char *arg = *(++argv); arg; arg = *(++argv)) {
-        positionals.push_back(arg);
+        positionals.emplace_back(arg);
     }
 }
