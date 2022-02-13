@@ -1,6 +1,7 @@
 #ifndef FTRACE_HPP
 #define FTRACE_HPP
 
+#include "class_tools.hpp"
 #include "source_location_fix.hpp"
 
 #include <spdlog/spdlog.h>
@@ -9,11 +10,15 @@
 
 namespace Tools {
 struct Ftrace {
+public:
+    NO_MOVE_OR_COPY(Ftrace);
+
 private:
     std::string_view m_func;
     spdlog::stopwatch m_sw;
 
-    static char indent[128];
+    static constexpr auto maxIndent = 128;
+    static char indent[maxIndent];
     static int level;
 
 public:

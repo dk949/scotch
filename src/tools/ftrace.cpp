@@ -3,13 +3,12 @@
 #include "log.hpp"
 
 
-char Tools::Ftrace::indent[128] = {0};
+char Tools::Ftrace::indent[maxIndent] = {0};
 int Tools::Ftrace::level = 0;
 
 
 Tools::Ftrace::Ftrace(std::string_view func)
-        : m_func(func)
-        , m_sw() {
+        : m_func(func) {
     trace_init();
     ftraceLogger->trace("{}Enter {}", indent, m_func);
     indent[level++] = ' ';
