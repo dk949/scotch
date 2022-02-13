@@ -37,6 +37,9 @@ target_link_libraries(
             ${BOOST_PKG}
 )
 
-target_compile_definitions(${EXE_NAME} PRIVATE TRACE)
+if(ENABLE_TRACING)
+    target_compile_definitions(${EXE_NAME} PRIVATE TRACE)
+endif()
+
 
 target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>)

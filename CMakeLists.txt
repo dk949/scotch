@@ -31,6 +31,7 @@ enable_doxygen()
 include(cmake/StaticAnalyzers.cmake)
 
 option(ENABLE_TESTING "Enable Test Builds" ON)
+option(ENABLE_TRACING "Enable function tracing" OFF)
 
 option(USE_BOOST "Get boost through conan. Configurable in cmake/boost.cmake" OFF)
 include(cmake/Boost.cmake)

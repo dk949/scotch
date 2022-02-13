@@ -16,6 +16,9 @@ file(
     "*.cpp"
 )
 list(FILTER SOURCE_FILES EXCLUDE REGEX "^.*/test/catch_main.cpp$")
+if(ENABLE_TRACING)
+    target_compile_definitions(${EXE_NAME} PRIVATE TRACE)
+endif()
 
 add_library(catch_main STATIC catch_main.cpp)
 target_link_libraries(catch_main PUBLIC CONAN_PKG::catch2)
