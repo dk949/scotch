@@ -14,7 +14,7 @@ private:
 public:
     Literal(Value value);
 
-    friend String Ast::printNode(NodePtr node);
+    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Literal);

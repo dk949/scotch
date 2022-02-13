@@ -1,6 +1,5 @@
 #include "ast.hpp"
 #include "common.hpp"
-#include "node.hpp"
 
 #include <fmt/format.h>
 
@@ -10,7 +9,7 @@ constexpr auto indentSize = 2;
 template<int O>
 constexpr unsigned char offs = O *indentSize;
 
-String Ast::printNode(NodePtr node) {
+String Ast::printNode(const NodePtr &node) {
     static int indent = 0;
 
 

@@ -17,7 +17,7 @@ private:
 public:
     explicit BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs);
 
-    friend String Ast::printNode(NodePtr node);
+    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(BinExpr);

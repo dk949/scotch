@@ -7,7 +7,7 @@ class Program : public Scope {
 
 public:
     explicit Program() = default;
-    friend String Ast::printNode(NodePtr node);
+    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Program);

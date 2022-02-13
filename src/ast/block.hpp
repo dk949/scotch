@@ -6,7 +6,7 @@ namespace Ast {
 class Block : public Scope {
 public:
     Block() = default;
-    friend String Ast::printNode(NodePtr node);
+    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Block);

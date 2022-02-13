@@ -9,14 +9,14 @@
 
 
 
-#define addClassName(CLASS)                         \
-    virtual StringView className() const override { \
-        ftrace();                                   \
-        return #CLASS;                              \
+#define addClassName(CLASS)                                       \
+    [[nodiscard]] virtual StringView className() const override { \
+        ftrace();                                                 \
+        return #CLASS;                                            \
     }
 
 namespace Ast {
-String printNode(NodePtr node);
+String printNode(const NodePtr &node);
 
 class Node {
 public:
@@ -30,7 +30,7 @@ public:
         return this <=> &rhs;
     }
 
-    friend String Ast::printNode(NodePtr node);
+    friend String Ast::printNode(const NodePtr &node);
 
 protected:
     Node() = default;
