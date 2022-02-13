@@ -38,7 +38,7 @@ int main(int, dev char **argv) {
         info(tok);
     }
 
-    Parser p {tokens};
+    Parse::Parser p {tokens};
     const auto ast = p.makeProgram();
 
     info("generated ast = \n{}", to<Ast::NodePtr>(ast));

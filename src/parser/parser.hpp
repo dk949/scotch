@@ -4,6 +4,8 @@
 #include "tokenize.hpp"
 #include "types.hpp"
 
+namespace Parse {
+
 class Parser {
     using Iter = Vector<Lex::Token>::iterator;
     Vector<Lex::Token> m_tokens;
@@ -34,5 +36,7 @@ public:
 
     [[nodiscard]] Iter next() const;
 };
+
+}
 
 #endif  // PARSER_HPP
