@@ -22,7 +22,7 @@ private:
     static int level;
 
 public:
-    Ftrace(std::string_view func);
+    explicit Ftrace(std::string_view func);
     ~Ftrace();
 };
 }
