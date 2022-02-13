@@ -4,8 +4,9 @@
 #include <string_view>
 namespace Tools {
 
+constexpr auto initHashOffs = 0xcbf29ce484222325;
 constexpr uint64_t fnv_1a(std::string_view data) {
-    uint64_t hash = 0xcbf29ce484222325;
+    uint64_t hash = initHashOffs;
 
     constexpr uint64_t prime = 0x00000100000001B3;
 
