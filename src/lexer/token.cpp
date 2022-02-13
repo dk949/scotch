@@ -190,7 +190,7 @@ bool Lex::Token::isBinExpr() const {
         BAD_ENUM_CASE(OP_COUNT);
     }
     // clang-format on
-    unreachable("{}", "exhaustive enum");
+    unreachable("exhaustive enum");
     // return false;
 }
 

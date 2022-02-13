@@ -69,35 +69,35 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
 
 
 
-#define unreachable(MSG, ...)                   \
+#define unreachable(...)                        \
     do {                                        \
         const auto loc = sloc::current();       \
-        critical("{}:{}:{}: Unreachable: " MSG, \
+        critical("{}:{}:{}: Unreachable: {}",   \
             Tools::filename(loc.file_name()),   \
             loc.line(),                         \
             loc.column(),                       \
-            __VA_ARGS__);                       \
+            fmt::format(__VA_ARGS__));          \
         exit(1);                                \
     } while (0)
 
-#define fixme(MSG, ...)                                                 \
-    do {                                                                \
-        const auto loc = sloc::current();                               \
-        const auto file = Tools::filename(loc.file_name());             \
-        const auto line = loc.line();                                   \
-        const auto col = loc.column();                                  \
-        if(!WarnCache::isCached(Tools::fnv_1a(file) ^ line ^ ~col))     \
-            warn("{}:{}:{}: FIXME: " MSG, file, line, col, __VA_ARGS__);\
+#define fixme(...)                                                                         \
+    do {                                                                                   \
+        const auto loc = sloc::current();                                                  \
+        const auto file = Tools::filename(loc.file_name());                                \
+        const auto line = loc.line();                                                      \
+        const auto col = loc.column();                                                     \
+        if(!WarnCache::isCached(Tools::fnv_1a(file) ^ line ^ ~static_cast<uint64_t>(col))) \
+            warn("{}:{}:{}: FIXME: {}", file, line, col, fmt::format(__VA_ARGS__));        \
     } while (0)
 
-#define crash(MSG, ...)                         \
+#define crash(...)                              \
     do {                                        \
         const auto loc = sloc::current();       \
-        critical("{}:{}:{}: Fatal error: " MSG, \
+        critical("{}:{}:{}: Fatal error: {}",   \
             Tools::filename(loc.file_name()),   \
             loc.line(),                         \
             loc.column(),                       \
-            __VA_ARGS__);                       \
+            fmt::format(__VA_ARGS__));          \
         exit(1);                                \
     } while (0)
 
@@ -113,15 +113,15 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
         exit(1);                                                \
     } while (0)
 
-#define verify_msg(X, MSG, ...)                                          \
+#define verify_msg(X, ...)                                               \
     do {                                                                 \
         if((X)) break;                                                   \
         const auto loc = sloc::current();                                \
-        critical("{}:{}:{}: Assertion failed: (" #X ") is false\n\t" MSG,\
+        critical("{}:{}:{}: Assertion failed: (" #X ") is false\n\t {}", \
             Tools::filename(loc.file_name()),                            \
             loc.line(),                                                  \
             loc.column(),                                                \
-            __VA_ARGS__);                                                \
+            fmt::format(__VA_ARGS__));                                   \
         exit(1);                                                         \
     } while (0)
 

@@ -30,9 +30,8 @@ const Map<StringView, Lex::Token::Operator> Lex::Builtins::opMap {
 Lex::Builtins::Builtins() {
     ftrace();
     if (m_i) {
-        crash("{}",
-            "Lex::Builtins needs to be instantiated exactly once,"
-            " before entering main");
+        crash("Lex::Builtins needs to be instantiated exactly once,"
+              "before entering main");
     }
     verify(kwMap.size() == to<size_t>(Lex::Token::KW_COUNT));
     verify(opMap.size() == to<size_t>(Lex::Token::OP_COUNT));
