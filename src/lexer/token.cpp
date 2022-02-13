@@ -17,7 +17,7 @@ Int64 Lex::Token::get<Int64>() const {
 template<>
 Lex::Token::Keyword Lex::Token::get<Lex::Token::Keyword>() const {
     ftrace();
-    [[likely]] if (m_type == Lex::TokenType::T_KEYWORD) {
+    if (m_type == Lex::TokenType::T_KEYWORD) [[likely]] {
         return m_val.kw;
     }
     crash("cannot extract Keyword value of token type {}", m_type);
@@ -26,7 +26,7 @@ Lex::Token::Keyword Lex::Token::get<Lex::Token::Keyword>() const {
 template<>
 Lex::Token::Operator Lex::Token::get<Lex::Token::Operator>() const {
     ftrace();
-    [[likely]] if (m_type == Lex::TokenType::T_OP) {
+    if (m_type == Lex::TokenType::T_OP) [[likely]] {
         return m_val.op;
     }
     crash("cannot extract Operator value of token type {}", m_type);
@@ -36,7 +36,7 @@ Lex::Token::Operator Lex::Token::get<Lex::Token::Operator>() const {
 template<>
 const char *Lex::Token::get<const char *>() const {
     ftrace();
-    [[likely]] if (m_type == Lex::TokenType::T_IDENTIFIER) {
+    if (m_type == Lex::TokenType::T_IDENTIFIER) [[likely]] {
         return m_val.id;
     }
     crash("cannot extract Identifier value of token type {}", m_type);
@@ -45,7 +45,7 @@ const char *Lex::Token::get<const char *>() const {
 template<>
 Lex::Token::BuiltinType Lex::Token::get<Lex::Token::BuiltinType>() const {
     ftrace();
-    [[likely]] if (m_type == Lex::TokenType::T_BUILTIN_TYPE) {
+    if (m_type == Lex::TokenType::T_BUILTIN_TYPE) [[likely]] {
         return m_val.type;
     }
     crash("cannot extract BuiltinType value of token type {}", m_type);
@@ -56,7 +56,7 @@ Lex::Token::BuiltinType Lex::Token::get<Lex::Token::BuiltinType>() const {
 template<>
 void Lex::Token::get<void>() const {
     ftrace();
-    [[likely]] if (m_type == Lex::TokenType::T_EOF) {
+    if (m_type == Lex::TokenType::T_EOF) [[likely]] {
         return;
     }
     crash("cannot extract Identifier value of token type {}", m_type);
