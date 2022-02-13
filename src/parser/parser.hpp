@@ -32,7 +32,7 @@ public:
 
     bool isScopeEnd();
 
-    Iter next() const;
+    [[nodiscard]] Iter next() const;
 };
 
 #endif  // PARSER_HPP

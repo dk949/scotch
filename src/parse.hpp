@@ -3,5 +3,4 @@
 
 #include "parser/parser.hpp"
 
-#endif // PARSE_HPP
-
+#endif  // PARSE_HPP

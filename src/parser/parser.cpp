@@ -22,7 +22,7 @@ Ast::ProgramPtr Parser::makeProgram() {
 Ast::NodePtr Parser::makeNode() {
     ftrace();
     if (*m_current == Token::DEF) {
-        const auto func =  makeFunction();
+        const auto func = makeFunction();
         return func;
     }
     if (*m_current == Token::RETURN) {
@@ -62,14 +62,14 @@ Ast::ExpressionPtr Parser::makeExpr() {
                 fixme("{}", "Reached semicolon in expression");
                 todo();
             }
-            fixme("{}", "Not handeling any operator other then binary operators in expressions");
+            fixme("{}", "Not handling any operator other then binary operators in expressions");
             todo();
         case TokenType::T_BUILTIN_TYPE:
             crash("unexpected BUILTIN_TYPE after {} in expression", *std::prev(m_current));
         case TokenType::T_EOF:
             crash("unexpected EOF after {} in expression", *std::prev(m_current));
     }
-    unreachable("{}", "exhaustive enum handleing");
+    unreachable("{}", "exhaustive enum handling");
 }
 
 Ast::LiteralPtr Parser::makeLiteral() {
