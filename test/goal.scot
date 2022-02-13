@@ -1,4 +1,4 @@
-// a is copied, because it is trivially coplyable
+// a is copied, because it is trivially copyable
 def foo(a: int, b: int): int{
     return a + b;
 }
@@ -7,14 +7,14 @@ def bar(a: &int, b: int): int{
     return a += b;
 }
 
-/* Erorr, a points to non mutable int
+/* Error, a points to non mutable int
 def baz(a: *int, b: int): int{
     return a += b;
 }
 */
 
 
-// str taen by reference
+// str taken by reference
 def helloRef(msg: *str){
     print("hello", msg);
 }
