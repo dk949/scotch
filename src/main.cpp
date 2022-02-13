@@ -31,5 +31,7 @@ int main(int, char **argv) {
     Comp::Compiler comp {ast};
     const auto result = comp.compile();
 
+    Tools::saveFile(result, "out.dat");
+
     return 0;
 }
