@@ -1,7 +1,7 @@
 function (enable_doxygen)
-    option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" ON)
+    option(ENABLE_DOXYGEN "Enable doxygen doc builds of source" OFF)
     if (ENABLE_DOXYGEN)
-        # Note: If you want to change some Doxyfile setting, prepend `DOXYGEN_` to the sdetting name and set it as a
+        # Note: If you want to change some Doxyfile setting, prepend `DOXYGEN_` to the setting name and set it as a
         # cmake variable
 
         set(DOXYFILE_SUFFIX doxygen-docs)

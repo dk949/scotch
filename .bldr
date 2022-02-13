@@ -7,6 +7,6 @@
   "reset": "rm -rf build",
   "run": "./build/bin/scotch test/shortterm_goal.scot",
   "setup": "bldr setup:dbg",
-  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON",
-  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON"
+  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON",
+  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON"
 }
