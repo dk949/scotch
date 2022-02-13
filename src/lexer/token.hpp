@@ -104,9 +104,9 @@ public:
         return Tools::fnv_1a(sv);
     }
 
-    static const char *opToStr(Token::Operator b);
-    static const char *kwToStr(Token::Keyword k);
-    static const char *typeToStr(Token::BuiltinType t);
+    static StringView opToStr(Token::Operator b);
+    static StringView kwToStr(Token::Keyword k);
+    static StringView typeToStr(Token::BuiltinType t);
 };
 
 // clang-format off

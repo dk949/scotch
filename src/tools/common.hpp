@@ -5,6 +5,15 @@
 namespace Tools {
 template<typename>
 constexpr bool always_false_v = false;
+
+constexpr std::string_view shortEnumName(std::string_view sv) {
+    for (auto it = sv.rbegin(); it != sv.rend(); it++) {
+        if (*it == ':') {
+            return std::string_view {it.base(), sv.end()};
+        }
+    }
+    return sv;
+}
 }
 
 template<typename T>

@@ -1,5 +1,6 @@
 #include "token.hpp"
 
+#include "common.hpp"
 #include "ftrace.hpp"
 #include "log.hpp"
 
@@ -318,9 +319,9 @@ Lex::TokenType Lex::Token::type() const {
 
 
 #undef ENUM_DO
-#define ENUM_DO(E) return #E
+#define ENUM_DO(E) return Tools::shortEnumName(#E);
 
-const char *Lex::Token::opToStr(Token::Operator b) {
+StringView Lex::Token::opToStr(Token::Operator b) {
     ftrace();
     switch (b) {
         ENUM_CASE(Lex::Token::MINUS);
@@ -335,7 +336,7 @@ const char *Lex::Token::opToStr(Token::Operator b) {
     }
     crash("Unsupported operator {}", b);
 }
-const char *Lex::Token::kwToStr(Token::Keyword k) {
+StringView Lex::Token::kwToStr(Token::Keyword k) {
     ftrace();
     switch (k) {
         ENUM_CASE(Lex::Token::CONST);
@@ -346,7 +347,7 @@ const char *Lex::Token::kwToStr(Token::Keyword k) {
     crash("Unsupported keyword {}", k);
 };
 
-const char *Lex::Token::typeToStr(Token::BuiltinType t) {
+StringView Lex::Token::typeToStr(Token::BuiltinType t) {
     ftrace();
     switch (t) {
         ENUM_CASE(Lex::Token::INT);

@@ -2,6 +2,7 @@
 #define TOKEN_TYPE_HPP
 
 #include "switch_tools.hpp"
+#include "common.hpp"
 
 #include <fmt/format.h>
 
@@ -24,10 +25,11 @@ enum class TokenType {
 }
 
 #undef ENUM_DO
-#define ENUM_DO(TOK) name = #TOK;
+#define ENUM_DO(TOK) name = Tools::shortEnumName(#TOK);
 
 template<>
 struct fmt::formatter<Lex::TokenType> : formatter<std::string_view> {
+public:
     template<typename FormatContext>
     auto format(Lex::TokenType t, FormatContext &ctx) {
         std::string name = "Invalid token";
