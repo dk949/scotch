@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.20)
 # Set the project name to your project name, my project isn't very descriptive
 project(Scotch CXX)
 include(cmake/CompileCommands.cmake)
-add_compile_definitions(NOT_CCLS)
 include(cmake/StandardProjectSettings.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested
@@ -34,7 +33,7 @@ include(cmake/StaticAnalyzers.cmake)
 option(ENABLE_TESTING "Enable Test Builds" ON)
 
 option(USE_BOOST "Get boost through conan. Configurable in cmake/boost.cmake" OFF)
-include(cmake/boost.cmake)
+include(cmake/Boost.cmake)
 config_boost()
 
 # Set up some extra Conan dependencies based on our needs before loading Conan
