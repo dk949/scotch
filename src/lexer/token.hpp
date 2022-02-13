@@ -1,5 +1,6 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
+#include "gsl/gsl"
 #include "hash.hpp"
 #include "log.hpp"
 #include "token_type.hpp"
@@ -47,7 +48,7 @@ public:
         Keyword kw;
         Operator op;
         BuiltinType type;
-        char *id;
+        gsl::owner<char *> id;
     };
 
 private:
@@ -68,13 +69,13 @@ public:
     Token(const Token &);
     Token &operator=(const Token &);
 
-    Token(Token &&);
-    Token &operator=(Token &&);
+    Token(Token &&) noexcept;
+    Token &operator=(Token &&) noexcept;
 
 
     ~Token();
 
-    TokenType type() const;
+    [[nodiscard]] TokenType type() const;
 
     template<typename T>
     T get() const {
@@ -94,8 +95,8 @@ public:
     bool operator==(StringView id) const;
     bool operator==(BuiltinType t) const;
     bool operator==(const Token &t) const;
-    bool isEOF() const;
-    bool isBinExpr() const;
+    [[nodiscard]] bool isEOF() const;
+    [[nodiscard]] bool isBinExpr() const;
 
     constexpr static IdentifierHashT hash(std::string_view sv) {
         return Tools::fnv_1a(sv);
@@ -107,19 +108,18 @@ public:
 };
 
 // clang-format off
-template<> Token::Operator Token::get<Token::Operator>() const;
-template<> Int64 Token::get<Int64>() const;
-template<> Token::Keyword Token::get<Token::Keyword>() const;
-template<> Token::Operator Token::get<Token::Operator>() const;
-template<> const char * Token::get<const char *>() const;
-template<> Token::BuiltinType Token::get<Token::BuiltinType>() const;
+template<> [[nodiscard]] Token::Operator Token::get<Token::Operator>() const;
+template<> [[nodiscard]] Int64 Token::get<Int64>() const;
+template<> [[nodiscard]] Token::Keyword Token::get<Token::Keyword>() const;
+template<> [[nodiscard]] const char * Token::get<const char *>() const;
+template<> [[nodiscard]] Token::BuiltinType Token::get<Token::BuiltinType>() const;
 template<> void Token::get<void>() const;
 // clang-format on
 
 template<>
 struct fmt::formatter<Token> : formatter<std::string> {
     template<typename FormatContext>
-    auto format(Token t, FormatContext &ctx) {
+    auto format(const Token &t, FormatContext &ctx) {
         std::string name = "Invalid token";
         // clang-format off
         switch (t.type()) {

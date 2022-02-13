@@ -129,7 +129,7 @@ Token &Token::operator=(const Token &other) {
     return *this;
 }
 
-Token::Token(Token &&other)
+Token::Token(Token &&other) noexcept
         : m_type(other.m_type)
         , m_val(other.m_val) {
     ftrace();
@@ -138,7 +138,7 @@ Token::Token(Token &&other)
     }
 }
 
-Token &Token::operator=(Token &&other) {
+Token &Token::operator=(Token &&other) noexcept {
     ftrace();
     if (&other == this) {
         return *this;
@@ -171,8 +171,10 @@ bool Token::isEOF() const {
 
 bool Token::isBinExpr() const {
     ftrace();
-    if (m_type != TokenType::T_OP)
+    if (m_type != TokenType::T_OP) {
         return false;
+    }
+    // clang-format off
     switch (m_val.op) {
         case PLUS:
         case MINUS:
@@ -186,49 +188,56 @@ bool Token::isBinExpr() const {
             return false;
         BAD_ENUM_CASE(OP_COUNT);
     }
+    // clang-format on
     unreachable("{}", "exhaustive enum");
     // return false;
 }
 
 Token::Order Token::operator<=>(Int64 i) const {
     ftrace();
-    if (m_type == TokenType::T_INT)
+    if (m_type == TokenType::T_INT) {
         return m_val.num <=> i;
+    }
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(Keyword k) const {
     ftrace();
-    if (m_type == TokenType::T_KEYWORD)
+    if (m_type == TokenType::T_KEYWORD) {
         return m_val.kw <=> k;
+    }
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(Operator o) const {
     ftrace();
-    if (m_type == TokenType::T_OP)
+    if (m_type == TokenType::T_OP) {
         return m_val.op <=> o;
+    }
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(StringView id) const {
     ftrace();
-    if (m_type == TokenType::T_IDENTIFIER)
+    if (m_type == TokenType::T_IDENTIFIER) {
         return StringView {m_val.id} <=> id;
+    }
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(BuiltinType t) const {
     ftrace();
-    if (m_type == TokenType::T_BUILTIN_TYPE)
+    if (m_type == TokenType::T_BUILTIN_TYPE) {
         return t <=> m_val.type;
+    }
     return Order::unordered;
 }
 
 Token::Order Token::operator<=>(const Token &t) const {
     ftrace();
-    if (m_type != t.m_type)
+    if (m_type != t.m_type) {
         return Order::unordered;
+    }
 
     switch (t.m_type) {
         case (TokenType::T_BUILTIN_TYPE):
@@ -276,8 +285,9 @@ bool Token::operator==(BuiltinType t) const {
 
 bool Token::operator==(const Token &t) const {
     ftrace();
-    if (m_type != t.m_type)
+    if (m_type != t.m_type) {
         return false;
+    }
 
     switch (t.m_type) {
         case (TokenType::T_BUILTIN_TYPE):
@@ -323,7 +333,7 @@ const char *Token::opToStr(Token::Operator b) {
         ENUM_CASE(Token::RBRACKET);
         BAD_ENUM_CASE(Token::OP_COUNT);
     }
-    crash("Unsuppirted operator {}", b);
+    crash("Unsupported operator {}", b);
 }
 const char *Token::kwToStr(Token::Keyword k) {
     ftrace();
@@ -333,7 +343,7 @@ const char *Token::kwToStr(Token::Keyword k) {
         ENUM_CASE(Token::RETURN);
         BAD_ENUM_CASE(Token::KW_COUNT);
     }
-    crash("Unsuppirted keyword {}", k);
+    crash("Unsupported keyword {}", k);
 };
 
 const char *Token::typeToStr(Token::BuiltinType t) {
@@ -342,5 +352,5 @@ const char *Token::typeToStr(Token::BuiltinType t) {
         ENUM_CASE(Token::INT);
         BAD_ENUM_CASE(Token::TYPE_COUNT);
     }
-    crash("Unsuppirted keyword {}", t);
+    crash("Unsupported type {}", t);
 };
