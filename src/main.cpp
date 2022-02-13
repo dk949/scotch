@@ -6,15 +6,10 @@ log_init();
 #include "common.hpp"
 #include "file.hpp"
 #include "parse.hpp"
-#include "tokenize.hpp"
-
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
 
 
-dev Builtins b;
+
+dev const Builtins blt;
 int main(int, dev char **argv) {
     ftrace();
     auto child = MakePtr<Ast::Return>(MakePtr<Ast::Literal>(Ast::Value {10}));
