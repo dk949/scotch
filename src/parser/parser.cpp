@@ -22,8 +22,7 @@ Ast::ProgramPtr Parse::Parser::makeProgram() {
 Ast::NodePtr Parse::Parser::makeNode() {
     ftrace();
     if (*m_current == Lex::Token::DEF) {
-        const auto func = makeFunction();
-        return func;
+        return makeFunction();
     }
     if (*m_current == Lex::Token::RETURN) {
         return makeReturn();
@@ -50,8 +49,10 @@ Ast::ExpressionPtr Parse::Parser::makeExpr() {
         case Lex::TokenType::T_STR:
             return makeLiteral();
         case Lex::TokenType::T_KEYWORD:
+            fixme("{}", "keywords are not handled in expressions");
             todo();
         case Lex::TokenType::T_IDENTIFIER:
+            fixme("{}", "identifiers are not handled in expressions");
             todo();
         case Lex::TokenType::T_OP:
             if (m_current->isBinExpr()) {
@@ -78,6 +79,7 @@ Ast::LiteralPtr Parse::Parser::makeLiteral() {
         case Lex::TokenType::T_INT:
             return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Int64>()});
         case Lex::TokenType::T_STR:
+            fixme("{}", "string literals are not handled");
             todo();
         default:
             crash("Unexpected {} in literal", m_current->type());
@@ -100,7 +102,6 @@ Ast::FunctionDeclPtr Parse::Parser::makeFunction() {
 
     m_current = next();
     Ast::ValueType ret = makeTypeAnnotation();
-    debug("about to enter block. next toke = {}", *m_current);
     Ast::ScopePtr body = makeBlock();
     auto func = MakePtr<Ast::FunctionDecl>(String {id}, args, ret, body);
 
@@ -113,7 +114,6 @@ Ast::BlockPtr Parse::Parser::makeBlock() {
     verify_msg(*m_current == Lex::Token::LCURLY, "Expected left curly brace at the start of a scope, found {}", *m_current);
     auto body = MakePtr<Ast::Block>();
     while (true) {
-        debug("in makeBlock. current token = {}", *m_current);
         m_current = next();
         verify_msg(!isLast(),  //
             "Expected expression after {} in function body. Found nothing",
@@ -164,10 +164,10 @@ Ast::ValueType Parse::Parser::makeTypeAnnotation() {
                 BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
             }
         }
-        // TODO: handle user defined types
+        fixme("{}", "user defined types are not handled");
         todo();
     }
-    // TODO: handle implicit types
+    fixme("{}", "implicit types are not handled");
     todo();
 }
 
@@ -208,6 +208,5 @@ bool Parse::Parser::isScopeEnd() {
 
 Parse::Parser::Iter Parse::Parser::next() const {
     ftrace();
-    debug("next token is {}", *std::next(m_current));
     return std::next(m_current);
 }
