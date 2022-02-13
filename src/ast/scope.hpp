@@ -8,7 +8,7 @@ private:
     NodePtrVector m_children;
 
 public:
-    const inline NodePtrVector &children() const {
+    [[nodiscard]] const inline NodePtrVector &children() const {
         ftrace();
         return m_children;
     }

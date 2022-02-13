@@ -12,7 +12,7 @@ class Literal : public Expression {
 private:
     Value m_value;
 public:
-    Literal(Value value);
+    explicit Literal(Value value);
 
     friend String Ast::printNode(const NodePtr &node);
 

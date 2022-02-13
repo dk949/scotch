@@ -21,7 +21,7 @@ String printNode(const NodePtr &node);
 class Node {
 public:
 
-    virtual StringView className() const = 0;
+    [[nodiscard]] virtual StringView className() const = 0;
 
     virtual ~Node() = default;
 

@@ -17,7 +17,7 @@ protected:
 public:
     FunctionDecl(String name, Vector<ValueType> args, ValueType ret, ScopePtr body);
 
-    const inline String &name() const {
+    [[nodiscard]] const inline String &name() const {
         return m_name;
     }
 

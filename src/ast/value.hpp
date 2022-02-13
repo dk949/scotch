@@ -23,7 +23,7 @@ public:
 
     Int64 as_int();
     ValueType as_type();
-    ValueType inline type() const {
+    [[nodiscard]] ValueType inline type() const {
         return m_type;
     }
 };

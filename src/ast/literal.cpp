@@ -1,4 +1,5 @@
 #include "literal.hpp"
+
 #include "ftrace.hpp"
 
 Ast::Literal::Literal(Value value)

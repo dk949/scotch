@@ -11,7 +11,7 @@ private:
 public:
     explicit Return(ExpressionPtr argument);
 
-    const inline ExpressionPtr argument() const {
+    [[nodiscard]] inline ExpressionPtr argument() const {
         return m_argument;
     }
 
