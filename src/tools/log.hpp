@@ -52,6 +52,7 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
 #define warn(...)     spdlog::warn(__VA_ARGS__)
 #define error(...)    spdlog::error(__VA_ARGS__)
 #define critical(...) spdlog::critical(__VA_ARGS__)
+#define print(...)    fmt::print(__VA_ARGS__)
 
 // clang-format off
 #define todo()                                         \
