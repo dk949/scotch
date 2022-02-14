@@ -27,9 +27,10 @@ Tools::File::File(StringView filename, uint8_t state) {
     if (!mode) {
         crash("failed to set mode from provided state");
     }
+
     m_fp = fopen(name, mode);
     if (!m_fp) {
-        crash("File error: {}: {}", std::strerror(errno), filename);
+        crash("File error: {}: {}", std::strerror(errno), name);
     }
 }
 
@@ -46,12 +47,9 @@ String Tools::File::read() {
 
     String out(fsize, '\0');
     auto ret = std::fread(out.data(), sizeof(char), fsize, m_fp);
-    if(ret < fsize){
+    if (ret < fsize) {
         error("File error: {}", std::strerror(errno));
     }
-    debug("file size = {}", fsize);
-    debug("data = {}", out);
-    debug("ret = {}", ret);
     return out;
 }
 
@@ -70,7 +68,7 @@ void Tools::File::write(const String &data) {
 }
 void Tools::File::writeImpl(const char *data, size_t size) {
     ftrace();
-    if(std::fwrite(data, sizeof(char), size, m_fp) < size){
+    if (std::fwrite(data, sizeof(char), size, m_fp) < size) {
         error("File error: {}", std::strerror(errno));
     }
 }
@@ -91,7 +89,8 @@ const char *Tools::File::stateToMode(uint8_t state) {
     }
 
     if (stateRep.read) {
-        *it++ = it == std::begin(m) ? 'r' : '+';
+        *it = it == std::begin(m) ? 'r' : '+';
+        it++;
     }
 
     if (stateRep.binary) {

@@ -1,8 +1,8 @@
 #ifndef FILE_HPP
 #define FILE_HPP
 
-#include "types.hpp"
 #include "class_tools.hpp"
+#include "types.hpp"
 
 #include <cerrno>
 #include <cstdio>
@@ -33,6 +33,7 @@ private:
     static constexpr auto maxStackString = 4096;
 public:
     NO_MOVE_OR_COPY(File);
+
     explicit File(StringView filename, uint8_t state);
     ~File();
 
