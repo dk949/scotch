@@ -4,11 +4,12 @@
 
 General commit shape is:
 
-    area: \[subarea\]: short sentence describing the change.
+    area: [area]: short sentence describing the change.
 
     Longer description. Reasons, implications, etc...
 
-* `subarea` is optional and does not include the square brackets.
+* Multiple areas can be provided if a commit affects multiple areas of the
+  project
 * Every line must not exceed 80 columns.
 * Short message must start with a lowercase letter
 * Long description must start with an upper case letter
@@ -19,15 +20,16 @@ General commit shape is:
 * List of areas and subareas for this project
   * build
   * ci
+  * git
   * doxygen
   * readme
   * changelog
-  * lexer/ast/parser/tools
-    * feat
-    * fix
-    * perf
-    * ref
+  * lexer
+  * ast
+  * parser
+  * tools
   * test
+  * general
 
 ## Changelog
 
