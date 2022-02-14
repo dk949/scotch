@@ -6,6 +6,7 @@
 namespace Tools {
 struct Args {
     static Vector<StringView> positionals;
+    static StringView output;
     static void parse(char **argv);
 };
 }
