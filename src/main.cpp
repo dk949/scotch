@@ -14,14 +14,14 @@ dev const Lex::Builtins blt;
 int main(int, char **argv) {
     ftrace();
     Tools::Args::parse(argv);
-    Vector<StringView> positionals = Tools::Args::positionals;
-    if (positionals.empty()) {
-        crash("Expected file, got nothing");
-    }
-    String input = Tools::loadFile(positionals.back());
-    info("input = \n{}", input);
+    const auto inputFiles = Tools::Args::positionals;
+    const auto outputFile = Tools::Args::output;
 
-    Lex::Lexer lex {input};
+
+    const auto inputProgram = Tools::loadFile(inputFiles.front());
+    info("input = \n{}", inputProgram);
+
+    Lex::Lexer lex {inputProgram};
     const auto tokens = lex.parseAll();
 
     Parse::Parser parse {tokens};
@@ -29,9 +29,9 @@ int main(int, char **argv) {
 
 
     Comp::Compiler comp {ast};
-    const auto result = comp.compile();
+    const auto outputCode = comp.compile();
 
-    Tools::saveFile(result, "out.dat");
+    Tools::saveFile(outputCode, outputFile);
 
     return 0;
 }
