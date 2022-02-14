@@ -30,8 +30,8 @@ constexpr T *is(Ptr<U> o) {
     return dynamic_cast<T *>(o.get());
 }
 template<typename T>
-constexpr T *as(auto *o) {
-    return reinterpret_cast<T *>(o);
+constexpr T as(auto *o) {
+    return reinterpret_cast<T>(o);
 }
 
 #define dev [[maybe_unused]]
