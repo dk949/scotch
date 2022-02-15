@@ -62,7 +62,31 @@ TEST_CASE("StringView to char * conversion", "[Tools::File]") {
 
 #include "comp.hpp"
 #include "lex.hpp"
+#include "log.hpp"
 #include "parse.hpp"
+
+TEST_CASE("lexing  shortterm_goal.scot", "[Lex::Lexer]") {
+    using Catch::Matchers::Equals;
+    const auto inputProgram = Tools::loadFile("./test/shortterm_goal.scot");
+
+    Lex::Lexer lex {inputProgram};
+    const auto tokens = lex.parseAll();
+    const auto expectedTokens = Vector<Lex::Token> {
+        Lex::Token {Lex::Token::DEF},
+        Lex::Token {"main"},
+        Lex::Token {Lex::Token::LBRACKET},
+        Lex::Token {Lex::Token::RBRACKET},
+        Lex::Token {Lex::Token::COLON},
+        Lex::Token {Lex::Token::INT},
+        Lex::Token {Lex::Token::LCURLY},
+        Lex::Token {Lex::Token::RETURN},
+        Lex::Token {10},
+        Lex::Token {Lex::Token::SEMICOLON},
+        Lex::Token {Lex::Token::RCURLY},
+        Lex::Token {},
+    };
+    REQUIRE_THAT(tokens, Equals(expectedTokens));
+}
 
 TEST_CASE("Trying to compile a simple `main`", "[Comp::Compiler]") {
     using Catch::Matchers::Equals;
