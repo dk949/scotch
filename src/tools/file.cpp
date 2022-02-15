@@ -22,7 +22,7 @@ void Tools::saveFile(StringView data, StringView filename) {
 
 Tools::File::File(StringView filename, uint8_t state) {
     ftrace();
-    const char *name = svToCharPtr(alloca(filename.size() + 1), filename);
+    const char *name = svToCharPtr(svalloca(filename), filename);
     const char *mode = stateToMode(state);
     if (!mode) {
         crash("failed to set mode from provided state");
@@ -30,13 +30,15 @@ Tools::File::File(StringView filename, uint8_t state) {
 
     m_fp = fopen(name, mode);
     if (!m_fp) {
-        crash("File error: {}: {}", std::strerror(errno), name);
+        crash("Could not open file: {}: {}", std::strerror(errno), name);
     }
 }
 
 Tools::File::~File() {
     ftrace();
-    std::fclose(m_fp);
+    if (std::fclose(m_fp)) {
+        error("Could not close file: {}", std::strerror(errno));
+    }
 }
 
 String Tools::File::read() {
@@ -48,7 +50,7 @@ String Tools::File::read() {
     String out(fsize, '\0');
     auto ret = std::fread(out.data(), sizeof(char), fsize, m_fp);
     if (ret < fsize) {
-        error("File error: {}", std::strerror(errno));
+        error("Could not read from file: {}", std::strerror(errno));
     }
     return out;
 }
@@ -56,7 +58,7 @@ String Tools::File::read() {
 void Tools::File::write(StringView data) {
     ftrace();
     if (data.size() < maxStackString) {
-        writeImpl(svToCharPtr(alloca(data.size() + 1), data), data.size());
+        writeImpl(svToCharPtr(svalloca(data), data), data.size());
     } else {
         write(String {data});
     }
@@ -64,12 +66,12 @@ void Tools::File::write(StringView data) {
 
 void Tools::File::write(const String &data) {
     ftrace();
-    writeImpl(data.data(), data.size());
+    writeImpl(data.c_str(), data.size());
 }
 void Tools::File::writeImpl(const char *data, size_t size) {
     ftrace();
     if (std::fwrite(data, sizeof(char), size, m_fp) < size) {
-        error("File error: {}", std::strerror(errno));
+        error("Could not write to file: {}", std::strerror(errno));
     }
 }
 
@@ -99,9 +101,11 @@ const char *Tools::File::stateToMode(uint8_t state) {
     for (; it != std::end(m); *it = 0, it++) { }
     return m;
 }
+
+
 char *Tools::File::svToCharPtr(void *dest, StringView source) {
     ftrace();
-    std::memcpy(dest, &*source.begin(), source.size() * sizeof(char));
+    std::memcpy(dest, &*source.begin(), source.size() * sizeof(StringView::value_type));
 
     static_cast<char *>(dest)[source.size()] = 0;
     return static_cast<char *>(dest);

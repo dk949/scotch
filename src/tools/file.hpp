@@ -12,6 +12,8 @@
 
 namespace Tools {
 
+#define svalloca(SV) alloca(SV.size() + 1)
+
 class File {
 public:
     enum State : unsigned char {
@@ -30,7 +32,7 @@ private:
     };
     static_assert(sizeof(StateRepr) == sizeof(uint8_t));
     gsl::owner<FILE *> m_fp;
-    static constexpr auto maxStackString = 4096;
+    static constexpr auto maxStackString = 512;
 public:
     NO_MOVE_OR_COPY(File);
 
