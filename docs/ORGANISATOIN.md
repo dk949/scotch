@@ -29,6 +29,7 @@ General commit shape is:
   * parser
   * tools
   * test
+  * wasm
   * general
 
 ## Changelog

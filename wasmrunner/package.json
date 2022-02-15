@@ -1,0 +1,13 @@
+{
+  "name": "wasmrunner",
+  "version": "0.1.0",
+  "description": "Simple script to assemble wat files into wasm and run the resultingwasm",
+  "main": "wasmrunner.js",
+  "author": "dk949",
+  "license": "BSD3",
+  "private": true,
+  "dependencies": {
+    "commander": "^9.0.0",
+    "wabt": "^1.0.26"
+  }
+}
