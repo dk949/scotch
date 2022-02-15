@@ -88,6 +88,29 @@ TEST_CASE("lexing  shortterm_goal.scot", "[Lex::Lexer]") {
     REQUIRE_THAT(tokens, Equals(expectedTokens));
 }
 
+TEST_CASE("creatig an AST for shortterm_goal.scot", "[Parse::Parser, Ast::Program]") {
+    using Catch::Matchers::Equals;
+    const auto inputProgram = Tools::loadFile("./test/shortterm_goal.scot");
+
+    Lex::Lexer lex {inputProgram};
+    const auto tokens = lex.parseAll();
+
+    Parse::Parser parse {tokens};
+    const auto ast = parse.makeProgram();
+
+
+    const auto expr = MakePtr<Ast::Literal>(Ast::Value {10});
+    const auto ret = MakePtr<Ast::Return>(expr);
+    auto block = MakePtr<Ast::Block>();
+    block->append(ret);
+    const auto func = MakePtr<Ast::FunctionDecl>("main", Vector<Ast::ValueType> {}, Ast::ValueType::INT, block);
+    auto expectedAst = MakePtr<Ast::Program>();
+    expectedAst->append(func);
+
+    REQUIRE_THAT(fmt::format("{}", to<Ast::NodePtr>(ast)), Equals(fmt::format("{}", to<Ast::NodePtr>(expectedAst))));
+}
+
+
 TEST_CASE("Trying to compile a simple `main`", "[Comp::Compiler]") {
     using Catch::Matchers::Equals;
 
