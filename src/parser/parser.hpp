@@ -1,7 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 #include "ast.hpp"
-#include "tokenize.hpp"
+#include "lex.hpp"
 #include "types.hpp"
 
 namespace Parse {
