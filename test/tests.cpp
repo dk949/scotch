@@ -59,3 +59,26 @@ TEST_CASE("StringView to char * conversion", "[Tools::File]") {
         REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test4), test4), Equals(""));
     }
 }
+
+#include "comp.hpp"
+#include "lex.hpp"
+#include "parse.hpp"
+
+TEST_CASE("Trying to compile a simple `main`", "[Comp::Compiler]") {
+    using Catch::Matchers::Equals;
+
+    const auto inputProgram = Tools::loadFile("./test/shortterm_goal.scot");
+
+    Lex::Lexer lex {inputProgram};
+    const auto tokens = lex.parseAll();
+
+    Parse::Parser parse {tokens};
+    const auto ast = parse.makeProgram();
+
+    Comp::Compiler comp {ast};
+    const auto outputCode = comp.compile();
+
+    const auto expectedOutputCode = Tools::loadFile("./test/shortterm_goal_expected_output.wat");
+
+    REQUIRE_THAT(outputCode, Equals(expectedOutputCode));
+}
