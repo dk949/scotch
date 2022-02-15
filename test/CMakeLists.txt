@@ -51,6 +51,10 @@ target_include_directories(
 )
 
 target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>)
+target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:SCOTCH_CAN_HAVE_ALLOCA>)
+target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:GNU>:SCOTCH_CAN_HAVE_ALLOCA>)
+target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:Clang>:SCOTCH_CAN_HAVE_ALLOCA>)
+
 catch_discover_tests(
     tests
     TEST_PREFIX

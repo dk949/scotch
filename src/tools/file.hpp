@@ -3,6 +3,7 @@
 
 #include "class_tools.hpp"
 #include "types.hpp"
+#include "scalloca.hpp"
 
 #include <cerrno>
 #include <cstdio>
@@ -12,7 +13,7 @@
 
 namespace Tools {
 
-#define svalloca(SV) alloca(SV.size() + 1)
+#define svalloca(SV) scalloca(SV.size() + 1)
 
 class File {
 public:

@@ -22,7 +22,7 @@ void Tools::saveFile(StringView data, StringView filename) {
 
 Tools::File::File(StringView filename, uint8_t state) {
     ftrace();
-    const char *name = svToCharPtr(svalloca(filename), filename);
+    char *name = svToCharPtr(svalloca(filename), filename);
     const char *mode = stateToMode(state);
     if (!mode) {
         crash("failed to set mode from provided state");
@@ -32,6 +32,7 @@ Tools::File::File(StringView filename, uint8_t state) {
     if (!m_fp) {
         crash("Could not open file: {}: {}", std::strerror(errno), name);
     }
+    scfreea(name);
 }
 
 Tools::File::~File() {
@@ -58,7 +59,9 @@ String Tools::File::read() {
 void Tools::File::write(StringView data) {
     ftrace();
     if (data.size() < maxStackString) {
-        writeImpl(svToCharPtr(svalloca(data), data), data.size());
+        char *d = svToCharPtr(svalloca(data), data);
+        writeImpl(d, data.size());
+        scfreea(d);
     } else {
         write(String {data});
     }
