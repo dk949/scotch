@@ -30,3 +30,32 @@ TEST_CASE("state to mode conversion", "[Tools::File]") {
         REQUIRE(Tools::File::stateToMode(0b00010001) == nullptr);
     }
 }
+
+TEST_CASE("StringView to char * conversion", "[Tools::File]") {
+    using Catch::Matchers::Equals;
+    SECTION("Simple cases") {
+        StringView test1 = "test";
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test1), test1), Equals("test"));
+
+        StringView test2 = "";
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test2), test2), Equals(""));
+
+        StringView test3 = "\0\0\0";
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test3), test3), Equals(""));
+    }
+
+    SECTION("Complex cases") {
+        String mainString = "hello world";
+        StringView test1 {mainString.begin(), mainString.begin() + 5};
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test1), test1), Equals("hello"));
+
+        StringView test2 {mainString.begin() + 6, mainString.end()};
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test2), test2), Equals("world"));
+
+        StringView test3 {mainString.begin() + 5, mainString.begin() + 6};
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test3), test3), Equals(" "));
+
+        StringView test4 {mainString.begin(), mainString.begin()};
+        REQUIRE_THAT(Tools::File::svToCharPtr(svalloca(test4), test4), Equals(""));
+    }
+}
