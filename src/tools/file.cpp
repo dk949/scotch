@@ -38,7 +38,7 @@ Tools::File::File(StringView filename, uint8_t state) {
 Tools::File::~File() {
     ftrace();
     if (std::fclose(m_fp)) {
-        error("Could not close file: {}", std::strerror(errno));
+        spdlog::error("Could not close file: {}", std::strerror(errno));
     }
 }
 
@@ -51,7 +51,7 @@ String Tools::File::read() {
     String out(fsize, '\0');
     auto ret = std::fread(out.data(), sizeof(char), fsize, m_fp);
     if (ret < fsize) {
-        error("Could not read from file: {}", std::strerror(errno));
+        spdlog::error("Could not read from file: {}", std::strerror(errno));
     }
     return out;
 }
@@ -74,7 +74,7 @@ void Tools::File::write(const String &data) {
 void Tools::File::writeImpl(const char *data, size_t size) {
     ftrace();
     if (std::fwrite(data, sizeof(char), size, m_fp) < size) {
-        error("Could not write to file: {}", std::strerror(errno));
+        spdlog::error("Could not write to file: {}", std::strerror(errno));
     }
 }
 
@@ -84,7 +84,7 @@ const char *Tools::File::stateToMode(uint8_t state) {
     auto *it = std::begin(m);
     const auto stateRep = std::bit_cast<StateRepr>(state);
     if (stateRep.padding || (stateRep.write && stateRep.append) || !(stateRep.read || stateRep.write || stateRep.append)) {
-        error("Illegal state for opening a file: {:#b}", state);
+        spdlog::error("Illegal state for opening a file: {:#b}", state);
         return nullptr;
     }
     if (stateRep.write) {

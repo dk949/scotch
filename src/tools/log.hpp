@@ -47,18 +47,11 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
         }();                                               \
     }
 
-#define debug(...)    spdlog::debug(__VA_ARGS__)
-#define info(...)     spdlog::info(__VA_ARGS__)
-#define warn(...)     spdlog::warn(__VA_ARGS__)
-#define error(...)    spdlog::error(__VA_ARGS__)
-#define critical(...) spdlog::critical(__VA_ARGS__)
-#define print(...)    fmt::print(__VA_ARGS__)
-
 // clang-format off
 #define todo()                                         \
     do {                                               \
         const auto loc = sloc::current();              \
-        critical("{}:{}:{}: `{}` not yet implemented", \
+        spdlog::critical("{}:{}:{}: `{}` not yet implemented", \
             Tools::filename(loc.file_name()),          \
             loc.line(),                                \
             loc.column(),                              \
@@ -73,7 +66,7 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
 #define unreachable(...)                        \
     do {                                        \
         const auto loc = sloc::current();       \
-        critical("{}:{}:{}: Unreachable: {}",   \
+        spdlog::critical("{}:{}:{}: Unreachable: {}",   \
             Tools::filename(loc.file_name()),   \
             loc.line(),                         \
             loc.column(),                       \
@@ -88,13 +81,13 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
         const auto line = loc.line();                                                      \
         const auto col = loc.column();                                                     \
         if(!WarnCache::isCached(Tools::fnv_1a(file) ^ line ^ ~static_cast<uint64_t>(col))) \
-            warn("{}:{}:{}: FIXME: {}", file, line, col, fmt::format(__VA_ARGS__));        \
+            spdlog::warn("{}:{}:{}: FIXME: {}", file, line, col, fmt::format(__VA_ARGS__));        \
     } while (0)
 
 #define crash(...)                              \
     do {                                        \
         const auto loc = sloc::current();       \
-        critical("{}:{}:{}: Fatal error: {}",   \
+        spdlog::critical("{}:{}:{}: Fatal error: {}",   \
             Tools::filename(loc.file_name()),   \
             loc.line(),                         \
             loc.column(),                       \
@@ -107,7 +100,7 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
     do {                                                        \
         if((X)) break;                                          \
         const auto loc = sloc::current();                       \
-        critical("{}:{}:{}: Assertion failed: " #X " is false", \
+        spdlog::critical("{}:{}:{}: Assertion failed: " #X " is false", \
             Tools::filename(loc.file_name()),                   \
             loc.line(),                                         \
             loc.column());                                      \
@@ -118,7 +111,7 @@ static std::shared_ptr<spdlog::logger> ftraceLogger;
     do {                                                                 \
         if((X)) break;                                                   \
         const auto loc = sloc::current();                                \
-        critical("{}:{}:{}: Assertion failed: (" #X ") is false\n\t {}", \
+        spdlog::critical("{}:{}:{}: Assertion failed: (" #X ") is false\n\t {}", \
             Tools::filename(loc.file_name()),                            \
             loc.line(),                                                  \
             loc.column(),                                                \
