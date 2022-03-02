@@ -9,12 +9,14 @@ file(GLOB_RECURSE HEADER_FILES "${CMAKE_SOURCE_DIR}/src/*.hpp")
 
 add_executable(${EXE_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
+message(STATUES ${CONAN_INCLUDE_DIRS_TL-EXPECTED})
+
 target_include_directories(
     ${EXE_NAME}
     PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_SPDLOG}
     PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_FMT}
     PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_MS-GSL}
-    PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_BOOST}
+    PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_TL-EXPECTED}
     PRIVATE ${CMAKE_SOURCE_DIR}/src
     PRIVATE ${CMAKE_SOURCE_DIR}/src/tools
 )
@@ -24,6 +26,7 @@ target_link_libraries(
             project_warnings
             CONAN_PKG::spdlog
             CONAN_PKG::ms-gsl
+            CONAN_PKG::tl-expected
             ${BOOST_PKG}
 )
 

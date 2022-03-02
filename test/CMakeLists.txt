@@ -42,6 +42,7 @@ add_executable(${EXE_NAME}  ${TESTED_FILES} ${TEST_FILES})
 target_link_libraries(${EXE_NAME} PRIVATE project_warnings project_options catch_main
         CONAN_PKG::spdlog
         CONAN_PKG::ms-gsl
+        CONAN_PKG::tl-expected
         )
 
 target_include_directories(

@@ -33,6 +33,7 @@ macro (run_conan)
         catch2/2.13.8
         spdlog/1.9.2
         ms-gsl/4.0.0
+        tl-expected/20190710
         OPTIONS
         ${CONAN_EXTRA_OPTIONS}
         BASIC_SETUP
