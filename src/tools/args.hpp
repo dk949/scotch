@@ -5,9 +5,19 @@
 
 namespace Tools {
 struct Args {
-    static Vector<StringView> positionals;
-    static StringView output;
-    static void parse(char **argv);
+private:
+    Args(Vector<StringView> positionals, StringView output);
+    Vector<StringView> m_positionals;
+    StringView m_output;
+public:
+    static Args parse(char **argv);
+
+    inline Vector<StringView> positionals() const noexcept {
+        return m_positionals;
+    }
+    inline StringView output() const noexcept {
+        return m_output;
+    }
 };
 }
 

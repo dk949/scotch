@@ -13,13 +13,13 @@ log_init();
 dev const Lex::Builtins blt;
 int main(int, char **argv) {
     ftrace();
-    Tools::Args::parse(argv);
-    const auto inputFiles = Tools::Args::positionals;
-    const auto outputFile = Tools::Args::output;
+    const auto args = Tools::Args::parse(argv);
+    const auto inputFiles = args.positionals();
+    const auto outputFile = args.output();
 
 
     const auto inputProgram = Tools::loadFile(inputFiles.front());
-    info("input = \n{}", inputProgram);
+    spdlog::info("input = \n{}", inputProgram);
 
     Lex::Lexer lex {inputProgram};
     const auto tokens = lex.parseAll();

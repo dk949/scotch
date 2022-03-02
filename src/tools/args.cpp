@@ -4,20 +4,28 @@
 #include "log.hpp"
 #include "switch_tools.hpp"
 
-#include <vector>  // for vector
+#include <vector>
 
-std::vector<StringView> Tools::Args::positionals = {};
-StringView Tools::Args::output = "out.wasm";
 
-void Tools::Args::parse(char **argv) {
+namespace Tools {
+
+Args::Args(Vector<StringView> positionals, StringView output)
+        : m_positionals(std::move(positionals))
+        , m_output(output) {
+    ftrace();
+}
+
+Args Args::parse(char **argv) {
     ftrace();
     auto *prog = *argv;
+    StringView output;
+    Vector<StringView> positionals;
     for (const char *arg = *(++argv); arg; arg = *(++argv)) {
         // clang-format off
         str_switch(arg) {
             str_case("-h"):
             str_case("--help"):
-                print("Usage: {} IN_FILE [-o OUT_FILE]\n", Tools::filename(prog));
+                fmt::print("Usage: {} IN_FILE [-o OUT_FILE]\n", Tools::filename(prog));
                 exit(0);
             str_case("-o"):
             str_case("--output"):
@@ -30,4 +38,8 @@ void Tools::Args::parse(char **argv) {
     if (positionals.empty()) {
         crash("Expected file, got nothing");
     }
+    return Args(positionals, output);
 }
+
+
+}  // namespace Tools
