@@ -29,14 +29,20 @@ Args Args::parse(char **argv) {
                 exit(0);
             str_case("-o"):
             str_case("--output"):
-                output = *(++argv);
+                if(*(argv++)) {
+                    output = *argv;
+                } else {
+                    fmt::print("Expected filename after '-o', got nothing");
+                    exit(1);
+                }
         }
         // clang-format on
         positionals.emplace_back(arg);
     }
 
     if (positionals.empty()) {
-        crash("Expected file, got nothing");
+        fmt::print("Expected file, got nothing");
+        exit(1);
     }
     return Args(positionals, output);
 }
