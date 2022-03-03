@@ -1,6 +1,7 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 #include "types.hpp"
+
 #include <utility>
 
 namespace Tools {
@@ -35,5 +36,9 @@ constexpr T as(auto *o) {
 }
 
 #define dev [[maybe_unused]]
+
+#define CAT(x, y)    x##y
+#define CAT2(x, y)   CAT(x, y)
+#define UNIQUE(Name) CAT2(Name, __LINE__)
 
 #endif  // COMMON_HPP
