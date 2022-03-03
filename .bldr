@@ -8,6 +8,6 @@
   "run": "./build/bin/scotch ./test/shortterm_goal.scot -o build/bin/output.wasm",
   "test": "./build/bin/tests",
   "setup": "bldr setup:dbg",
-  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON",
-  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON"
+  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF",
+  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF"
 }
