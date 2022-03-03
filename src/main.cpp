@@ -13,25 +13,28 @@ log_init();
 dev const Lex::Builtins blt;
 int main(int, char **argv) {
     ftrace();
+
     const auto args = Tools::Args::parse(argv);
     const auto inputFiles = args.positionals();
     const auto outputFile = args.output();
 
+    Tools::loadFile(inputFiles.front())
+        .map([](const auto &input) {
+            Lex::Lexer lex {input};
+            const auto tokens = lex.parseAll();
 
-    const auto inputProgram = Tools::loadFile(inputFiles.front());
-    spdlog::info("input = \n{}", inputProgram);
-
-    Lex::Lexer lex {inputProgram};
-    const auto tokens = lex.parseAll();
-
-    Parse::Parser parse {tokens};
-    const auto ast = parse.makeProgram();
+            Parse::Parser parse {tokens};
+            const auto ast = parse.makeProgram();
 
 
-    Comp::Compiler comp {ast};
-    const auto outputCode = comp.compile();
+            Comp::Compiler comp {ast};
+            const auto outputCode = comp.compile();
 
-    Tools::saveFile(outputCode, outputFile);
-
+            return outputCode;
+        })
+        .and_then([&outputFile](const auto &output) { return Tools::saveFile(outputFile, output); })
+        .map_error([](const auto &fileError) {
+            crash("Failed file operation: {}: {}", fileError.errStr, std::strerror(fileError.errc));
+        });
     return 0;
 }
