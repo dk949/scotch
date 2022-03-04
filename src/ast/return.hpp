@@ -1,6 +1,7 @@
 #ifndef RETURN_HPP
 #define RETURN_HPP
 #include "ast/node.hpp"
+#include "compiler/compiler.hpp"
 #include "types.hpp"
 
 namespace Ast {
@@ -10,6 +11,8 @@ private:
 
 public:
     explicit Return(ExpressionPtr argument);
+
+    virtual String compile(Comp::Compiler &) override;
 
     [[nodiscard]] inline ExpressionPtr argument() const {
         return m_argument;

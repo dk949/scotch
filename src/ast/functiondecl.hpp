@@ -1,6 +1,7 @@
 #ifndef FUNCTIONDECL_HPP
 #define FUNCTIONDECL_HPP
 
+#include "compiler/compiler.hpp"
 #include "node.hpp"
 #include "types.hpp"
 
@@ -17,6 +18,8 @@ protected:
 public:
     FunctionDecl(String name, Vector<ValueType> args, ValueType ret, ScopePtr body);
 
+    virtual String compile(Comp::Compiler &) override;
+
     [[nodiscard]] const inline String &name() const {
         return m_name;
     }
@@ -26,6 +29,6 @@ public:
 private:
     addClassName(FunctionDecl);
 };
-}
+}  // namespace Ast
 
 #endif  // FUNCTIONDECL_HPP

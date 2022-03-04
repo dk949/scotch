@@ -1,13 +1,10 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
+#include "compiler/compiler.hpp"
 #include "ftrace.hpp"
 #include "types.hpp"
 #include "value.hpp"
-
-#include <compare>
-
-
 
 #define addClassName(CLASS)                                       \
     [[nodiscard]] virtual StringView className() const override { \
@@ -25,12 +22,10 @@ public:
 
     virtual ~Node() = default;
 
-    virtual std::partial_ordering operator<=>(const Node &rhs) const {
-        ftrace();
-        return this <=> &rhs;
-    }
+    virtual String compile(Comp::Compiler &) = 0;
 
     friend String Ast::printNode(const NodePtr &node);
+
 
 protected:
     Node() = default;

@@ -4,7 +4,16 @@
 
 #include <utility>  // for move
 
-Ast::Return::Return(ExpressionPtr argument)
+namespace Ast {
+
+Return::Return(ExpressionPtr argument)
         : m_argument(std::move(argument)) {
     ftrace();
+}
+
+String Return::compile(Comp::Compiler &comp) {
+    spdlog::debug("Current compiler state = {}", comp);
+    todo();
+}
+
 }

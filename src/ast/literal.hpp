@@ -3,6 +3,7 @@
 
 #include "ast/node.hpp"
 #include "ast/value.hpp"
+#include "compiler/compiler.hpp"
 #include "expression.hpp"
 #include "types.hpp"
 
@@ -13,6 +14,8 @@ private:
     Value m_value;
 public:
     explicit Literal(Value value);
+
+    virtual String compile(Comp::Compiler &) override;
 
     friend String Ast::printNode(const NodePtr &node);
 

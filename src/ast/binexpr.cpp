@@ -6,9 +6,19 @@
 #include <utility>
 
 
-Ast::BinExpr::BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs)
+namespace Ast {
+
+BinExpr::BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs)
         : m_op(op)
         , m_lhs(std::move(lhs))
         , m_rhs(std::move(rhs)) {
     ftrace();
+}
+
+
+String BinExpr::compile(Comp::Compiler &comp) {
+    spdlog::debug("Current compiler state = {}", comp);
+    todo();
+}
+
 }

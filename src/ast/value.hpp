@@ -1,5 +1,6 @@
 #ifndef VALUE_HPP
 #define VALUE_HPP
+#include "compiler/compiler.hpp"
 #include "switch_tools.hpp"
 #include "types.hpp"
 
@@ -21,13 +22,15 @@ public:
     explicit Value(ValueType type);
     explicit Value(Int64 val);
 
+    String compile(Comp::Compiler &);
+
     Int64 as_int();
     ValueType as_type();
     [[nodiscard]] ValueType inline type() const {
         return m_type;
     }
 };
-}
+}  // namespace Ast
 
 template<>
 struct fmt::formatter<Ast::Value> : formatter<std::string> {
