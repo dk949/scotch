@@ -108,7 +108,7 @@ PenaltyReturnTypeOnItsOwnLine: 20
 PointerAlignment: Right
 ReferenceAlignment: Right
 ReflowComments: true
-ShortNamespaceLines: 30
+ShortNamespaceLines: 10
 SortIncludes: CaseInsensitive
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
