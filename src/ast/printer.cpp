@@ -4,12 +4,16 @@
 #include <fmt/format.h>
 
 
-constexpr auto indentSize = 2;
 
+namespace Ast {
+
+constexpr auto indentSize = 2;
 template<int O>
 constexpr unsigned char offs = O *indentSize;
 
-String Ast::printNode(const NodePtr &node) {
+
+
+String printNode(const NodePtr &node) {
     static int indent = 0;
 
 
@@ -105,4 +109,6 @@ String Ast::printNode(const NodePtr &node) {
     }
 
     return fmt::format("{: >{}}{}", "", indent, node->className());
+}
+
 }
