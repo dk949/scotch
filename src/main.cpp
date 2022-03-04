@@ -18,7 +18,7 @@ int main(int, char **argv) {
     const auto inputFiles = args.positionals();
     const auto outputFile = args.output();
 
-    Tools::loadFile(inputFiles.front())
+    Tools::File::readFile(inputFiles.front())
         .map([](const auto &input) {
             Lex::Lexer lex {input};
             const auto tokens = lex.parseAll();
@@ -32,7 +32,7 @@ int main(int, char **argv) {
 
             return outputCode;
         })
-        .and_then([&outputFile](const auto &output) { return Tools::saveFile(outputFile, output); })
+        .and_then([&outputFile](const auto &output) { return Tools::File::writeFile(outputFile, output); })
         .map_error([](const auto &fileError) {
             crash("Failed file operation: {}: {}", fileError.errStr, std::strerror(fileError.errc));
         });

@@ -4,45 +4,60 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
-#include <filesystem>
+namespace Tools {
 
-String Tools::loadFile(StringView filename) {
+
+FileErrorOr<String> File::readFile(StringView filename) noexcept {
     ftrace();
-    File f {filename, File::Read | File::Binary};
-
-    return f.read();
+    return File::open(filename, File::Read | File::Binary).and_then([](File &&f) { return f.read(); });
 }
 
-void Tools::saveFile(StringView data, StringView filename) {
+FileErrorOr<void> File::writeFile(StringView filename, StringView data) noexcept {
     ftrace();
-    File f {filename, File::Write | File::Binary};
-    f.write(data);
+    return File::open(filename, File::Write | File::Binary).and_then([&data](File &&f) { return f.write(data); });
+}
+
+File::File(FILE *fp) noexcept
+        : m_fp(fp) { }
+
+File::File(File &&other) noexcept
+        : m_fp(other.m_fp) {
+    other.m_fp = nullptr;
 }
 
 
-Tools::File::File(StringView filename, uint8_t state) {
+FileErrorOr<File> File::open(StringView filename, uint8_t state) noexcept {
     ftrace();
-    char *name = svToCharPtr(svalloca(filename), filename);
-    const char *mode = stateToMode(state);
-    if (!mode) {
-        crash("failed to set mode from provided state");
+    return stateToMode(state).and_then([&filename](const char *mode) -> FileErrorOr<File> {
+        return svToCharPtr(svalloca(filename), filename).and_then([mode](const char *name) -> FileErrorOr<File> {
+            auto *fp = fopen(name, mode);
+            if (!fp) {
+                return tl::unexpected {
+                    FileError {"Could not open file", errno}
+                };
+            }
+            scfreea(name);
+            return File {fp};
+        });
+    });
+}
+
+FileErrorOr<void> File::close() noexcept {
+    ftrace();
+    if (m_fp && std::fclose(m_fp)) {
+        return tl::unexpected {
+            FileError {"Could not close file", errno}
+        };
     }
-
-    m_fp = fopen(name, mode);
-    if (!m_fp) {
-        crash("Could not open file: {}: {}", std::strerror(errno), name);
-    }
-    scfreea(name);
+    return {};
 }
 
-Tools::File::~File() {
+File::~File() noexcept {
     ftrace();
-    if (std::fclose(m_fp)) {
-        spdlog::error("Could not close file: {}", std::strerror(errno));
-    }
+    close().map_error([](const FileError &err) { spdlog::error("{}: {}", err.errStr, std::strerror(err.errc)); });
 }
 
-String Tools::File::read() {
+FileErrorOr<String> File::read() noexcept {
     ftrace();
     std::fseek(m_fp, 0l, SEEK_END);
     const size_t fsize = to<size_t>(std::ftell(m_fp));
@@ -51,41 +66,44 @@ String Tools::File::read() {
     String out(fsize, '\0');
     auto ret = std::fread(out.data(), sizeof(char), fsize, m_fp);
     if (ret < fsize) {
-        spdlog::error("Could not read from file: {}", std::strerror(errno));
+        return tl::unexpected(FileError {"Could not read from file", errno});
     }
     return out;
 }
 
-void Tools::File::write(StringView data) {
+FileErrorOr<void> File::write(StringView data) noexcept {
     ftrace();
     if (data.size() < maxStackString) {
-        char *d = svToCharPtr(svalloca(data), data);
-        writeImpl(d, data.size());
-        scfreea(d);
+        return svToCharPtr(svalloca(data), data).and_then([&data, this](const char *d) {
+            const auto res = write(d, data.size());
+            scfreea(d);
+            return res;
+        });
     } else {
-        write(String {data});
+        return write(String {data});
     }
 }
 
-void Tools::File::write(const String &data) {
+FileErrorOr<void> File::write(const String &data) noexcept {
     ftrace();
-    writeImpl(data.c_str(), data.size());
+    return write(data.c_str(), data.size());
 }
-void Tools::File::writeImpl(const char *data, size_t size) {
+
+FileErrorOr<void> File::write(const char *data, size_t size) noexcept {
     ftrace();
     if (std::fwrite(data, sizeof(char), size, m_fp) < size) {
-        spdlog::error("Could not write to file: {}", std::strerror(errno));
+        return tl::unexpected(FileError {"Could not write to file", errno});
     }
+    return {};
 }
 
-const char *Tools::File::stateToMode(uint8_t state) {
+FileErrorOr<const char *> File::stateToMode(uint8_t state) noexcept {
     ftrace();
     static char m[4] = {0};
     auto *it = std::begin(m);
     const auto stateRep = std::bit_cast<StateRepr>(state);
     if (stateRep.padding || (stateRep.write && stateRep.append) || !(stateRep.read || stateRep.write || stateRep.append)) {
-        spdlog::error("Illegal state for opening a file: {:#b}", state);
-        return nullptr;
+        return tl::unexpected(FileError {"Illegal state for opening a file", 0});
     }
     if (stateRep.write) {
         *it++ = 'w';
@@ -106,10 +124,14 @@ const char *Tools::File::stateToMode(uint8_t state) {
 }
 
 
-char *Tools::File::svToCharPtr(void *dest, StringView source) {
+FileErrorOr<const char *> File::svToCharPtr(void *dest, StringView source) noexcept {
     ftrace();
+    if (!dest) {
+        return tl::unexpected(FileError {"Destination is null. Possible failed allocation", errno});
+    }
     std::memcpy(dest, &*source.begin(), source.size() * sizeof(StringView::value_type));
 
     static_cast<char *>(dest)[source.size()] = 0;
     return static_cast<char *>(dest);
 }
+}  // namespace Tools

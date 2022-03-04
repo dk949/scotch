@@ -2,18 +2,32 @@
 #define FILE_HPP
 
 #include "class_tools.hpp"
-#include "types.hpp"
 #include "scalloca.hpp"
+#include "types.hpp"
 
 #include <cerrno>
 #include <cstdio>
 #include <fstream>
 #include <gsl/gsl>
 #include <sstream>
+#include <tl/expected.hpp>
 
 namespace Tools {
 
-#define svalloca(SV) scalloca(SV.size() + 1)
+#define svalloca(SV)     scalloca(SV.size() + 1)
+#define DECL_FN(Ret, Fn) [[nodiscard]] FileErrorOr<Ret> Fn noexcept
+
+class File;
+struct FileError;
+
+template<typename T>
+using FileErrorOr = tl::expected<T, FileError>;
+
+struct FileError {
+    StringView errStr;
+    int errc;
+};
+
 
 class File {
 public:
@@ -32,27 +46,34 @@ private:
         char padding: 4;
     };
     static_assert(sizeof(StateRepr) == sizeof(uint8_t));
+
     gsl::owner<FILE *> m_fp;
+
     static constexpr auto maxStackString = 512;
+
+    File(FILE *) noexcept;
+
 public:
-    NO_MOVE_OR_COPY(File);
+    NO_COPY(File);
 
-    explicit File(StringView filename, uint8_t state);
-    ~File();
+    File(File &&) noexcept;
+    File &operator=(File &&) = delete;
+    static FileErrorOr<File> open(StringView filename, uint8_t mode) noexcept;
+    FileErrorOr<void> close() noexcept;
 
-    String read();
-    void write(StringView data);
-    void write(const String &data);
 
-    static char *svToCharPtr(void *dest, StringView source);
-    [[nodiscard]] static const char *stateToMode(uint8_t state);
-private:
-    void writeImpl(const char *data, size_t size);
+    ~File() noexcept;
+
+    DECL_FN(String, read());
+    DECL_FN(void, write(StringView data));
+    DECL_FN(void, write(const String &data));
+    DECL_FN(void, write(const char *data, size_t size));
+
+    DECL_FN(const char *, static svToCharPtr(void *dest, StringView source));
+    DECL_FN(const char *, static stateToMode(uint8_t state));
+    DECL_FN(String, static readFile(StringView filename));
+    DECL_FN(void, static writeFile(StringView location, StringView data));
 };
-
-
-String loadFile(StringView filename);
-void saveFile(StringView data, StringView location);
-}
+}  // namespace Tools
 
 #endif  // FILE_HPP
