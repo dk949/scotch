@@ -5,13 +5,19 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
+namespace Comp {
 
-Comp::Compiler::Compiler(Ast::ProgramPtr prog)
+Compiler::Compiler(Ast::ProgramPtr prog)
         : m_prog(std::move(prog)) {
     ftrace();
     spdlog::debug("now compiling \n{}", to<Ast::NodePtr>(m_prog));
 }
 
-String Comp::Compiler::compile() {
-    return "nothing yet";
+String Compiler::compile() {
+    return m_prog->compile(*this);
+}
+
+void Compiler::appendFunc(StringView func) {
+    m_funcs.push_back(func);
+}
 }

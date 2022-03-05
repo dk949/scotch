@@ -15,6 +15,14 @@ private:
 public:
     explicit Literal(Value value);
 
+    inline Value &value() {
+        return m_value;
+    }
+
+    inline const Value &value() const {
+        return m_value;
+    }
+
     virtual String compile(Comp::Compiler &) override;
 
     friend String Ast::printNode(const NodePtr &node);

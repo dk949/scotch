@@ -4,7 +4,7 @@
 #include "node.hpp"
 namespace Ast {
 class Scope : public Node {
-private:
+protected:
     NodePtrVector m_children;
 
 public:

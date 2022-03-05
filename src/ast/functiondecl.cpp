@@ -1,5 +1,9 @@
 #include "functiondecl.hpp"
 
+#include "common.hpp"
+#include "log.hpp"
+#include "scope.hpp"
+
 #include <utility>  // for move
 
 namespace Ast {
@@ -14,7 +18,25 @@ FunctionDecl::FunctionDecl(String name, Vector<ValueType> args, ValueType ret, S
 
 String FunctionDecl::compile(Comp::Compiler &comp) {
     spdlog::debug("Current compiler state = {}", comp);
-    todo();
+    String out = fmt::format("(func ${0} (export \"{0}\")", m_name);
+    comp.appendFunc(m_name);
+    if (!m_args.empty()) {
+        crash("Funciton arguments not yet tupported");
+    }
+
+    out.append("(result ");
+    if (m_return == ValueType::INT) {
+        out.append("i64)");
+    } else {
+        crash("Only int return is supported for now");
+    }
+
+    for (auto &child : m_body->children()) {
+        out.append(child->compile(comp));
+    }
+
+    out.push_back(')');
+    return out;
 }
 
-}
+}  // namespace Ast
