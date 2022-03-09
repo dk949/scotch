@@ -1,7 +1,7 @@
 // Main function
 
-def main(): int {
+def main(): i32 {
 
 
-    return 10;
+    return 10i;
 }
