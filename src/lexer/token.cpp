@@ -4,14 +4,40 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
+template<>
+Int32 Lex::Token::get<Int32>() const {
+    ftrace();
+    if (m_type == Lex::TokenType::T_I32) {
+        return m_val.i32;
+    }
+    crash("cannot extract Int32 value of token type {}", m_type);
+}
 
 template<>
 Int64 Lex::Token::get<Int64>() const {
     ftrace();
-    if (m_type == Lex::TokenType::T_INT) {
-        return m_val.num;
+    if (m_type == Lex::TokenType::T_I64) {
+        return m_val.i64;
     }
     crash("cannot extract Int64 value of token type {}", m_type);
+}
+
+template<>
+Float32 Lex::Token::get<Float32>() const {
+    ftrace();
+    if (m_type == Lex::TokenType::T_I32) {
+        return m_val.f32;
+    }
+    crash("cannot extract Float32 value of token type {}", m_type);
+}
+
+template<>
+Float64 Lex::Token::get<Float64>() const {
+    ftrace();
+    if (m_type == Lex::TokenType::T_I64) {
+        return m_val.f64;
+    }
+    crash("cannot extract Float64 value of token type {}", m_type);
 }
 
 template<>
@@ -63,9 +89,24 @@ void Lex::Token::get<void>() const {
 }
 
 
+Lex::Token::Token(Int32 val)
+        : m_type(Lex::TokenType::T_I32) {
+    m_val.i32 = val;
+}
+
 Lex::Token::Token(Int64 val)
-        : m_type(Lex::TokenType::T_INT) {
-    m_val.num = val;
+        : m_type(Lex::TokenType::T_I64) {
+    m_val.i64 = val;
+}
+
+Lex::Token::Token(Float32 val)
+        : m_type(Lex::TokenType::T_F32) {
+    m_val.f32 = val;
+}
+
+Lex::Token::Token(Float64 val)
+        : m_type(Lex::TokenType::T_F64) {
+    m_val.f64 = val;
 }
 Lex::Token::Token(Keyword val)
         : m_type(Lex::TokenType::T_KEYWORD) {
@@ -194,10 +235,34 @@ bool Lex::Token::isBinExpr() const {
     // return false;
 }
 
+Lex::Token::Order Lex::Token::operator<=>(Int32 i) const {
+    ftrace();
+    if (m_type == Lex::TokenType::T_I32) {
+        return m_val.i32 <=> i;
+    }
+    return Order::unordered;
+}
+
 Lex::Token::Order Lex::Token::operator<=>(Int64 i) const {
     ftrace();
-    if (m_type == Lex::TokenType::T_INT) {
-        return m_val.num <=> i;
+    if (m_type == Lex::TokenType::T_I64) {
+        return m_val.i64 <=> i;
+    }
+    return Order::unordered;
+}
+
+Lex::Token::Order Lex::Token::operator<=>(Float32 f) const {
+    ftrace();
+    if (m_type == Lex::TokenType::T_F32) {
+        return m_val.f32 <=> f;
+    }
+    return Order::unordered;
+}
+
+Lex::Token::Order Lex::Token::operator<=>(Float64 f) const {
+    ftrace();
+    if (m_type == Lex::TokenType::T_F64) {
+        return m_val.f64 <=> f;
     }
     return Order::unordered;
 }
@@ -247,8 +312,14 @@ Lex::Token::Order Lex::Token::operator<=>(const Token &t) const {
             return *this <=> t.m_val.op;
         case (Lex::TokenType::T_EOF):
             return Order::equivalent;
-        case (Lex::TokenType::T_INT):
-            return *this <=> t.m_val.num;
+        case (Lex::TokenType::T_I32):
+            return *this <=> t.m_val.i32;
+        case (Lex::TokenType::T_I64):
+            return *this <=> t.m_val.i64;
+        case (Lex::TokenType::T_F32):
+            return *this <=> t.m_val.f32;
+        case (Lex::TokenType::T_F64):
+            return *this <=> t.m_val.f64;
         case (Lex::TokenType::T_STR):
             fixme("string literals are not being handled");
             todo();
@@ -260,9 +331,24 @@ Lex::Token::Order Lex::Token::operator<=>(const Token &t) const {
     return Order::unordered;
 }
 
+bool Lex::Token::operator==(Int32 i) const {
+    ftrace();
+    return (m_type == Lex::TokenType::T_I32) && m_val.i32 == i;
+}
+
 bool Lex::Token::operator==(Int64 i) const {
     ftrace();
-    return (m_type == Lex::TokenType::T_INT) && m_val.num == i;
+    return (m_type == Lex::TokenType::T_I64) && m_val.i64 == i;
+}
+
+bool Lex::Token::operator==(Float32 f) const {
+    ftrace();
+    return (m_type == Lex::TokenType::T_F32) && m_val.f32 == f;
+}
+
+bool Lex::Token::operator==(Float64 f) const {
+    ftrace();
+    return (m_type == Lex::TokenType::T_F64) && m_val.f64 == f;
 }
 
 bool Lex::Token::operator==(Keyword k) const {
@@ -298,8 +384,14 @@ bool Lex::Token::operator==(const Token &t) const {
             return *this == t.m_val.op;
         case (Lex::TokenType::T_EOF):
             return true;
-        case (Lex::TokenType::T_INT):
-            return *this == t.m_val.num;
+        case (Lex::TokenType::T_I32):
+            return *this == t.m_val.i32;
+        case (Lex::TokenType::T_I64):
+            return *this == t.m_val.i64;
+        case (Lex::TokenType::T_F32):
+            return *this == t.m_val.f32;
+        case (Lex::TokenType::T_F64):
+            return *this == t.m_val.f64;
         case (Lex::TokenType::T_STR):
             fixme("string literals are not being handled");
             todo();
@@ -352,7 +444,10 @@ StringView Lex::Token::kwToStr(Token::Keyword k) {
 StringView Lex::Token::typeToStr(Token::BuiltinType t) {
     ftrace();
     switch (t) {
-        ENUM_CASE(Lex::Token::INT);
+        ENUM_CASE(Lex::Token::I32);
+        ENUM_CASE(Lex::Token::I64);
+        ENUM_CASE(Lex::Token::F32);
+        ENUM_CASE(Lex::Token::F64);
         BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
     }
     crash("Unsupported type {}", t);

@@ -45,7 +45,10 @@ Ast::ReturnPtr Parse::Parser::makeReturn() {
 Ast::ExpressionPtr Parse::Parser::makeExpr() {
     ftrace();
     switch (m_current->type()) {
-        case Lex::TokenType::T_INT:
+        case Lex::TokenType::T_I32:
+        case Lex::TokenType::T_I64:
+        case Lex::TokenType::T_F32:
+        case Lex::TokenType::T_F64:
         case Lex::TokenType::T_STR:
             return makeLiteral();
         case Lex::TokenType::T_KEYWORD:
@@ -76,13 +79,19 @@ Ast::ExpressionPtr Parse::Parser::makeExpr() {
 Ast::LiteralPtr Parse::Parser::makeLiteral() {
     ftrace();
     switch (m_current->type()) {
-        case Lex::TokenType::T_INT:
+        case Lex::TokenType::T_I32:
+            return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Int32>()});
+        case Lex::TokenType::T_I64:
             return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Int64>()});
+        case Lex::TokenType::T_F32:
+            return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Float32>()});
+        case Lex::TokenType::T_F64:
+            return MakePtr<Ast::Literal>(Ast::Value {m_current->get<Float64>()});
         case Lex::TokenType::T_STR:
             fixme("string literals are not handled");
             todo();
         default:
-            crash("Unexpected {} in literal", m_current->type());
+            unreachable("Handleled all literal types. Unexpected {} in literal", m_current->type());
     }
 }
 
@@ -157,9 +166,21 @@ Ast::ValueType Parse::Parser::makeTypeAnnotation() {
         // Handling builtin types
         if (m_current->type() == Lex::TokenType::T_BUILTIN_TYPE) {
             switch (m_current->get<Lex::Token::BuiltinType>()) {
-                bcase Lex::Token::INT : {
+                bcase Lex::Token::I32 : {
                     m_current = next();
-                    return Ast::ValueType::INT;
+                    return Ast::ValueType::I32;
+                }
+                bcase Lex::Token::I64 : {
+                    m_current = next();
+                    return Ast::ValueType::I64;
+                }
+                bcase Lex::Token::F32 : {
+                    m_current = next();
+                    return Ast::ValueType::F32;
+                }
+                bcase Lex::Token::F64 : {
+                    m_current = next();
+                    return Ast::ValueType::F64;
                 }
                 BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
             }

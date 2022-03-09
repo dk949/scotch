@@ -30,7 +30,12 @@ using StringView = std::string_view;
 using String = std::string;
 
 // other
+using Int32 = int32_t;
 using Int64 = int64_t;
+static_assert(sizeof(float) == 4, "size of float is asumed to be 32 bits");
+static_assert(sizeof(double) == 8, "size of double is asumed to be 64 bits");
+using Float32 = float;
+using Float64 = double;
 using Hash = int64_t;
 
 namespace Ast {
@@ -51,7 +56,15 @@ using NodePtrVector = Vector<Ptr<Node>>;
 
 enum class BinOp { PLUS, MINUS };
 
-enum class ValueType { INT, TYPE };
-}
+enum class ValueType {
+    I32,
+    I64,
+
+    F32,
+    F64,
+
+    TYPE,
+};
+}  // namespace Ast
 
 #endif  // TYPES_HPP

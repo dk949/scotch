@@ -19,16 +19,27 @@ FunctionDecl::FunctionDecl(String name, Vector<ValueType> args, ValueType ret, S
 String FunctionDecl::compile(Comp::Compiler &comp) {
     spdlog::debug("Current compiler state = {}", comp);
     String out = fmt::format("(func ${0} (export \"{0}\")", m_name);
-    comp.appendFunc(m_name);
+    comp.appendFunc(m_name, m_args, m_return);
     if (!m_args.empty()) {
         crash("Funciton arguments not yet tupported");
     }
 
     out.append("(result ");
-    if (m_return == ValueType::INT) {
-        out.append("i64)");
-    } else {
-        crash("Only int return is supported for now");
+    switch (m_return) {
+        case ValueType::I32:
+            out.append("i32)");
+            break;
+        case ValueType::I64:
+            out.append("i64)");
+            break;
+        case ValueType::F32:
+            out.append("f32)");
+            break;
+        case ValueType::F64:
+            out.append("f64)");
+            break;
+        default:
+            crash("Only int return is supported for now");
     }
 
     for (auto &child : m_body->children()) {

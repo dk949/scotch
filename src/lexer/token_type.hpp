@@ -12,7 +12,12 @@ enum class TokenType {
     T_KEYWORD,
     T_IDENTIFIER,
 
-    T_INT,
+    T_I32,
+    T_I64,
+
+    T_F32,
+    T_F64,
+
     T_STR,
 
     T_OP,
@@ -37,7 +42,12 @@ public:
             ENUM_CASE(Lex::TokenType::T_KEYWORD);
             ENUM_CASE(Lex::TokenType::T_IDENTIFIER);
 
-            ENUM_CASE(Lex::TokenType::T_INT);
+            ENUM_CASE(Lex::TokenType::T_I32);
+            ENUM_CASE(Lex::TokenType::T_I64);
+
+            ENUM_CASE(Lex::TokenType::T_F32);
+            ENUM_CASE(Lex::TokenType::T_F64);
+
             ENUM_CASE(Lex::TokenType::T_STR);
 
             ENUM_CASE(Lex::TokenType::T_OP);

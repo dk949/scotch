@@ -10,16 +10,50 @@ Value::Value(ValueType type)
     ftrace();
 }
 
-Value::Value(Int64 val)
-        : m_type(ValueType::INT) {
+Value::Value(Int32 val)
+        : m_type(ValueType::I32) {
     ftrace();
-    m_value.as_int = val;
+    m_value.as_i32 = val;
 }
 
-Int64 Value::as_int() {
+Value::Value(Int64 val)
+        : m_type(ValueType::I64) {
     ftrace();
-    verify(m_type == ValueType::INT);
-    return m_value.as_int;
+    m_value.as_i64 = val;
+}
+Value::Value(Float32 val)
+        : m_type(ValueType::F32) {
+    ftrace();
+    m_value.as_f32 = val;
+}
+Value::Value(Float64 val)
+        : m_type(ValueType::F64) {
+    ftrace();
+    m_value.as_f64 = val;
+}
+
+Int32 Value::as_i32() {
+    ftrace();
+    verify(m_type == ValueType::I32);
+    return m_value.as_i32;
+}
+
+Int64 Value::as_i64() {
+    ftrace();
+    verify(m_type == ValueType::I64);
+    return m_value.as_i64;
+}
+
+Float32 Value::as_f32() {
+    ftrace();
+    verify(m_type == ValueType::F32);
+    return m_value.as_f32;
+}
+
+Float64 Value::as_f64() {
+    ftrace();
+    verify(m_type == ValueType::F64);
+    return m_value.as_f64;
 }
 
 ValueType Value::as_type() {

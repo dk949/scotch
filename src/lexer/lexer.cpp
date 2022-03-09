@@ -98,19 +98,40 @@ Lex::Token Lex::Lexer::parseWord() {
 Lex::Token Lex::Lexer::parseNumber() {
     ftrace();
     String number {*m_current};
+    struct {
+        bool i32;
+        bool f32;
+    } flags;
     m_current = std::next(m_current);
     while (!isEOF() && std::isdigit(*m_current)) {
         number.push_back(*m_current);
         m_current = std::next(m_current);
     }
     if (std::isalpha(*m_current)) {
-        crash("integer suffixes are not supported, expected number, got {}", *m_current);
+        switch (*m_current) {
+            case 'i':
+                flags.i32 = true;
+                spdlog::debug("encountered an i32 literal");
+                break;
+            case 'f':
+                flags.f32 = true;
+                break;
+            default:
+                crash("Unknonw suffix. Expected f or i, got {}", *m_current);
+        }
+        m_current = std::next(m_current);
     }
     if (*m_current == '.') {
         crash("floating point numbers are not supported, expected number, got {}", *m_current);
     }
 
-    return Lex::Token {Int64 {std::stoi(number)}};
+    if (flags.i32) {
+        spdlog::debug("returning 32 bit int");
+        return Lex::Token {Int32 {std::stoi(number)}};
+    } else {
+        spdlog::debug("returning 64 bit int");
+        return Lex::Token {Int64 {std::stoll(number)}};
+    }
 }
 
 

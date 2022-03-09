@@ -37,7 +37,11 @@ public:
     };
 
     enum class BuiltinType {
-        INT,
+        I32,
+        I64,
+
+        F32,
+        F64,
 
         TYPE_COUNT,
     };
@@ -46,7 +50,12 @@ public:
     using enum BuiltinType;
 
     union Value {
-        Int64 num;
+        Int32 i32;
+        Int64 i64;
+
+        Float32 f32;
+        Float64 f64;
+
         Keyword kw;
         Operator op;
         BuiltinType type;
@@ -60,7 +69,12 @@ private:
 
 public:
 
+    explicit Token(Int32 val);
     explicit Token(Int64 val);
+
+    explicit Token(Float32 val);
+    explicit Token(Float64 val);
+
     explicit Token(Keyword val);
     explicit Token(Operator val);
     explicit Token(const char *val);
@@ -84,14 +98,20 @@ public:
         static_assert(Tools::always_false_v<T>, "get used with an invalid type");
     }
 
+    Order operator<=>(Int32 i) const;
     Order operator<=>(Int64 i) const;
+    Order operator<=>(Float32 i) const;
+    Order operator<=>(Float64 i) const;
     Order operator<=>(Keyword k) const;
     Order operator<=>(Operator o) const;
     Order operator<=>(StringView id) const;
     Order operator<=>(BuiltinType t) const;
     Order operator<=>(const Token &t) const;
 
+    bool operator==(Int32 i) const;
     bool operator==(Int64 i) const;
+    bool operator==(Float32 i) const;
+    bool operator==(Float64 i) const;
     bool operator==(Keyword k) const;
     bool operator==(Operator o) const;
     bool operator==(StringView id) const;
@@ -111,7 +131,10 @@ public:
 
 // clang-format off
 template<> [[nodiscard]] Token::Operator Token::get<Token::Operator>() const;
+template<> [[nodiscard]] Int32 Token::get<Int32>() const;
 template<> [[nodiscard]] Int64 Token::get<Int64>() const;
+template<> [[nodiscard]] Float32 Token::get<Float32>() const;
+template<> [[nodiscard]] Float64 Token::get<Float64>() const;
 template<> [[nodiscard]] Token::Keyword Token::get<Token::Keyword>() const;
 template<> [[nodiscard]] const char * Token::get<const char *>() const;
 template<> [[nodiscard]] Token::BuiltinType Token::get<Token::BuiltinType>() const;
@@ -135,8 +158,14 @@ struct fmt::formatter<Lex::Token> : formatter<std::string> {
                 name = fmt::format("{}({})", t.type(), t.get<const char *>());
             bcase Lex::TokenType::T_KEYWORD:
                 name = fmt::format("{}({})", t.type(), Lex::Token::kwToStr(t.get<Lex::Token::Keyword>()));
-            bcase Lex::TokenType::T_INT:
+            bcase Lex::TokenType::T_I32:
+                name = fmt::format("{}({})", t.type(), t.get<Int32>());
+            bcase Lex::TokenType::T_I64:
                 name = fmt::format("{}({})", t.type(), t.get<Int64>());
+            bcase Lex::TokenType::T_F32:
+                name = fmt::format("{}({})", t.type(), t.get<Float32>());
+            bcase Lex::TokenType::T_F64:
+                name = fmt::format("{}({})", t.type(), t.get<Float64>());
             bcase Lex::TokenType::T_BUILTIN_TYPE:
                 name = fmt::format("{}({})", t.type(), Lex::Token::typeToStr(t.get<Lex::Token::BuiltinType>()));
             bcase Lex::TokenType::T_STR:

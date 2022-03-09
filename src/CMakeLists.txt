@@ -9,8 +9,6 @@ file(GLOB_RECURSE HEADER_FILES "${CMAKE_SOURCE_DIR}/src/*.hpp")
 
 add_executable(${EXE_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
-message(STATUES ${CONAN_INCLUDE_DIRS_TL-EXPECTED})
-
 target_include_directories(
     ${EXE_NAME}
     PRIVATE SYSTEM ${CONAN_INCLUDE_DIRS_SPDLOG}

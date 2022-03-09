@@ -13,7 +13,10 @@ const Map<StringView, Lex::Token::Keyword> Lex::Builtins::kwMap {
 };
 
 const Map<StringView, Lex::Token::BuiltinType> Lex::Builtins::typeMap {
-    {"int", Lex::Token::INT},
+    {"i32", Lex::Token::I32},
+    {"i64", Lex::Token::I64},
+    {"f32", Lex::Token::F32},
+    {"f64", Lex::Token::F64},
 };
 
 const Map<StringView, Lex::Token::Operator> Lex::Builtins::opMap {

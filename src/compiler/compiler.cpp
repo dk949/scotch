@@ -17,7 +17,13 @@ String Compiler::compile() {
     return m_prog->compile(*this);
 }
 
-void Compiler::appendFunc(StringView func) {
+void Compiler::appendFunc(const FuncRep &func) {
     m_funcs.push_back(func);
 }
+
+void Compiler::appendFunc(StringView name, const std::vector<Ast::ValueType> &args, Ast::ValueType ret) {
+    m_funcs.emplace_back(name, args, ret);
 }
+
+
+}  // namespace Comp
