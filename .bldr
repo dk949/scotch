@@ -6,8 +6,9 @@
   "docs": "cmake --build build --target doxygen-docs",
   "reset": "rm -rf build",
   "run": "./build/bin/scotch ./test/shortterm_goal.scot -o build/bin/output.wat",
+  "runwasm": "node wasmrunner/wasmrunner.js --very-verbose build/bin/output.wat",
   "test": "./build/bin/tests",
   "setup": "bldr setup:dbg",
-  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF",
-  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF"
+  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF -DENABLE_TRACING=ON",
+  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF -DENABLE_TRACING=ON"
 }
