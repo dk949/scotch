@@ -1,0 +1,12 @@
+// Main module
+module Main;
+
+
+
+// Main function
+def main(): i32 {
+    const ret: i32 = 10i;
+
+
+    return ret;
+}
