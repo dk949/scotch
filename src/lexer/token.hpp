@@ -19,6 +19,7 @@ public:
     enum class Keyword {
         CONST,
         DEF,
+        MODULE,
         RETURN,
 
         KW_COUNT,

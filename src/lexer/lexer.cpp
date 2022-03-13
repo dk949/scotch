@@ -111,7 +111,6 @@ Lex::Token Lex::Lexer::parseNumber() {
         switch (*m_current) {
             case 'i':
                 flags.i32 = true;
-                spdlog::debug("encountered an i32 literal");
                 break;
             case 'f':
                 flags.f32 = true;

@@ -3,6 +3,10 @@
 #include "ftrace.hpp"
 #include "log.hpp"
 
+
+#define expectNotLast(Expected, Location) \
+    verify_msg(!isLast(), "Expected " Expected " after {} in " Location " statement. Found nothing", *std::prev(m_current));
+
 Parse::Parser::Parser(Vector<Lex::Token> tokens)
         : m_tokens(std::move(tokens))
         , m_current(m_tokens.begin()) {
@@ -14,9 +18,30 @@ Ast::ProgramPtr Parse::Parser::makeProgram() {
     ftrace();
     auto program = MakePtr<Ast::Program>();
     while (!isLast()) {
-        program->append(makeNode());
+        program->append(makeModule());
     }
     return program;
+}
+
+Ast::ModulePtr Parse::Parser::makeModule() {
+    ftrace();
+
+    verify_msg(*m_current == Lex::Token::MODULE, "Expected keyword \"module\" at the start of the module, got {}", *m_current);
+    m_current = std::next(m_current);
+
+    expectNotLast("module name", "module declaration");
+
+    verify_msg(m_current->type() == Lex::TokenType::T_IDENTIFIER, "expected module name after module declaration, got {}", *m_current);
+    auto mod = MakePtr<Ast::Module>(m_current->get<const char *>());
+    m_current = std::next(m_current);
+
+    verify_msg(m_current->type() == Lex::TokenType::T_OP, "expected semicolon after module declaration, got {}", *m_current);
+    m_current = std::next(m_current);
+
+    while (!isLast()) {
+        mod->append(makeNode());
+    }
+    return mod;
 }
 
 Ast::NodePtr Parse::Parser::makeNode() {
@@ -34,9 +59,7 @@ Ast::ReturnPtr Parse::Parser::makeReturn() {
     ftrace();
     verify_msg(*m_current == Lex::Token::RETURN, "Expected return keyword in the return statement, got {}", *m_current);
     m_current = std::next(m_current);
-    verify_msg(!isLast(),  //
-        "Expected expression or semicolon after {} in return statement. Found nothing",
-        *std::prev(m_current));
+    expectNotLast("expression or semicolon", "return statement");
     auto ret = MakePtr<Ast::Return>(makeExpr());
     m_current = std::next(m_current);
     return ret;
@@ -52,22 +75,18 @@ Ast::ExpressionPtr Parse::Parser::makeExpr() {
         case Lex::TokenType::T_STR:
             return makeLiteral();
         case Lex::TokenType::T_KEYWORD:
-            fixme("keywords are not handled in expressions");
-            todo();
+            crash("keywords are not handled in expressions");
         case Lex::TokenType::T_IDENTIFIER:
             fixme("identifiers are not handled in expressions");
             todo();
         case Lex::TokenType::T_OP:
             if (m_current->isBinExpr()) {
-                fixme("Not parsing binary expression {}", *m_current);
-                todo();
+                crash("Not parsing binary expression {}", *m_current);
             }
             if (*m_current == Lex::Token::SEMICOLON) {
-                fixme("Reached semicolon in expression");
-                todo();
+                crash("Reached semicolon in expression");
             }
-            fixme("Not handling any operator other then binary operators in expressions");
-            todo();
+            crash("Not handling any operator other then binary operators in expressions");
         case Lex::TokenType::T_BUILTIN_TYPE:
             crash("unexpected BUILTIN_TYPE after {} in expression", *std::prev(m_current));
         case Lex::TokenType::T_EOF:
@@ -98,9 +117,7 @@ Ast::LiteralPtr Parse::Parser::makeLiteral() {
 Ast::FunctionDeclPtr Parse::Parser::makeFunction() {
     ftrace();
     m_current = next();
-    verify_msg(!isLast(),  //
-        "Expected function declaration after {} in function declaration. Found nothing",
-        *std::prev(m_current));
+    expectNotLast("function declaration", "function declaration");
     verify_msg(m_current->type() == Lex::TokenType::T_IDENTIFIER,  //
         "Expected function name after {} in function declaration. Found {}",
         *std::prev(m_current),
@@ -124,9 +141,7 @@ Ast::BlockPtr Parse::Parser::makeBlock() {
     auto body = MakePtr<Ast::Block>();
     while (true) {
         m_current = next();
-        verify_msg(!isLast(),  //
-            "Expected expression after {} in function body. Found nothing",
-            *std::prev(m_current));
+        expectNotLast("expression", "function body");
         if (*m_current == Lex::Token::RCURLY) {
             m_current = std::next(m_current);
             break;
@@ -161,7 +176,7 @@ Ast::ValueType Parse::Parser::makeTypeAnnotation() {
 
     if (*m_current == Lex::Token::COLON) {
         m_current = next();
-        verify_msg(!isLast(), "Expected a type after {} in type annotation declaration, got nothing", *std::prev(m_current));
+        expectNotLast("type", "type annotation declaration");
 
         // Handling builtin types
         if (m_current->type() == Lex::TokenType::T_BUILTIN_TYPE) {

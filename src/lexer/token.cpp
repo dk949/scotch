@@ -435,6 +435,7 @@ StringView Lex::Token::kwToStr(Token::Keyword k) {
     switch (k) {
         ENUM_CASE(Lex::Token::CONST);
         ENUM_CASE(Lex::Token::DEF);
+        ENUM_CASE(Lex::Token::MODULE);
         ENUM_CASE(Lex::Token::RETURN);
         BAD_ENUM_CASE(Lex::Token::KW_COUNT);
     }

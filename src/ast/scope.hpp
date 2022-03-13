@@ -5,10 +5,10 @@
 namespace Ast {
 class Scope : public Node {
 protected:
-    NodePtrVector m_children;
+    Vector<NodePtr> m_children;
 
 public:
-    [[nodiscard]] const inline NodePtrVector &children() const {
+    [[nodiscard]] const inline Vector<NodePtr> &children() const {
         ftrace();
         return m_children;
     }

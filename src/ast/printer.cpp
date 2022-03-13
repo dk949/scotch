@@ -17,7 +17,8 @@ String printNode(const NodePtr &node) {
     static int indent = 0;
 
 
-    if (auto *func = is<FunctionDecl>(node); func) {
+
+    if (auto *func = is<FunctionDecl>(node)) {
         // clang-format off
         String out {fmt::format("{: >{}}{}({} -> {})("
                                     "\n{: >{}}args(",
@@ -50,7 +51,23 @@ String printNode(const NodePtr &node) {
         return out;
     }
 
-    if (auto *scope = is<Scope>(node); scope) {
+
+    if (auto *prog = is<Program>(node)) [[unlikely]] {
+        String out {fmt::format("{: >{}}{}(", "", indent, node->className())};
+        indent += offs<1>;
+        if (!prog->m_modules.empty()) {
+            for (const auto &mod : prog->m_modules) {
+                fmt::format_to(std::back_inserter(out), "\n{}", to<NodePtr>(mod));
+            }
+            indent -= offs<1>;
+            fmt::format_to(std::back_inserter(out), "\n{: >{}})", "", indent);
+        } else {
+            out.push_back(')');
+        }
+        return out;
+    }
+
+    if (auto *scope = is<Scope>(node)) {
         String out {fmt::format("{: >{}}{}(", "", indent, node->className())};
         indent += offs<1>;
         if (!scope->m_children.empty()) {
@@ -65,7 +82,7 @@ String printNode(const NodePtr &node) {
         return out;
     }
 
-    if (auto *ret = is<Return>(node); ret) {
+    if (auto *ret = is<Return>(node)) {
         indent += offs<1>;
 
         // clang-format off
@@ -83,7 +100,7 @@ String printNode(const NodePtr &node) {
         return out;
     }
 
-    if (auto *binexpr = is<BinExpr>(node); binexpr) {
+    if (auto *binexpr = is<BinExpr>(node)) {
         indent += offs<1>;
         // clang-format off
         String out{
@@ -104,7 +121,7 @@ String printNode(const NodePtr &node) {
         return out;
     }
 
-    if (auto *literal = is<Literal>(node); literal) {
+    if (auto *literal = is<Literal>(node)) {
         return fmt::format("{: >{}}{}({})", "", indent, node->className(), literal->m_value);
     }
 

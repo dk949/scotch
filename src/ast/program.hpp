@@ -2,13 +2,26 @@
 #define PROGRAM_HPP
 
 #include "compiler/compiler.hpp"
-#include "scope.hpp"
+#include "module.hpp"
 
 
 namespace Ast {
-class Program : public Scope {
+class Program : public Node {
+
+private:
+    Vector<ModulePtr> m_modules;
 
 public:
+    [[nodiscard]] const inline Vector<ModulePtr> &modules() const {
+        ftrace();
+        return m_modules;
+    }
+
+    void append(ModulePtr child) {
+        ftrace();
+        m_modules.emplace_back(child);
+    }
+
     explicit Program() = default;
 
     virtual String compile(Comp::Compiler &) override;

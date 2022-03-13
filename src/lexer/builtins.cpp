@@ -9,6 +9,7 @@ bool Lex::Builtins::m_i = false;
 const Map<StringView, Lex::Token::Keyword> Lex::Builtins::kwMap {
     { "const",  Lex::Token::CONST},
     {   "def",    Lex::Token::DEF},
+    {"module", Lex::Token::MODULE},
     {"return", Lex::Token::RETURN},
 };
 

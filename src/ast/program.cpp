@@ -5,12 +5,11 @@ namespace Ast {
 
 String Program::compile(Comp::Compiler &comp) {
     spdlog::debug("Current compiler state = {}", comp);
-    String out {"(module "};
-    for (auto &child : m_children) {
-        out.append(child->compile(comp));
+    String out;
+    for (auto &mod : m_modules) {
+        comp.setModName(mod->name());
+        out.append(mod->compile(comp));
     }
-    out.push_back(')');
     return out;
 }
-
 }

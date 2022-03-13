@@ -21,17 +21,24 @@ int main(int, char **argv) {
     Tools::File::readFile(inputFiles.front())
         .map([](const auto &input) {
             spdlog::debug("Begin compilation");
+
+
             Lex::Lexer lex {input};
             const auto tokens = lex.parseAll();
+            spdlog::debug("Tokens:\n{}", fmt::join(tokens, ",\n"));
+
             spdlog::debug("Lexing complete");
 
             Parse::Parser parse {tokens};
             const auto ast = parse.makeProgram();
-            spdlog::debug("Parsing complete");
+            spdlog::debug("AST:\n{}", to<Ast::NodePtr>(ast));
 
+            spdlog::debug("Parsing complete");
 
             Comp::Compiler comp {ast};
             const auto outputCode = comp.compile();
+            spdlog::debug("Output:\n{}", outputCode);
+
             spdlog::debug("Compilation complete");
 
             return outputCode;

@@ -3,10 +3,11 @@
 
 // Includes node
 #include "ast/functiondecl.hpp"
+#include "ast/program.hpp"
 
 // Includes scope->node
 #include "ast/block.hpp"
-#include "ast/program.hpp"
+#include "ast/module.hpp"
 
 // Includes expression->scope->node
 #include "ast/binexpr.hpp"

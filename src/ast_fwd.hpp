@@ -8,6 +8,7 @@ class Call;
 class Expression;
 class FunctionDecl;
 class Literal;
+class Module;
 class Node;
 class Program;
 class Return;

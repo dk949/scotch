@@ -13,10 +13,12 @@ class Parser {
 public:
     explicit Parser(Vector<Lex::Token> tokens);
 
+
     Ast::BlockPtr makeBlock();
     Ast::ExpressionPtr makeExpr();
     Ast::FunctionDeclPtr makeFunction();
     Ast::LiteralPtr makeLiteral();
+    Ast::ModulePtr makeModule();
     Ast::NodePtr makeNode();
     Ast::ProgramPtr makeProgram();
     Ast::ReturnPtr makeReturn();
@@ -37,6 +39,6 @@ public:
     [[nodiscard]] Iter next() const;
 };
 
-}
+}  // namespace Parse
 
 #endif  // PARSER_HPP
