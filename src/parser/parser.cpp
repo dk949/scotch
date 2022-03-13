@@ -180,25 +180,9 @@ Ast::ValueType Parse::Parser::makeTypeAnnotation() {
 
         // Handling builtin types
         if (m_current->type() == Lex::TokenType::T_BUILTIN_TYPE) {
-            switch (m_current->get<Lex::Token::BuiltinType>()) {
-                bcase Lex::Token::I32 : {
-                    m_current = next();
-                    return Ast::ValueType::I32;
-                }
-                bcase Lex::Token::I64 : {
-                    m_current = next();
-                    return Ast::ValueType::I64;
-                }
-                bcase Lex::Token::F32 : {
-                    m_current = next();
-                    return Ast::ValueType::F32;
-                }
-                bcase Lex::Token::F64 : {
-                    m_current = next();
-                    return Ast::ValueType::F64;
-                }
-                BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
-            }
+            const auto valueType = tokenToValueType(m_current->get<Lex::Token::BuiltinType>());
+            m_current = std::next(m_current);
+            return valueType;
         }
         fixme("user defined types are not handled");
         todo();
@@ -245,4 +229,23 @@ bool Parse::Parser::isScopeEnd() {
 Parse::Parser::Iter Parse::Parser::next() const {
     ftrace();
     return std::next(m_current);
+}
+
+Ast::ValueType Parse::Parser::tokenToValueType(Lex::Token::BuiltinType tokenT) {
+    switch (tokenT) {
+        bcase Lex::Token::I32 : {
+            return Ast::ValueType::I32;
+        }
+        bcase Lex::Token::I64 : {
+            return Ast::ValueType::I64;
+        }
+        bcase Lex::Token::F32 : {
+            return Ast::ValueType::F32;
+        }
+        bcase Lex::Token::F64 : {
+            return Ast::ValueType::F64;
+        }
+        BAD_ENUM_CASE(Lex::Token::TYPE_COUNT);
+    }
+    unreachable("Exhausted all enum variants");
 }

@@ -47,6 +47,7 @@ using FunctionDeclPtr = Ptr<FunctionDecl>;
 using LiteralPtr = Ptr<Literal>;
 using NodePtr = Ptr<Node>;
 using ProgramPtr = Ptr<Program>;
+using ModulePtr = Ptr<Module>;
 using ReturnPtr = Ptr<Return>;
 using ScopePtr = Ptr<Scope>;
 using ValuePtr = Ptr<Value>;
@@ -56,15 +57,6 @@ using NodePtrVector = Vector<Ptr<Node>>;
 
 enum class BinOp { PLUS, MINUS };
 
-enum class ValueType {
-    I32,
-    I64,
-
-    F32,
-    F64,
-
-    TYPE,
-};
 }  // namespace Ast
 
 #endif  // TYPES_HPP

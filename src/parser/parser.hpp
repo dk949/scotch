@@ -36,6 +36,8 @@ public:
 
     bool isScopeEnd();
 
+    [[nodiscard]] static Ast::ValueType tokenToValueType(Lex::Token::BuiltinType);
+
     [[nodiscard]] Iter next() const;
 };
 

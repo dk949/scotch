@@ -3,10 +3,12 @@
 #include "compiler/compiler.hpp"
 #include "switch_tools.hpp"
 #include "types.hpp"
+#include "valuetype.hpp"
 
 #include <fmt/format.h>
 
 namespace Ast {
+
 
 class Value {
 public:
@@ -69,5 +71,6 @@ struct fmt::formatter<Ast::Value> : formatter<std::string> {
         return formatter<string_view>::format(name, ctx);
     }
 };
+
 
 #endif  // VALUE_HPP
