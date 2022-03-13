@@ -10,7 +10,7 @@ int Tools::Ftrace::level = 0;
 Tools::Ftrace::Ftrace(std::string_view func)
         : m_func(func) {
     trace_init();
-    ftraceLogger->trace("{}Enter {}", indent, m_func);
+    ftraceLogger->trace("{}{}{{", indent, m_func);
     indent[level++] = ' ';
     indent[level++] = ' ';
 }
@@ -18,5 +18,5 @@ Tools::Ftrace::Ftrace(std::string_view func)
 Tools::Ftrace::~Ftrace() {
     indent[--level] = '\0';
     indent[--level] = '\0';
-    ftraceLogger->trace("{}Exit {}. Took {}s", indent, m_func, m_sw);
+    ftraceLogger->trace("{}}}. ({}s)", indent, m_sw);
 }
