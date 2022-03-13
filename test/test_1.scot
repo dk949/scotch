@@ -1,3 +1,4 @@
+module Main;
 // Main function
 
 def main(): i32 {
