@@ -15,31 +15,48 @@ int main(int, char **argv) {
     ftrace();
 
     const auto args = Tools::Args::parse(argv);
+    switch (args.verbosity()) {
+        case Tools::Args::NONE:
+            spdlog::set_level(spdlog::level::warn);
+            break;
+        case Tools::Args::SOME:
+            spdlog::set_level(spdlog::level::info);
+            break;
+        case Tools::Args::MOST:
+            spdlog::set_level(spdlog::level::debug);
+            break;
+        case Tools::Args::ALL:
+            spdlog::set_level(spdlog::level::trace);
+            break;
+    }
     const auto inputFiles = args.positionals();
     const auto outputFile = args.output();
 
     Tools::File::readFile(inputFiles.front())
-        .map([](const auto &input) {
-            spdlog::debug("Begin compilation");
+        .map([&args](const auto &input) {
+            spdlog::info("Begin compilation");
 
 
             Lex::Lexer lex {input};
             const auto tokens = lex.parseAll();
-            spdlog::debug("Tokens:\n{}", fmt::join(tokens, ",\n"));
+            if (args.dumpTokens())
+                spdlog::debug("Tokens:\n{}", fmt::join(tokens, ",\n"));
 
-            spdlog::debug("Lexing complete");
+            spdlog::info("Lexing complete");
 
             Parse::Parser parse {tokens};
             const auto ast = parse.makeProgram();
-            spdlog::debug("AST:\n{}", to<Ast::NodePtr>(ast));
+            if (args.dumpAst())
+                spdlog::debug("AST:\n{}", to<Ast::NodePtr>(ast));
 
-            spdlog::debug("Parsing complete");
+            spdlog::info("Parsing complete");
 
             Comp::Compiler comp {ast};
             const auto outputCode = comp.compile();
-            spdlog::debug("Output:\n{}", outputCode);
+            if (args.dumpWat())
+                spdlog::debug("Output:\n{}", outputCode);
 
-            spdlog::debug("Compilation complete");
+            spdlog::info("Compilation complete");
 
             return outputCode;
         })

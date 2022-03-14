@@ -4,9 +4,8 @@
 
 namespace Ast {
 
-String Block::compile(Comp::Compiler &comp) {
+String Block::compile(Comp::Compiler &) {
     ftrace();
-    spdlog::debug("Current compiler state = {}", comp);
     todo();
 }
 

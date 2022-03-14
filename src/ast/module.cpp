@@ -12,7 +12,6 @@ Module::Module(String name)
 
 String Module::compile(Comp::Compiler &comp) {
     ftrace();
-    spdlog::debug("Current compiler state = {}", comp);
     String out = fmt::format("(module ${}", m_name);
     for (auto &child : m_children) {
         out.append(child->compile(comp));

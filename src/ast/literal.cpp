@@ -9,9 +9,8 @@ Literal::Literal(Value value)
     ftrace();
 }
 
-String Literal::compile(Comp::Compiler &comp) {
+String Literal::compile(Comp::Compiler &) {
     ftrace();
-    spdlog::debug("Current compiler state = {}", comp);
 
     switch (m_value.type()) {
         // clang-format off

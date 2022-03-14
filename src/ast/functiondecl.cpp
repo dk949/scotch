@@ -18,11 +18,10 @@ FunctionDecl::FunctionDecl(String name, Vector<ValueType> args, ValueType ret, S
 
 String FunctionDecl::compile(Comp::Compiler &comp) {
     ftrace();
-    spdlog::debug("Current compiler state = {}", comp);
     String pre = fmt::format("(func ${0} (export \"{0}\")", m_name);
     comp.appendFunc(m_name, m_args, m_return);
     if (!m_args.empty()) {
-        crash("Funciton arguments not yet tupported");
+        crash("Funciton arguments not yet supported");
     }
 
     pre.append("(result ");

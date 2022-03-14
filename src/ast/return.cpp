@@ -19,7 +19,6 @@ Return::Return(ExpressionPtr argument)
 
 String Return::compile(Comp::Compiler &comp) {
     ftrace();
-    spdlog::debug("Current compiler state = {}", comp);
     String out;
     if (auto *lit = is<Literal>(m_argument)) {
         verify_msg(lit->value().type() == comp.funcs().back().ret,
