@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 # Set the project name to your project name, my project isn't very descriptive
-project(Scotch CXX)
+project(Scotch VERSION 0.2.0 LANGUAGES CXX)
 include(cmake/CompileCommands.cmake)
 include(cmake/StandardProjectSettings.cmake)
 

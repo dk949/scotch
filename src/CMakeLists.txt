@@ -36,3 +36,4 @@ target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:_CRT_SE
 target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:SCOTCH_CAN_HAVE_ALLOCA>)
 target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:GNU>:SCOTCH_CAN_HAVE_ALLOCA>)
 target_compile_definitions(${EXE_NAME} PRIVATE $<$<CXX_COMPILER_ID:Clang>:SCOTCH_CAN_HAVE_ALLOCA>)
+target_compile_definitions(${EXE_NAME} PRIVATE "SC_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
