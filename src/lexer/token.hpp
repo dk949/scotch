@@ -27,6 +27,7 @@ public:
     enum class Operator {
         PLUS,
         MINUS,
+        EQ,
         COLON,
         SEMICOLON,
         LCURLY,

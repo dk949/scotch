@@ -4,6 +4,7 @@
 // Includes node
 #include "ast/functiondecl.hpp"
 #include "ast/program.hpp"
+#include "ast/variabledecl.hpp"
 
 // Includes scope->node
 #include "ast/block.hpp"
@@ -15,6 +16,7 @@
 #include "ast/expressionstatement.hpp"
 #include "ast/literal.hpp"
 #include "ast/return.hpp"
+#include "ast/variableaccess.hpp"
 
 
 

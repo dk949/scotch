@@ -12,11 +12,6 @@ Literal::Literal(Value value)
 String Literal::compile(Comp::Compiler &comp) {
     spdlog::debug("Current compiler state = {}", comp);
 
-    if (m_value.type() != comp.funcs().back().ret) {
-        crash("mismathced return types. trying to return {} from a function expecting {}",
-            m_value.type(),
-            comp.funcs().back().ret);
-    }
     switch (m_value.type()) {
         // clang-format off
         case ValueType::I32:

@@ -51,6 +51,14 @@ String printNode(const NodePtr &node) {
         return out;
     }
 
+    if (auto *var = is<VariableDecl>(node)) {
+        const auto oldIndent = indent;
+        indent = 0;
+        const auto out =
+            fmt::format("{: >{}}const {}: {} = {}", "", oldIndent, var->m_name, var->m_type, to<NodePtr>(var->m_value));
+        indent = oldIndent;
+        return out;
+    }
 
     if (auto *prog = is<Program>(node)) [[unlikely]] {
         String out {fmt::format("{: >{}}{}(", "", indent, node->className())};
@@ -80,6 +88,9 @@ String printNode(const NodePtr &node) {
             out.push_back(')');
         }
         return out;
+    }
+    if (auto *var = is<VariableAccess>(node)) {
+        return fmt::format("{: >{}}${}", "", indent, var->m_name);
     }
 
     if (auto *ret = is<Return>(node)) {

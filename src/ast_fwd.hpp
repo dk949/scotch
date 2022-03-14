@@ -14,7 +14,9 @@ class Program;
 class Return;
 class Scope;
 class Value;
-}
+class VariableDecl;
+class VariableAccess;
+}  // namespace Ast
 
 
 #endif  // AST_FWD_HPP

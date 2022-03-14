@@ -220,6 +220,7 @@ bool Lex::Token::isBinExpr() const {
     switch (m_val.op) {
         case PLUS:
         case MINUS:
+        case EQ:
             return true;
         case COLON:
         case SEMICOLON:
@@ -420,6 +421,7 @@ StringView Lex::Token::opToStr(Token::Operator b) {
     switch (b) {
         ENUM_CASE(Lex::Token::MINUS);
         ENUM_CASE(Lex::Token::PLUS);
+        ENUM_CASE(Lex::Token::EQ);
         ENUM_CASE(Lex::Token::COLON);
         ENUM_CASE(Lex::Token::SEMICOLON);
         ENUM_CASE(Lex::Token::LCURLY);

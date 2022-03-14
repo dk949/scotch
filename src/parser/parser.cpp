@@ -49,6 +49,9 @@ Ast::NodePtr Parse::Parser::makeNode() {
     if (*m_current == Lex::Token::DEF) {
         return makeFunction();
     }
+    if (*m_current == Lex::Token::CONST) {
+        return makeVariable();
+    }
     if (*m_current == Lex::Token::RETURN) {
         return makeReturn();
     }
@@ -77,8 +80,7 @@ Ast::ExpressionPtr Parse::Parser::makeExpr() {
         case Lex::TokenType::T_KEYWORD:
             crash("keywords are not handled in expressions");
         case Lex::TokenType::T_IDENTIFIER:
-            fixme("identifiers are not handled in expressions");
-            todo();
+            return MakePtr<Ast::VariableAccess>(m_current->get<const char *>());
         case Lex::TokenType::T_OP:
             if (m_current->isBinExpr()) {
                 crash("Not parsing binary expression {}", *m_current);
@@ -132,6 +134,30 @@ Ast::FunctionDeclPtr Parse::Parser::makeFunction() {
     auto func = MakePtr<Ast::FunctionDecl>(String {id}, args, ret, body);
 
     return func;
+}
+
+Ast::VariableDeclPtr Parse::Parser::makeVariable() {
+    ftrace();
+    expectNotLast("const", "variable declaration");
+    m_current = std::next(m_current);
+    expectNotLast("variable name", "variable declaration");
+    verify_msg(m_current->type() == Lex::TokenType::T_IDENTIFIER,  //
+        "expected variable name, in variable declaration, got {}",
+        *m_current);
+
+    const auto name = m_current->get<const char *>();
+
+    m_current = std::next(m_current);
+    expectNotLast("variable name", "variable declaration");
+
+    const auto type = makeTypeAnnotation();
+
+    verify_msg(*m_current == Lex::Token::EQ, "Expected equals sign afer variable type, found {}", *m_current);
+    m_current = std::next(m_current);
+    const auto val = makeExpr();
+    m_current = std::next(m_current);
+
+    return MakePtr<Ast::VariableDecl>(name, type, val);
 }
 
 

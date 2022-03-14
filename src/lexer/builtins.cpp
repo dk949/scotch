@@ -21,6 +21,7 @@ const Map<StringView, Lex::Token::BuiltinType> Lex::Builtins::typeMap {
 };
 
 const Map<StringView, Lex::Token::Operator> Lex::Builtins::opMap {
+    {"=",        Lex::Token::EQ},
     {"+",      Lex::Token::PLUS},
     {"-",     Lex::Token::MINUS},
     {":",     Lex::Token::COLON},

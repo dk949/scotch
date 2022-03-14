@@ -10,7 +10,6 @@ namespace Comp {
 Compiler::Compiler(Ast::ProgramPtr prog)
         : m_prog(std::move(prog)) {
     ftrace();
-    spdlog::debug("now compiling \n{}", to<Ast::NodePtr>(m_prog));
 }
 
 String Compiler::compile() {
@@ -21,9 +20,19 @@ void Compiler::appendFunc(const FuncRep &func) {
     m_funcs.push_back(func);
 }
 
-void Compiler::appendFunc(StringView name, const std::vector<Ast::ValueType> &args, Ast::ValueType ret) {
-    m_funcs.emplace_back(name, args, ret);
+void Compiler::appendFunc(StringView name, const Vector<Ast::ValueType> &args, Ast::ValueType ret, const std::vector<LocalRep> &locals) {
+    m_funcs.emplace_back(name, args, ret, locals);
 }
+
+void Compiler::appendVar(const LocalRep &var) {
+    m_funcs.back().locals.push_back(var);
+}
+
+
+void Compiler::setModName(StringView name) {
+    m_moduleName = name;
+}
+
 
 
 }  // namespace Comp

@@ -18,36 +18,41 @@ FunctionDecl::FunctionDecl(String name, Vector<ValueType> args, ValueType ret, S
 
 String FunctionDecl::compile(Comp::Compiler &comp) {
     spdlog::debug("Current compiler state = {}", comp);
-    String out = fmt::format("(func ${0} (export \"{0}\")", m_name);
+    String pre = fmt::format("(func ${0} (export \"{0}\")", m_name);
     comp.appendFunc(m_name, m_args, m_return);
     if (!m_args.empty()) {
         crash("Funciton arguments not yet tupported");
     }
 
-    out.append("(result ");
+    pre.append("(result ");
     switch (m_return) {
         case ValueType::I32:
-            out.append("i32)");
+            pre.append("i32)");
             break;
         case ValueType::I64:
-            out.append("i64)");
+            pre.append("i64)");
             break;
         case ValueType::F32:
-            out.append("f32)");
+            pre.append("f32)");
             break;
         case ValueType::F64:
-            out.append("f64)");
+            pre.append("f64)");
             break;
         default:
             crash("Only int return is supported for now");
     }
+    String out;
 
     for (auto &child : m_body->children()) {
         out.append(child->compile(comp));
     }
-
     out.push_back(')');
-    return out;
+
+    for (const auto &local : comp.funcs().back().locals) {
+        pre.append(local.decl);
+    }
+
+    return pre + out;
 }
 
 }  // namespace Ast

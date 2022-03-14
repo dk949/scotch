@@ -44,6 +44,8 @@ namespace Ast {
 using BlockPtr = Ptr<Block>;
 using ExpressionPtr = Ptr<Expression>;
 using FunctionDeclPtr = Ptr<FunctionDecl>;
+using VariableDeclPtr = Ptr<VariableDecl>;
+using VariableAccessPtr = Ptr<VariableAccess>;
 using LiteralPtr = Ptr<Literal>;
 using NodePtr = Ptr<Node>;
 using ProgramPtr = Ptr<Program>;

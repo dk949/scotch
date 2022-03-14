@@ -22,7 +22,7 @@ public:
     Ast::NodePtr makeNode();
     Ast::ProgramPtr makeProgram();
     Ast::ReturnPtr makeReturn();
-
+    Ast::VariableDeclPtr makeVariable();
     Ast::ValueType makeTypeAnnotation();
     Vector<Ast::ValueType> makeArgs();
 

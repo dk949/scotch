@@ -2,6 +2,8 @@
 #define COMMON_HPP
 #include "types.hpp"
 
+#include <algorithm>
+#include <ranges>
 #include <utility>
 
 namespace Tools {
@@ -16,7 +18,14 @@ constexpr std::string_view shortEnumName(std::string_view sv) {
     }
     return sv;
 }
+
+template<std::ranges::range Range, typename Searched = typename Range::value_type>
+constexpr bool contains(const Range &s, const Searched &x) {
+    return std::find(s.begin(), s.end(), x) != s.end();
 }
+
+
+}  // namespace Tools
 
 template<typename T, typename U>
 constexpr T to(U &&o) {
