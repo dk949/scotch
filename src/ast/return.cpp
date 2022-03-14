@@ -27,7 +27,7 @@ String Return::compile(Comp::Compiler &comp) {
             comp.funcs().back().ret);
         out.append(lit->compile(comp));
     } else if (auto *var = is<VariableAccess>(m_argument)) {
-        out.append(var->compile(comp));
+        fmt::format_to(std::back_inserter(out), "(local.set 0 {}) br ${}", var->compile(comp), comp.funcs().back().name);
     } else {
         unreachable("Unexpected Expression type '{}'", to<NodePtr>(m_argument)->className());
     }

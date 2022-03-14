@@ -31,7 +31,7 @@ String FunctionDecl::compile(Comp::Compiler &comp) {
     for (auto &child : m_body->children()) {
         out.append(child->compile(comp));
     }
-    out.append("))");
+    out.append(")(local.get 0))");
 
     for (const auto &local : comp.funcs().back().locals) {
         pre.append(local.decl);
