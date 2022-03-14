@@ -9,11 +9,17 @@ namespace Tools {
 
 FileErrorOr<String> File::readFile(StringView filename) noexcept {
     ftrace();
+    if (filename.empty()) {
+        return tl::unexpected(FileError {"Path is an empty string", 0});
+    }
     return File::open(filename, File::Read | File::Binary).and_then([](File &&f) { return f.read(); });
 }
 
 FileErrorOr<void> File::writeFile(StringView filename, StringView data) noexcept {
     ftrace();
+    if (filename.empty()) {
+        return tl::unexpected(FileError {"Path is an empty string", 0});
+    }
     return File::open(filename, File::Write | File::Binary).and_then([&data](File &&f) { return f.write(data); });
 }
 
@@ -28,6 +34,9 @@ File::File(File &&other) noexcept
 
 FileErrorOr<File> File::open(StringView filename, uint8_t state) noexcept {
     ftrace();
+    if (filename.empty()) {
+        return tl::unexpected(FileError {"Path is an empty string", 0});
+    }
     return stateToMode(state).and_then([&filename](const char *mode) -> FileErrorOr<File> {
         return svToCharPtr(svalloca(filename), filename).and_then([mode](const char *name) -> FileErrorOr<File> {
             auto *fp = fopen(name, mode);
@@ -73,6 +82,9 @@ FileErrorOr<String> File::read() noexcept {
 
 FileErrorOr<void> File::write(StringView data) noexcept {
     ftrace();
+    if (data.empty()) {
+        return write(nullptr, 0);
+    }
     if (data.size() < maxStackString) {
         return svToCharPtr(svalloca(data), data).and_then([&data, this](const char *d) {
             const auto res = write(d, data.size());
@@ -86,11 +98,17 @@ FileErrorOr<void> File::write(StringView data) noexcept {
 
 FileErrorOr<void> File::write(const String &data) noexcept {
     ftrace();
+    if (data.empty()) {
+        return write(nullptr, 0);
+    }
     return write(data.c_str(), data.size());
 }
 
 FileErrorOr<void> File::write(const char *data, size_t size) noexcept {
     ftrace();
+    if (data == nullptr || size == 0) {
+        return {};
+    }
     if (std::fwrite(data, sizeof(char), size, m_fp) < size) {
         return tl::unexpected(FileError {"Could not write to file", errno});
     }
@@ -128,6 +146,9 @@ FileErrorOr<const char *> File::svToCharPtr(void *dest, StringView source) noexc
     ftrace();
     if (!dest) {
         return tl::unexpected(FileError {"Destination is null. Possible failed allocation", errno});
+    }
+    if (source.empty()) {
+        return tl::unexpected(FileError {"Source is empty", 0});
     }
     std::memcpy(dest, &*source.begin(), source.size() * sizeof(StringView::value_type));
 
