@@ -99,24 +99,30 @@ Lex::Token Lex::Lexer::parseNumber() {
     ftrace();
     String number {*m_current};
     auto numType = Lex::Token::I64;
+    bool isDec = false;
     m_current = std::next(m_current);
 
     while (!isEOF() && (std::isdigit(*m_current) || *m_current == '.')) {
-        if (*m_current == '.')
+        if (*m_current == '.'){
             numType = Lex::Token::F64;
+            isDec = true;
+        }
         number.push_back(*m_current);
         m_current = std::next(m_current);
     }
 
     if (std::isalpha(*m_current)) {
-        numType = checkSuffix(*m_current);
+        numType = checkSuffix(*m_current, isDec);
         m_current = std::next(m_current);
     }
 
     return numTypeToToken(numType, number);
 }
 
-Lex::Token::BuiltinType Lex::Lexer::checkSuffix(char ch) {
+Lex::Token::BuiltinType Lex::Lexer::checkSuffix(char ch, bool isDec) {
+    if(isDec && (ch == 'i' || ch == 'l')){
+        crash("{} is not a supported suffix for float", ch);
+    }
     switch (ch) {
         case 'i':
             return Lex::Token::I32;

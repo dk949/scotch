@@ -32,7 +32,7 @@ private:
     Token parseOperator();
 
     Token numTypeToToken(Token::BuiltinType, const String &);
-    Token::BuiltinType checkSuffix(char);
+    Token::BuiltinType checkSuffix(char, bool isDec);
 
     bool isEOF(Iter i);
     bool isEOF();
