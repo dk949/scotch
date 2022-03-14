@@ -8,10 +8,7 @@ protected:
     Vector<NodePtr> m_children;
 
 public:
-    [[nodiscard]] const inline Vector<NodePtr> &children() const {
-        ftrace();
-        return m_children;
-    }
+    GetProperty(children);
 
     template<typename T>
     void append(Ptr<T> child) {
@@ -19,7 +16,6 @@ public:
         m_children.emplace_back(child);
     }
 
-    friend String Ast::printNode(const NodePtr &node);
 
 protected:
     Scope() = default;

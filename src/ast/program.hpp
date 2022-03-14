@@ -12,9 +12,7 @@ private:
     Vector<ModulePtr> m_modules;
 
 public:
-    [[nodiscard]] const inline Vector<ModulePtr> &modules() const {
-        return m_modules;
-    }
+    GetProperty(modules);
 
     void append(ModulePtr child) {
         ftrace();
@@ -25,7 +23,6 @@ public:
 
     virtual String compile(Comp::Compiler &) override;
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Program);

@@ -23,13 +23,13 @@ String printNode(const NodePtr &node) {
         // clang-format off
         String out {fmt::format("{: >{}}{}({} -> {})("
                                     "\n{: >{}}args(",
-                "", indent, node->className(), func->m_name, func->m_return,
+                "", indent, node->className(), func->name(), func->ret(),
                 "", indent + offs<1>)};
         // clang-format on
 
         indent += offs<2>;
-        if (!func->m_args.empty()) {
-            for (dev const auto &arg : func->m_args) {
+        if (!func->args().empty()) {
+            for (dev const auto &arg : func->args()) {
                 fmt::format_to(std::back_inserter(out), "\n{: >{}}{}", "", indent, arg);
             }
             fmt::format_to(std::back_inserter(out), "\n{: >{}})", "", indent - offs<1>);
@@ -43,7 +43,7 @@ String printNode(const NodePtr &node) {
                 "\n{: >{}})"
                 "\n{: >{}})",
                 "", indent - offs<1>,
-                to<NodePtr>(func->m_body),
+                to<NodePtr>(func->body()),
                 "", indent - offs<1>,
                 "", indent - offs<2>
                 );
@@ -56,7 +56,7 @@ String printNode(const NodePtr &node) {
         const auto oldIndent = indent;
         indent = 0;
         const auto out =
-            fmt::format("{: >{}}const {}: {} = {}", "", oldIndent, var->m_name, var->m_type, to<NodePtr>(var->m_value));
+            fmt::format("{: >{}}const {}: {} = {}", "", oldIndent, var->name(), var->type(), to<NodePtr>(var->value()));
         indent = oldIndent;
         return out;
     }
@@ -64,8 +64,8 @@ String printNode(const NodePtr &node) {
     if (auto *prog = is<Program>(node)) [[unlikely]] {
         String out {fmt::format("{: >{}}{}(", "", indent, node->className())};
         indent += offs<1>;
-        if (!prog->m_modules.empty()) {
-            for (const auto &mod : prog->m_modules) {
+        if (!prog->modules().empty()) {
+            for (const auto &mod : prog->modules()) {
                 fmt::format_to(std::back_inserter(out), "\n{}", to<NodePtr>(mod));
             }
             indent -= offs<1>;
@@ -79,8 +79,8 @@ String printNode(const NodePtr &node) {
     if (auto *scope = is<Scope>(node)) {
         String out {fmt::format("{: >{}}{}(", "", indent, node->className())};
         indent += offs<1>;
-        if (!scope->m_children.empty()) {
-            for (dev const auto &child : scope->m_children) {
+        if (!scope->children().empty()) {
+            for (dev const auto &child : scope->children()) {
                 fmt::format_to(std::back_inserter(out), "\n{}", child);
             }
             indent -= offs<1>;
@@ -91,7 +91,7 @@ String printNode(const NodePtr &node) {
         return out;
     }
     if (auto *var = is<VariableAccess>(node)) {
-        return fmt::format("{: >{}}${}", "", indent, var->m_name);
+        return fmt::format("{: >{}}${}", "", indent, var->name());
     }
 
     if (auto *ret = is<Return>(node)) {
@@ -104,7 +104,7 @@ String printNode(const NodePtr &node) {
                         "\n{: >{}})",
 
                         "", indent - offs<1>, node->className(),
-                        to<NodePtr>(ret->m_argument),
+                        to<NodePtr>(ret->argument()),
                         "", indent - offs<1>)
         };
         // clang-format on
@@ -123,9 +123,9 @@ String printNode(const NodePtr &node) {
                     "\n{: >{}})",
 
                    "" , indent - offs<1>, node->className(),
-                   to<NodePtr>(binexpr->m_lhs),
-                   "" , indent - offs<0>, binexpr->m_op,
-                   to<NodePtr>(binexpr->m_rhs),
+                   to<NodePtr>(binexpr->lhs()),
+                   "" , indent - offs<0>, binexpr->op(),
+                   to<NodePtr>(binexpr->rhs()),
                    "" , indent - offs<1>)
         };
          //clang-format on
@@ -134,7 +134,7 @@ String printNode(const NodePtr &node) {
     }
 
     if (auto *literal = is<Literal>(node)) {
-        return fmt::format("{: >{}}{}({})", "", indent, node->className(), literal->m_value);
+        return fmt::format("{: >{}}{}({})", "", indent, node->className(), literal->value());
     }
 
     return fmt::format("{: >{}}{}", "", indent, node->className());

@@ -13,13 +13,10 @@ protected:
 public:
     explicit Module(String name);
 
-    inline const String &name() {
-        return m_name;
-    }
+    GetProperty(name);
 
     virtual String compile(Comp::Compiler &) override;
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Module);

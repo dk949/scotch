@@ -14,11 +14,8 @@ public:
 
     virtual String compile(Comp::Compiler &) override;
 
-    [[nodiscard]] inline ExpressionPtr argument() const {
-        return m_argument;
-    }
+    GetProperty(argument);
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Return);

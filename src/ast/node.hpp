@@ -24,7 +24,6 @@ public:
 
     virtual String compile(Comp::Compiler &) = 0;
 
-    friend String Ast::printNode(const NodePtr &node);
 
 
 protected:

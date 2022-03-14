@@ -13,13 +13,10 @@ private:
 public:
     explicit VariableAccess(String name);
 
-    inline const String &name() const {
-        return m_name;
-    }
+    GetProperty(name);
 
     virtual String compile(Comp::Compiler &) override;
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(VariableAccess);

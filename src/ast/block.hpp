@@ -9,7 +9,6 @@ public:
 
     virtual String compile(Comp::Compiler &) override;
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Block);

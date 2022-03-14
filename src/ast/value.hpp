@@ -40,9 +40,8 @@ public:
     Float64 as_f64();
 
     ValueType as_type();
-    [[nodiscard]] ValueType inline type() const {
-        return m_type;
-    }
+
+    GetProperty(type);
 };
 }  // namespace Ast
 

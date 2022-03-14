@@ -18,11 +18,10 @@ public:
 
     virtual String compile(Comp::Compiler &) override;
 
-    [[nodiscard]] const inline String &name() const {
-        return m_name;
-    }
+    GetProperty(name);
+    GetProperty(type);
+    GetProperty(value);
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Variable);

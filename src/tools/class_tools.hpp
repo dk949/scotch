@@ -33,4 +33,14 @@
     DEF_MOVE(CLASS);             \
     DEF_COPY(CLASS)
 
+#define GetProperty(Var)                                       \
+    [[nodiscard]] inline const auto &Var() const noexcept { \
+        return m_##Var;                                     \
+    }
+
+#define SetProperty(Var)                                       \
+    [[nodiscard]] inline auto &Var() noexcept { \
+        return m_##Var;                                     \
+    }
+
 #endif  // CLASS_TOOLS_HPP

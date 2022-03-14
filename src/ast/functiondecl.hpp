@@ -11,7 +11,7 @@ class FunctionDecl : public Node {
 protected:
     String m_name;
     Vector<ValueType> m_args;
-    ValueType m_return;
+    ValueType m_ret;
     ScopePtr m_body;
 
 
@@ -20,11 +20,11 @@ public:
 
     virtual String compile(Comp::Compiler &) override;
 
-    [[nodiscard]] const inline String &name() const {
-        return m_name;
-    }
+    GetProperty(name);
+    GetProperty(args);
+    GetProperty(ret);
+    GetProperty(body);
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(FunctionDecl);

@@ -1,6 +1,7 @@
 #ifndef BINEXPR_HPP
 #define BINEXPR_HPP
 #include "ast/node.hpp"
+#include "class_tools.hpp"
 #include "compiler/compiler.hpp"
 #include "expression.hpp"
 #include "types.hpp"
@@ -18,8 +19,11 @@ private:
 public:
     explicit BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs);
 
+    GetProperty(op);
+    GetProperty(lhs);
+    GetProperty(rhs);
+
     virtual String compile(Comp::Compiler &) override;
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(BinExpr);

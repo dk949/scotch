@@ -15,13 +15,10 @@ private:
 public:
     explicit Literal(Value value);
 
-    inline const Value &value() const {
-        return m_value;
-    }
+    GetProperty(value);
 
     virtual String compile(Comp::Compiler &) override;
 
-    friend String Ast::printNode(const NodePtr &node);
 
 private:
     addClassName(Literal);
