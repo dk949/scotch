@@ -56,6 +56,7 @@ template<>
 struct fmt::formatter<Comp::FuncRep> : formatter<std::string> {
     template<typename FormatContext>
     auto format(const Comp::FuncRep &fun, FormatContext &ctx) {
+        ftrace();
         std::string name;
         fmt::format_to(std::back_inserter(name),
             "{}({}) -> {}, Locas[{}]",

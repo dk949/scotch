@@ -91,21 +91,25 @@ void Lex::Token::get<void>() const {
 
 Lex::Token::Token(Int32 val)
         : m_type(Lex::TokenType::T_I32) {
+    ftrace();
     m_val.i32 = val;
 }
 
 Lex::Token::Token(Int64 val)
         : m_type(Lex::TokenType::T_I64) {
+    ftrace();
     m_val.i64 = val;
 }
 
 Lex::Token::Token(Float32 val)
         : m_type(Lex::TokenType::T_F32) {
+    ftrace();
     m_val.f32 = val;
 }
 
 Lex::Token::Token(Float64 val)
         : m_type(Lex::TokenType::T_F64) {
+    ftrace();
     m_val.f64 = val;
 }
 Lex::Token::Token(Keyword val)

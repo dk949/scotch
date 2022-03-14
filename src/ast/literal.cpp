@@ -10,6 +10,7 @@ Literal::Literal(Value value)
 }
 
 String Literal::compile(Comp::Compiler &comp) {
+    ftrace();
     spdlog::debug("Current compiler state = {}", comp);
 
     switch (m_value.type()) {

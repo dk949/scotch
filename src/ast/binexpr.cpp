@@ -17,6 +17,7 @@ BinExpr::BinExpr(BinOp op, ExpressionPtr lhs, ExpressionPtr rhs)
 
 
 String BinExpr::compile(Comp::Compiler &comp) {
+    ftrace();
     spdlog::debug("Current compiler state = {}", comp);
     todo();
 }

@@ -1,6 +1,7 @@
 #ifndef VALUETYPE_HPP
 #define VALUETYPE_HPP
 #include "switch_tools.hpp"
+#include "ftrace.hpp"
 
 #include <fmt/format.h>
 
@@ -20,6 +21,7 @@ template<>
 struct fmt::formatter<Ast::ValueType> : formatter<std::string_view> {
     template<typename FormatContext>
     auto format(Ast::ValueType v, FormatContext &ctx) {
+        ftrace();
         std::string_view name = "Invalid value";
         switch (v) {  //
             bcase Ast::ValueType::I32 : {

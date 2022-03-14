@@ -1,6 +1,7 @@
 #ifndef VALUE_HPP
 #define VALUE_HPP
 #include "compiler/compiler.hpp"
+#include "ftrace.hpp"
 #include "switch_tools.hpp"
 #include "types.hpp"
 #include "valuetype.hpp"
@@ -49,6 +50,7 @@ template<>
 struct fmt::formatter<Ast::Value> : formatter<std::string> {
     template<typename FormatContext>
     auto format(Ast::Value t, FormatContext &ctx) {
+        ftrace();
         std::string name = "Invalid value";
         switch (t.type()) {  //
             bcase Ast::ValueType::I32 : {

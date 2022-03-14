@@ -11,6 +11,7 @@ VariableAccess::VariableAccess(String name)
 }
 
 String VariableAccess::compile(Comp::Compiler &comp) {
+    ftrace();
     if (!Tools::contains<Vector<Comp::LocalRep>, StringView>(comp.funcs().back().locals, StringView {m_name})) {
         crash("No such variable {}", m_name);
     }

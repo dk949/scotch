@@ -258,6 +258,7 @@ Parse::Parser::Iter Parse::Parser::next() const {
 }
 
 Ast::ValueType Parse::Parser::tokenToValueType(Lex::Token::BuiltinType tokenT) {
+    ftrace();
     switch (tokenT) {
         bcase Lex::Token::I32 : {
             return Ast::ValueType::I32;

@@ -63,6 +63,7 @@ ValueType Value::as_type() {
 }
 
 String Value::compile(Comp::Compiler &comp) {
+    ftrace();
     spdlog::debug("Current compiler state = {}", comp);
     todo();
 }

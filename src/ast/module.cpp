@@ -1,12 +1,17 @@
 #include "module.hpp"
 
+#include "ftrace.hpp"
+
 
 namespace Ast {
 
 Module::Module(String name)
-        : m_name {std::move(name)} { }
+        : m_name {std::move(name)} {
+    ftrace();
+}
 
 String Module::compile(Comp::Compiler &comp) {
+    ftrace();
     spdlog::debug("Current compiler state = {}", comp);
     String out = fmt::format("(module ${}", m_name);
     for (auto &child : m_children) {

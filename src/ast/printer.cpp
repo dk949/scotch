@@ -14,6 +14,7 @@ constexpr unsigned char offs = O *indentSize;
 
 
 String printNode(const NodePtr &node) {
+    ftrace();
     static int indent = 0;
 
 

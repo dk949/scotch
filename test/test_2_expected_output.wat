@@ -1,0 +1,1 @@
+(module $Main(func $main (export "main")(result i32)(local $ret i32)(local $someOtherVar i64)(local $moreVars f32)(local $lastOne f64)(local.set $ret (i32.const 10))(local.set $someOtherVar (i64.const 10))(local.set $moreVars (i64.const 10))(local.set $lastOne (i64.const 10))(local.get $ret)))

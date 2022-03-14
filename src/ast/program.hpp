@@ -13,7 +13,6 @@ private:
 
 public:
     [[nodiscard]] const inline Vector<ModulePtr> &modules() const {
-        ftrace();
         return m_modules;
     }
 

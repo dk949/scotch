@@ -1,8 +1,9 @@
 #ifndef TOKEN_TYPE_HPP
 #define TOKEN_TYPE_HPP
 
-#include "switch_tools.hpp"
 #include "common.hpp"
+#include "ftrace.hpp"
+#include "switch_tools.hpp"
 
 #include <fmt/format.h>
 
@@ -37,6 +38,7 @@ struct fmt::formatter<Lex::TokenType> : formatter<std::string_view> {
 public:
     template<typename FormatContext>
     auto format(Lex::TokenType t, FormatContext &ctx) {
+        ftrace();
         std::string name = "Invalid token";
         switch (t) {
             ENUM_CASE(Lex::TokenType::T_KEYWORD);

@@ -1,5 +1,6 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
+#include "ftrace.hpp"
 #include "gsl/gsl"
 #include "hash.hpp"
 #include "log.hpp"
@@ -149,6 +150,7 @@ template<>
 struct fmt::formatter<Lex::Token> : formatter<std::string> {
     template<typename FormatContext>
     auto format(const Lex::Token &t, FormatContext &ctx) {
+        ftrace();
         std::string name = "Invalid token";
         // clang-format off
         switch (t.type()) {
