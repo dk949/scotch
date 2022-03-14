@@ -44,6 +44,9 @@ Args Args::parse(char **argv) {
         fmt::print("Expected file, got nothing");
         exit(1);
     }
+    if (output.empty()) {
+        output = "output.wat";
+    }
     return Args(positionals, output);
 }
 
