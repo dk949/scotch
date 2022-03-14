@@ -31,11 +31,14 @@ private:
     Token parseNumber();
     Token parseOperator();
 
+    Token numTypeToToken(Token::BuiltinType, const String &);
+    Token::BuiltinType checkSuffix(char);
+
     bool isEOF(Iter i);
     bool isEOF();
     bool isEOL();
 };
 
-}
+}  // namespace Lex
 
 #endif  // LEXER_HPP

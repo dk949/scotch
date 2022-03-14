@@ -25,7 +25,7 @@ Int64 Lex::Token::get<Int64>() const {
 template<>
 Float32 Lex::Token::get<Float32>() const {
     ftrace();
-    if (m_type == Lex::TokenType::T_I32) {
+    if (m_type == Lex::TokenType::T_F32) {
         return m_val.f32;
     }
     crash("cannot extract Float32 value of token type {}", m_type);
@@ -34,7 +34,7 @@ Float32 Lex::Token::get<Float32>() const {
 template<>
 Float64 Lex::Token::get<Float64>() const {
     ftrace();
-    if (m_type == Lex::TokenType::T_I64) {
+    if (m_type == Lex::TokenType::T_F64) {
         return m_val.f64;
     }
     crash("cannot extract Float64 value of token type {}", m_type);

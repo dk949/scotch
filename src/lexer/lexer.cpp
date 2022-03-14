@@ -98,41 +98,54 @@ Lex::Token Lex::Lexer::parseWord() {
 Lex::Token Lex::Lexer::parseNumber() {
     ftrace();
     String number {*m_current};
-    struct {
-        bool i32;
-        bool f32;
-    } flags;
+    auto numType = Lex::Token::I64;
     m_current = std::next(m_current);
-    while (!isEOF() && std::isdigit(*m_current)) {
+
+    while (!isEOF() && (std::isdigit(*m_current) || *m_current == '.')) {
+        if (*m_current == '.')
+            numType = Lex::Token::F64;
         number.push_back(*m_current);
         m_current = std::next(m_current);
     }
+
     if (std::isalpha(*m_current)) {
-        switch (*m_current) {
-            case 'i':
-                flags.i32 = true;
-                break;
-            case 'f':
-                flags.f32 = true;
-                break;
-            default:
-                crash("Unknonw suffix. Expected f or i, got {}", *m_current);
-        }
+        numType = checkSuffix(*m_current);
         m_current = std::next(m_current);
     }
-    if (*m_current == '.') {
-        crash("floating point numbers are not supported, expected number, got {}", *m_current);
-    }
 
-    if (flags.i32) {
-        spdlog::debug("returning 32 bit int");
-        return Lex::Token {Int32 {std::stoi(number)}};
-    } else {
-        spdlog::debug("returning 64 bit int");
-        return Lex::Token {Int64 {std::stoll(number)}};
+    return numTypeToToken(numType, number);
+}
+
+Lex::Token::BuiltinType Lex::Lexer::checkSuffix(char ch) {
+    switch (ch) {
+        case 'i':
+            return Lex::Token::I32;
+        case 'l':
+            return Lex::Token::I64;
+        case 'f':
+            return Lex::Token::F32;
+        case 'd':
+            return Lex::Token::F64;
+        default:
+            crash("Unknonw suffix. Expected f or i, got {}", ch);
     }
 }
 
+Lex::Token Lex::Lexer::numTypeToToken(Lex::Token::BuiltinType numType, const String &number) {
+    ftrace();
+    switch (numType) {
+        case Lex::Token::I32:
+            return Lex::Token {Int32 {std::stoi(number)}};
+        case Lex::Token::I64:
+            return Lex::Token {Int64 {std::stoll(number)}};
+        case Lex::Token::F32:
+            return Lex::Token {Float32 {std::stof(number)}};
+        case Lex::Token::F64:
+            return Lex::Token {Float64 {std::stod(number)}};
+        default:
+            unreachable("Should not be possible for this to be any other token");
+    }
+}
 
 Lex::Token Lex::Lexer::parseOperator() {
     ftrace();

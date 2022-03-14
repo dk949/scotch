@@ -15,10 +15,6 @@ private:
 public:
     explicit Literal(Value value);
 
-    inline Value &value() {
-        return m_value;
-    }
-
     inline const Value &value() const {
         return m_value;
     }

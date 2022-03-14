@@ -60,7 +60,7 @@ struct fmt::formatter<Ast::Value> : formatter<std::string> {
                 name = fmt::format("i64({})", t.as_i64());
             }
             bcase Ast::ValueType::F32 : {
-                name = fmt::format("f32({})", t.as_i32());
+                name = fmt::format("f32({})", t.as_f32());
             }
             bcase Ast::ValueType::F64 : {
                 name = fmt::format("f64({})", t.as_f64());
