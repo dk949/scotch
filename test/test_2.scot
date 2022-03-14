@@ -6,9 +6,16 @@ module Main;
 // Main function
 def main(): i32 {
     const ret: i32 = 10i;
-    const someOtherVar: i64 = 10;
-    const moreVars: f32 = 10f;
-    const lastOne: f64 = 10;
+
+    const someI32: i32       = 10i;
+    const someI64: i64       = 10l;
+    const anotherI64: i64    = 10;
+
+    const someF32: f32       = 10f;
+    const someF64: f64       = 10d;
+    const anotherF32: f32    = 10.3f;
+    const anotherF64: f64    = 10.3d;
+    const yetAnotherF64: f64 = 10.3;
 
     return ret;
 }
