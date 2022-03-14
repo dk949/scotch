@@ -15,7 +15,7 @@ Scotch is a compiled statically typed language.
 
 ## Goals
 
-* [ ] Generate [WebAssembly](https://webassembly.org/) from source code.
+* [X] Generate [WebAssembly](https://webassembly.org/) from source code.
 * [ ] Turing completeness.
 * [ ] [JavaScript](https://www.javascript.com/) integration.
 * [ ] [TypeScript](https://www.typescriptlang.org/) integration.
