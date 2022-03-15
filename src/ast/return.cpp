@@ -25,7 +25,8 @@ String Return::compile(Comp::Compiler &comp) {
             "mismathced return types. trying to return {} from a function expecting {}",
             lit->value().type(),
             comp.funcs().back().ret);
-        out.append(lit->compile(comp));
+        //out.append(lit->compile(comp));
+        fmt::format_to(std::back_inserter(out), "(local.set 0 {}) br ${}", lit->compile(comp), comp.funcs().back().name);
     } else if (auto *var = is<VariableAccess>(m_argument)) {
         fmt::format_to(std::back_inserter(out), "(local.set 0 {}) br ${}", var->compile(comp), comp.funcs().back().name);
     } else {
