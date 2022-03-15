@@ -2,14 +2,14 @@
 
 ## Test\_1
 
-<table>
+<table align="center">
 <tr>
 <th>Scotch</th>
 <th>WebAssembly text</th>
 </tr>
 <tr>
-
 <td>
+    
 ```scotch
 module Main;
 
@@ -18,11 +18,11 @@ def main(): i32 {
 
     return 10i;
 }
-
 ```
+    
 </td>
-
 <td>
+    
 ```wasm
 ;; Note: Actual generation has no whitespace. It was added for clarity.
 (module $Main
@@ -38,8 +38,8 @@ def main(): i32 {
   )
 )
 ```
+    
 </td>
-
 </tr>
 </table>
 
@@ -60,14 +60,14 @@ def main(): i32 {
 
 ## Test\_2
 
-<table>
+<table align="center">
 <tr>
 <th>Scotch</th>
 <th>WebAssembly text</th>
 </tr>
 <tr>
-
 <td>
+    
 ```scotch
 module Main;
 
@@ -87,9 +87,10 @@ def main(): i32 {
     return ret;
 }
 ```
+    
 </td>
-
 <td>
+    
 ```wasm
 (module $Main
   (func $main
@@ -122,8 +123,8 @@ def main(): i32 {
   )
 )
 ```
+    
 </td>
-
 </tr>
 </table>
 
