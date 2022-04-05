@@ -8,7 +8,8 @@
   "run": "./build/bin/scotch ./test/test_2.scot -o build/bin/output.wat -vvv",
   "runwasm": "node wasmrunner/wasmrunner.js --very-verbose build/bin/output.wat",
   "test": "./build/bin/tests",
-  "setup": "bldr setup:dbg",
+  "setup": "bldr setup:dbg setup:js",
+  "setup:js": "yarn --cwd wasmrunner",
   "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF -DENABLE_TRACING=ON",
   "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF -DENABLE_TRACING=ON"
 }
