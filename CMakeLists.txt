@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 project(
     scotch
     VERSION 0.1.0
-    DESCRIPTION "A statically typed compile programming language compiling to WebAssembly"
+    DESCRIPTION "A statically typed programming language compiling to WebAssembly."
     HOMEPAGE_URL "https://github.com/dk949/scotch"
     LANGUAGES CXX
 )

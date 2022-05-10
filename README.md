@@ -1,6 +1,6 @@
 # Scotch
 
-Scotch is statically typed language.
+A statically typed programming language compiling to WebAssembly.
 
 <p align="center">
   <img src="./logo/logo_export.svg" alt="Logo" width=25% />
