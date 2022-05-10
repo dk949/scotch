@@ -9,5 +9,14 @@ public:                                                      \
     }                                                        \
 private:
 
-#endif // MACROS_HPP
 
+
+#define TRY(X)                                \
+    ({                                        \
+        auto x = (X);                         \
+        if (!x)                               \
+            return tl::unexpected(x.error()); \
+        std::move(*x);                        \
+    })
+
+#endif  // MACROS_HPP
