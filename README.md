@@ -35,7 +35,7 @@ A statically typed programming language compiling to WebAssembly.
 
 ## Goals
 
-* [X] Generate [WebAssembly](https://webassembly.org/) from source code.
+* [ ] Generate [WebAssembly](https://webassembly.org/) from source code.
 * [ ] Turing completeness.
 * [ ] [JavaScript](https://www.javascript.com/) integration.
 * [ ] [TypeScript](https://www.typescriptlang.org/) integration.
