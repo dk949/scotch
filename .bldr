@@ -1,15 +1,44 @@
 {
-  "build": "cmake --build build -j 4",
-  "clean": "make -C build clean",
-  "cleanbuild": "bldr reset setup build",
-  "config": "$EDITOR .bldr",
-  "docs": "cmake --build build --target doxygen-docs",
-  "reset": "rm -rf build",
-  "run": "./build/bin/scotch ./test/test_2.scot -o build/bin/output.wat -vvv",
-  "runwasm": "node wasmrunner/wasmrunner.js --very-verbose build/bin/output.wat",
-  "test": "./build/bin/tests",
-  "setup": "bldr setup:dbg setup:js",
-  "setup:js": "yarn --cwd wasmrunner",
-  "setup:dbg": "cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF -DENABLE_TRACING=ON",
-  "setup:rel": "cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=ON -DENABLE_TESTING=OFF -DENABLE_TRACING=ON"
+  "wasm:setup": "yarn --cwd wasmrunner",
+  "wasm:run": "node wasmrunner/wasmrunner.js --very-verbose build/bin/output.wat",
+  "wasm:reset": "rm -rf ./wasmrunner/node_modules",
+
+
+  "vcpkg:clone": "git clone https://github.com/Microsoft/vcpkg.git",
+  "vcpkg:bootstrap": "./vcpkg/bootstrap-vcpkg.sh -disableMetrics",
+  "vcpkg:install": "./vcpkg/vcpkg install",
+  "vcpkg:setup": "bldr vcpkg:clone vcpkg:bootstrap vcpkg:install",
+  "vcpkg:reset": "rm -rf ./vcpkg ./vcpkg_installed",
+
+
+  "cxx:dbg:setup": "cmake -B build/debug -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=OFF",
+  "cxx:dbg:build": "cmake --build build/debug -j 12",
+  "cxx:dbg:clean": "make -C build/debug clean",
+  "cxx:dbg:run": "./build/debug/bin/scotch ./test/test.scot -o build/bin/output.wat -vvv",
+  "cxx:dbg:reset": "rm -rf build/debug",
+  "cxx:dbg:cleanbuild": "bldr cxx:dbg:reset cxx:dbg:setup cxx:dbg:build",
+
+
+  "cxx:rel:setup": "cmake -B build/release -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=OFF",
+  "cxx:rel:build": "cmake --build build/release -j 12",
+  "cxx:rel:clean": "make -C build/release clean",
+  "cxx:rel:run": "./build/release/bin/scotch ./test/test.scot -o build/bin/output.wat -vvv",
+  "cxx:rel:reset": "rm -rf build/release",
+  "cxx:rel:cleanbuild": "bldr cxx:rel:reset cxx:rel:setup cxx:rel:build",
+
+
+  "docs:build": "cmake --build build --target doxygen-docs",
+
+
+  "full:setup":"bldr vcpkg:setup wasm:setup cxx:dbg:setup cxx:rel:setup",
+  "full:build":"bldr cxx:dbg:build cxx:rel:build",
+  "full:reset":"bldr vcpkg:reset wasm:reset cxx:dbg:reset cxx:rel:reset",
+
+  "init":"bldr vcpkg:setup wasm:setup cxx:dbg:setup",
+  "setup":"bldr cxx:dbg:setup",
+  "build":"bldr cxx:dbg:build",
+  "clean":"bldr cxx:dbg:clean",
+  "reset":"bldr cxx:dbg:reset",
+  "run":"bldr cxx:dbg:run",
+  "exec":"bldr wasm:run"
 }

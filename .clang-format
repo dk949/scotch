@@ -136,6 +136,7 @@ SpacesInLineCommentPrefix:
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 Standard: c++20
+StatementMacros: ["PropertyGet"]
 TabWidth: 4
 UseCRLF: false
 UseTab: Never
@@ -147,6 +148,6 @@ WhitespaceSensitiveMacros:
   - CF_SWIFT_NAME
 
 #PackConstructorInitializers: CurrentLine
-#QualifierOrder: [ 'static', 'inline', 'constexpr', 'const', 'volatile', 'type', 'restrict']
+# QualifierOrder: [ 'static', 'inline', 'constexpr', 'const', 'volatile', 'type', 'restrict']
 #SeparateDefinitionBlocks: Leave
 ...

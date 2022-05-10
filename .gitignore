@@ -1,5 +1,5 @@
 build
 compile_commands.json
 logs
-docs/html
-/wasmrunner/node_modules
+vcpkg
+vcpkg_installed
