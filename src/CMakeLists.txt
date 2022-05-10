@@ -28,3 +28,5 @@ target_include_directories(${EXE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 find_package(fmt CONFIG REQUIRED)
 target_link_libraries(${EXE_NAME} PRIVATE fmt::fmt)
 
+find_package(tl-expected CONFIG REQUIRED)
+target_link_libraries(${EXE_NAME} PRIVATE tl::expected)
