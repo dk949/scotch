@@ -7,8 +7,12 @@ project(
     LANGUAGES CXX
 )
 
+
+if(MSVC)
+    message(FATAL_ERROR "MSVC is not supported due to the use of extensuions.\nSee the README for information on supported compilers and compiling on Windows.")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
