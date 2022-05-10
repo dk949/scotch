@@ -1,86 +1,82 @@
 #include "ast_compiler.hpp"
-#include <iostream>
 
-void printType(const Type &type) {
-    std::cout << "Type(" << (type.mod() == Mod::CONST ? "const" : "let") << ", " << type.name().name() << ')';
+#include "ast.hpp"
+
+#include <fmt/format.h>
+
+ErrorOr<std::string> compileType(const Type &type) {
+    return fmt::format("Type({}, {})", type.mod() == Mod::CONST ? "const" : "let", type.name().name());
 }
 
-void printVar(const Var &var) {
-    std::cout << "Var(";
-    printType(var.type());
-    std::cout << ", ";
-    std::cout << var.name().name();
-    std::cout << ')';
+ErrorOr<std::string> compileVar(const Var &var) {
+    return fmt::format("Var({}, {})", TRY(compileType(var.type())), var.name().name());
 }
 
-void printExpression(const std::shared_ptr<Expr> expr, std::string_view pre = "  ", std::string_view post = ",\n") {
+ErrorOr<std::string> compileExpression(const std::shared_ptr<Expr> expr, std::string_view pre = "  ", std::string_view post = ",\n") {
+    std::string out {pre};
     if (Assign *assign = dynamic_cast<Assign *>(expr.get())) {
-        std::cout << pre << "Assign(" << assign->target().name() << ", ";
-        printExpression(assign->source(), "", "");
-        std::cout << ')';
+        fmt::format_to(std::back_inserter(out),
+            "Assign({}, {})",
+            assign->target().name(),
+            TRY(compileExpression(assign->source(), "", "")));
 
     } else if (Declare *declare = dynamic_cast<Declare *>(expr.get())) {
-        std::cout << pre << "Declare(";
-        printVar(declare->target());
-        std::cout << ", ";
-        printExpression(declare->source(), "", "");
-        std::cout << ')';
+        fmt::format_to(std::back_inserter(out),
+            "Declare({}, {})",
+            TRY(compileVar(declare->target())),
+            TRY(compileExpression(declare->source(), "", "")));
 
     } else if (Return *ret = dynamic_cast<Return *>(expr.get())) {
-        std::cout << pre << "Return(";
-        printExpression(ret->value(), "", "");
-        std::cout << ')';
+        fmt::format_to(std::back_inserter(out), "Return({})", TRY(compileExpression(ret->value(), "", "")));
 
     } else if (Add *add = dynamic_cast<Add *>(expr.get())) {
-        std::cout << "Add(";
-        printExpression(add->lhs(), "", "");
-        std::cout << ", ";
-        printExpression(add->rhs(), "", "");
-        std::cout << ')';
-
+        fmt::format_to(std::back_inserter(out),
+            "Add({}, {})",
+            TRY(compileExpression(add->lhs(), "", "")),
+            TRY(compileExpression(add->rhs(), "", "")));
     } else if (VarExpr *varexpr = dynamic_cast<VarExpr *>(expr.get())) {
-        std::cout << "Access(" << varexpr->name().name() << ')';
-
+        fmt::format_to(std::back_inserter(out), "Access({})", varexpr->name().name());
     } else if (Int32 *int32 = dynamic_cast<Int32 *>(expr.get())) {
-        std::cout << "Int32(" << int32->value() << ")";
-
+        fmt::format_to(std::back_inserter(out), "Int32({})", int32->value());
     } else if (Int64 *int64 = dynamic_cast<Int64 *>(expr.get())) {
-        std::cout << "Int64(" << int64->value() << ")";
-
+        fmt::format_to(std::back_inserter(out), "Int64({})", int64->value());
     } else if (Float32 *float32 = dynamic_cast<Float32 *>(expr.get())) {
-        std::cout << "Float32(" << float32->value() << ")";
-
+        fmt::format_to(std::back_inserter(out), "Float32({})", float32->value());
     } else if (Float64 *float64 = dynamic_cast<Float64 *>(expr.get())) {
-        std::cout << "Float64(" << float64->value() << ")";
+        fmt::format_to(std::back_inserter(out), "Float64({})", float64->value());
+    } else {
+        return tl::unexpected(Error {fmt::format("Unexpected expression type {}", expr->name())});
     }
-    std::cout << post;
+    fmt::format_to(std::back_inserter(out), "{}", post);
+    return out;
 }
 
-void printFunc(const FunctionDef &func) {
-    std::cout << "Function(" << func.name().name() << ", Args(";
+ErrorOr<std::string> compileFunc(const FunctionDef &func) {
+    auto out = fmt::format("Function({}, Args(", func.name().name());
     int notFirst = 0;
     for (const auto &var : func.args()) {
-        std::cout << (notFirst++ ? ", " : "");
-        printVar(var);
+        fmt::format_to(std::back_inserter(out), "{}{}", notFirst++ ? ", " : "", TRY(compileVar(var)));
     }
-    std::cout << "), ";
-    printType(func.ret());
-    std::cout << ", Body(\n";
+
+    fmt::format_to(std::back_inserter(out), "), {}, Body(", TRY(compileType(func.ret())));
+
     for (const auto &expr : func.body()) {
-        printExpression(expr);
+        fmt::format_to(std::back_inserter(out), "{}, ", TRY(compileExpression(expr)));
     }
-    std::cout << "))\n";
+    fmt::format_to(std::back_inserter(out), "))\n");
+    return out;
 }
 
-void printModule(const Module &mod) {
-    std::cout << "Module(" << mod.name().name() << ")\n";
+ErrorOr<std::string> compileModule(const Module &mod) {
+    auto out = fmt::format("Module({})\n", mod.name().name());
 
-    const auto funcs = mod.funcs();
+    const auto &funcs = mod.funcs();
     for (const auto &func : funcs) {
-        printFunc(func);
+        fmt::format_to(std::back_inserter(out), "{}", TRY(compileFunc(func)));
     }
+    return out;
 }
 
-void printProgram(const Program &program) {
-    printModule(program.mod());
+ErrorOr<std::string> AstCompiler::compile(const Program &program) {
+    return compileModule(program.mod());
 }
