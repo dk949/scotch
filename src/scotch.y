@@ -11,6 +11,8 @@
 #include "ast.hpp"
 #include "ast_compiler.hpp"
 #include <vector>
+#include <memory>
+#include <iostream>
 }
 
 %code provides {
@@ -69,7 +71,17 @@ int yylex(scotch::parser::semantic_type* yylval, scotch::parser::location_type* 
 %type<std::shared_ptr<Expr>>                valExpr
 
 %%
-start       : program { printProgram($1); }
+start       : program
+            {
+                const auto program = $1;
+                std::unique_ptr<Compiler> compiler = std::make_unique<AstCompiler>();
+                compiler->typeCheck(program);
+                if(auto res = compiler->compile(program)){
+                    std::cout << res.value();
+                }else{
+                    std::cout << res.error().msg;
+                }
+            }
             ;
 
 program     : module { $$ = Program{$1}; }

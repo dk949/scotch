@@ -45,7 +45,7 @@ ErrorOr<std::string> compileExpression(const std::shared_ptr<Expr> expr, std::st
     } else if (Float64 *float64 = dynamic_cast<Float64 *>(expr.get())) {
         fmt::format_to(std::back_inserter(out), "Float64({})", float64->value());
     } else {
-        return tl::unexpected(Error {fmt::format("Unexpected expression type {}", expr->name())});
+        return tl::unexpected(Error {fmt::format("Unexpected expression type {}", expr->exprType())});
     }
     fmt::format_to(std::back_inserter(out), "{}", post);
     return out;
@@ -61,7 +61,7 @@ ErrorOr<std::string> compileFunc(const FunctionDef &func) {
     fmt::format_to(std::back_inserter(out), "), {}, Body(", TRY(compileType(func.ret())));
 
     for (const auto &expr : func.body()) {
-        fmt::format_to(std::back_inserter(out), "{}, ", TRY(compileExpression(expr)));
+        fmt::format_to(std::back_inserter(out), "{}", TRY(compileExpression(expr)));
     }
     fmt::format_to(std::back_inserter(out), "))\n");
     return out;
