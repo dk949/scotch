@@ -1,16 +1,18 @@
 #include "args.hpp"
 #include "ast.hpp"
 #include "ast_compiler.hpp"
+#include "parser_options.hpp"
 
 #include <cstdlib>
 #include <FlexLexer.h>
 #include <fmt/format.h>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <parser.hpp>
 #include <vector>
 
-yyFlexLexer *lexer;
+std::optional<yyFlexLexer> lexer;
 
 int yylex(scotch::parser::semantic_type *yylval, scotch::parser::location_type *yylloc) {
     yylloc->begin.line = lexer->lineno();
@@ -40,16 +42,14 @@ void scotch::parser::error(const location_type &loc, const std::string &msg) {
 int main(int, char *argv[]) {
     const auto args = scotch::Args::parse(argv);
 
-
     std::ifstream input(args.positionals().front().data());
     if (!input) {
         fmt::print(stderr, "Cannot open input file: {}", args.positionals().front());
         exit(1);
     }
 
-    lexer = new yyFlexLexer(&input);
+    lexer.emplace(&input);
     scotch::parser parser;
     parser.parse();
-    delete lexer;
     return 0;
 }
