@@ -28,5 +28,21 @@ constexpr std::uint64_t hash(std::string_view sv) {
     }
     return hash;
 }
+
+
+template<template<class...> class Tt>
+struct isTemplate {
+    template<typename... T>
+    struct Member : std::false_type { };
+
+    template<typename... T>
+    struct Member<Tt<T...>> : std::true_type { };
+};
+
+template<template<class...> class T, typename... V>
+concept Template = isTemplate<T>::template Member<V...>::value;
+
+
+
 }  // namespace scotch
 #endif  // COMMON_HPP
