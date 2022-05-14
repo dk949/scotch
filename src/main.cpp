@@ -1,6 +1,11 @@
 #include "args.hpp"
 #include "ast.hpp"
 #include "ast_compiler.hpp"
+#include "common.hpp"
+#include "console_error.hpp"
+#include "console_out.hpp"
+#include "empty_post_proc.hpp"
+#include "empty_pre_proc.hpp"
 #include "parser_options.hpp"
 
 #include <cstdlib>
@@ -8,6 +13,7 @@
 #include <fmt/format.h>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <optional>
 #include <parser.hpp>
 #include <vector>
@@ -39,6 +45,7 @@ void scotch::parser::error(const location_type &loc, const std::string &msg) {
 }
 
 
+
 int main(int, char *argv[]) {
     const auto args = scotch::Args::parse(argv);
 
@@ -47,6 +54,14 @@ int main(int, char *argv[]) {
         fmt::print(stderr, "Cannot open input file: {}", args.positionals().front());
         exit(1);
     }
+
+    Pipeline p {scotch::makeVector<std::unique_ptr<Preprocessor>>(std::make_unique<EmptyPreproc>()),
+        std::make_unique<AstCompiler>(),
+        scotch::makeVector<std::unique_ptr<Postprocessor>>(std::make_unique<EmptyPostproc>()),
+        std::make_unique<ConsoleOut>(),
+        std::make_unique<ConsoleError>()};
+
+    ParserOptions::setPipeline(std::move(p));
 
     lexer.emplace(&input);
     scotch::parser parser;
