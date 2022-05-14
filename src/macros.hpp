@@ -10,13 +10,22 @@ public:                                                      \
 private:
 
 
+#define MERGE_(a, b) a##b
+#define LABEL_(a)    MERGE_(x_, a)
 
-#define TRY(X)                                \
-    ({                                        \
-        auto x = (X);                         \
-        if (!x)                               \
-            return tl::unexpected(x.error()); \
-        std::move(*x);                        \
+#define TRY(X)                                               \
+    ({                                                       \
+        auto LABEL_(__LINE__) = (X);                         \
+        if (!LABEL_(__LINE__))                               \
+            return tl::unexpected(LABEL_(__LINE__).error()); \
+        std::move(*LABEL_(__LINE__));                        \
+    })
+
+#define TRY_VOID(X)                                          \
+    ({                                                       \
+        auto LABEL_(__LINE__) = (X);                         \
+        if (!LABEL_(__LINE__))                               \
+            return tl::unexpected(LABEL_(__LINE__).error()); \
     })
 
 #endif  // MACROS_HPP
