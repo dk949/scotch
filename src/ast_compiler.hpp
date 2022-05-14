@@ -5,11 +5,13 @@
 
 
 class AstCompiler : public Compiler {
-    [[nodiscard]] virtual ErrorOr<void> typeCheck(const Program &) override {
+    [[nodiscard]] ErrorOr<void> typeCheck(const Program &) override {
         return {};
     }
-    [[nodiscard]] virtual ErrorOr<std::string> compile(const Program &) override;
-    [[nodiscard]] virtual std::string_view compilerType() const override {
+
+    [[nodiscard]] ErrorOr<std::string> compile(Program &&) override;
+
+    [[nodiscard]] constexpr std::string_view compilerType() const override {
         return "AstCompiler";
     }
 };
