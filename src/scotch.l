@@ -9,7 +9,9 @@
 #include "parser.hpp"
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#if (defined(__GNUC__) && !defined(__clang__))
 #pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
 
 using namespace scotch;
 %}
