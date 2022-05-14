@@ -4,6 +4,7 @@
 #include <fmt/format.h>
 #include <stdexcept>
 #include <string_view>
+#include <vector>
 
 namespace scotch {
 
@@ -43,6 +44,11 @@ template<template<class...> class T, typename... V>
 concept Template = isTemplate<T>::template Member<V...>::value;
 
 
+template<typename T, typename... Ts>
+std::vector<T> makeVector(T &&first, Ts &&...rest) {
+    T tmp[sizeof...(Ts) + 1] {std::forward<T>(first), std::forward<Ts>(rest)...};
+    return std::vector<T> {std::make_move_iterator(std::begin(tmp)), std::make_move_iterator(std::end(tmp))};
+}
 
 }  // namespace scotch
 #endif  // COMMON_HPP
