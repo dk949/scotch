@@ -5,7 +5,7 @@
 
 class Postprocessor {
 public:
-    [[nodiscard]] virtual ErrorOr<std::string> postprocess(std::string &&) = 0;
+    [[nodiscard]] virtual ErrorOr<std::string> postprocess(std::string &&) const = 0;
     [[nodiscard]] virtual constexpr std::string_view postprocessorType() const = 0;
 
     virtual ~Postprocessor() = default;

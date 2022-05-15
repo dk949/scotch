@@ -6,7 +6,7 @@
 #include <iostream>
 
 class EmptyPostproc : public Postprocessor {
-    [[nodiscard]] virtual ErrorOr<std::string> postprocess(std::string &&bin) override {
+    [[nodiscard]] virtual ErrorOr<std::string> postprocess(std::string &&bin) const override {
         return bin;
     };
     [[nodiscard]] virtual constexpr std::string_view postprocessorType() const override {
