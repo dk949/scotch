@@ -13,6 +13,8 @@ class Ident {
     std::string PropertyGet(name)
 public:
     Ident(std::string name);
+    Ident(std::string_view name);
+    Ident(const char *name);
     Ident() = default;
 };
 
