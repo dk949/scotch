@@ -174,4 +174,7 @@ public:
     Program() = default;
 };
 
+
+#include "printers.hpp"
+
 #endif  // AST_HPP
