@@ -5,6 +5,10 @@
 
 struct Error {
     std::string msg;
+    Error();
+    Error(const char *m);
+    Error(std::string_view m);
+    Error(std::string m);
 };
 
 template<typename T>
