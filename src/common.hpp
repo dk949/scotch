@@ -50,5 +50,39 @@ std::vector<T> makeVector(T &&first, Ts &&...rest) {
     return std::vector<T> {std::make_move_iterator(std::begin(tmp)), std::make_move_iterator(std::end(tmp))};
 }
 
+template<typename D>
+concept StringSplitDelim = std::same_as<const char *, D> || std::same_as<std::string_view, D> || std::same_as<char, D>;
+
+namespace detail {
+    constexpr size_t delimLength(StringSplitDelim auto d) {
+        return d.size();
+    }
+
+    template<>
+    constexpr size_t delimLength<char>(char) {
+        return 1;
+    }
+
+    template<>
+    constexpr size_t delimLength<const char *>(const char *d) {
+        return std::char_traits<char>::length(d);
+    }
+}
+
+[[nodiscard]] std::vector<std::string_view> splitString(std::string_view s, StringSplitDelim auto delim) {
+    std::vector<std::string_view> out;
+    size_t start = 0U;
+    auto end = s.find(delim);
+    const auto dLength = detail::delimLength(delim);
+    while (end != std::string::npos) {
+        out.push_back(s.substr(start, end - start));
+        start = end + dLength;
+        end = s.find(delim, start);
+    }
+    out.push_back(s.substr(start, end - start));
+    return out;
+}
+
+
 }  // namespace scotch
 #endif  // COMMON_HPP
