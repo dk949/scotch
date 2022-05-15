@@ -16,6 +16,7 @@ public:
     Ident(std::string_view name);
     Ident(const char *name);
     Ident() = default;
+    operator std::string_view() const;
 };
 
 class Type {

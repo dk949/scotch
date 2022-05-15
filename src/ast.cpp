@@ -10,6 +10,10 @@ Ident::Ident(std::string_view name)
 Ident::Ident(const char *name)
         : m_name(name) { }
 
+Ident::operator std::string_view() const {
+    return m_name;
+}
+
 Type::Type(Mod mod, Ident name)
         : m_mod(mod)
         , m_name(std::move(name)) { }
