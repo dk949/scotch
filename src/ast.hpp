@@ -17,6 +17,15 @@ public:
     Ident(const char *name);
     Ident() = default;
     operator std::string_view() const;
+
+    bool operator==(const Ident &) const = default;
+};
+
+template<>
+struct std::hash<Ident> {
+    std::size_t operator()(const Ident &i) const noexcept {
+        return std::hash<std::string> {}(i.name());
+    }
 };
 
 class Type {
