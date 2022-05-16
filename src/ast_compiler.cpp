@@ -77,6 +77,6 @@ ErrorOr<std::string> compileModule(const Module &mod) {
     return out;
 }
 
-ErrorOr<std::string> AstCompiler::compile(Program &&program) {
+ErrorOr<std::string> AstCompiler::compile(Program &&program) const {
     return compileModule(program.mod());
 }

@@ -9,7 +9,7 @@ class AstCompiler : public Compiler {
         return {};
     }
 
-    [[nodiscard]] ErrorOr<std::string> compile(Program &&) override;
+    [[nodiscard]] ErrorOr<std::string> compile(Program &&) const override;
 
     [[nodiscard]] constexpr std::string_view compilerType() const override {
         return "AstCompiler";
