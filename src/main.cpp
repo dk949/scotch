@@ -8,6 +8,7 @@
 #include "empty_pre_proc.hpp"
 #include "parser_options.hpp"
 #include "wasm_compiler.hpp"
+#include "wasm_formatter.hpp"
 
 #include <cstdlib>
 #include <FlexLexer.h>
@@ -64,7 +65,7 @@ int main(int, char *argv[]) {
 
     Pipeline p {scotch::makeVector<std::unique_ptr<Preprocessor>>(std::make_unique<EmptyPreproc>()),
         std::move(compiler),
-        scotch::makeVector<std::unique_ptr<Postprocessor>>(std::make_unique<EmptyPostproc>()),
+        scotch::makeVector<std::unique_ptr<Postprocessor>>(std::make_unique<WasmFormatter>()),
         std::make_unique<ConsoleOut>(),
         std::make_unique<ConsoleError>()};
 
