@@ -7,6 +7,7 @@
 #include "empty_post_proc.hpp"
 #include "empty_pre_proc.hpp"
 #include "parser_options.hpp"
+#include "wasm_compiler.hpp"
 
 #include <cstdlib>
 #include <FlexLexer.h>
