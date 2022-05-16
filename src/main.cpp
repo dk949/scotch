@@ -55,8 +55,14 @@ int main(int, char *argv[]) {
         exit(1);
     }
 
+    std::unique_ptr<Compiler> compiler = nullptr;
+    if (args.dumpAst())
+        compiler = std::make_unique<AstCompiler>();
+    else
+        compiler = std::make_unique<WasmCompiler>();
+
     Pipeline p {scotch::makeVector<std::unique_ptr<Preprocessor>>(std::make_unique<EmptyPreproc>()),
-        std::make_unique<AstCompiler>(),
+        std::move(compiler),
         scotch::makeVector<std::unique_ptr<Postprocessor>>(std::make_unique<EmptyPostproc>()),
         std::make_unique<ConsoleOut>(),
         std::make_unique<ConsoleError>()};
