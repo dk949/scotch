@@ -22,12 +22,12 @@ ErrorOr<std::string> Pipeline::runCompilation(Program &&program) {
 
     auto compiled = TRY(m_compiler->compile(std::move(preprocessed)));
 
-    return TRY(runArray(m_postprocessor.begin(),
+    return runArray(m_postprocessor.begin(),
         m_postprocessor.end(),
         std::move(compiled),
         [](ErrorOr<std::string> &&a, const std::unique_ptr<Postprocessor> &b) -> ErrorOr<std::string> {
             return b->postprocess(TRY(a));
-        }));
+        });
 }
 
 void Pipeline::outputResult(ErrorOr<std::string> &&in) {
