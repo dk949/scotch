@@ -3,7 +3,6 @@ find_package(Catch2 CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(tl-expected CONFIG REQUIRED)
 
-set(TEST_EXE tests)
 
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/test/*.cpp")
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_SOURCE_DIR}/test/*.hpp")
