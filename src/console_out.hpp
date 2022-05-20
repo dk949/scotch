@@ -4,7 +4,7 @@
 
 
 class ConsoleOut : public Output {
-    void output(std::string &&) const override;
+    void output(std::string &&) override;
     [[nodiscard]] virtual constexpr std::string_view outputType() const override {
         return "ConsoleOut";
     }

@@ -3,6 +3,6 @@
 #include <fmt/format.h>
 
 
-void ConsoleError::error(Error &&err) const {
+void ConsoleError::error(Error &&err) {
     fmt::print("An error occured:\n{}\n", err.msg);
 }

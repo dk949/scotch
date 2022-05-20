@@ -4,7 +4,7 @@
 #include "error_handler.hpp"
 
 class ConsoleError : public ErrorHandler {
-    void error(Error &&) const override;
+    void error(Error &&) override;
     [[nodiscard]] virtual constexpr std::string_view errorHandlerType() const override {
         return "ConsoleError";
     }

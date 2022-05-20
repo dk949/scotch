@@ -5,7 +5,7 @@
 
 class Output {
 public:
-    virtual void output(std::string &&) const = 0;
+    virtual void output(std::string &&) = 0;
     [[nodiscard]] virtual constexpr std::string_view outputType() const = 0;
     virtual ~Output() = default;
 };
