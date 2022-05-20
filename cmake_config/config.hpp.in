@@ -9,6 +9,10 @@ namespace version {
     static constexpr int minor = @PROJECT_VERSION_MINOR@;
     static constexpr int patch = @PROJECT_VERSION_PATCH@;
 }
+namespace dirs{
+    static constexpr std::string_view src = "${CMAKE_SOURCE_DIR}/src";
+    static constexpr std::string_view test = "${CMAKE_SOURCE_DIR}/test";;
+}
 static constexpr std::string_view name = "@PROJECT_NAME@";
 static constexpr std::string_view description = "@PROJECT_DESCRIPTION@";
 static constexpr std::string_view url = "@PROJECT_HOMEPAGE_URL@";
