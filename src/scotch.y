@@ -11,15 +11,19 @@
 #include "ast.hpp"
 #include "ast_compiler.hpp"
 #include "parser_options.hpp"
-#include <vector>
-#include <memory>
 #include <iostream>
+}
+
+%code requires{
+#include <memory>
+#include <vector>
+#include "ast.hpp"
 }
 
 %code provides {
 int yylex(scotch::parser::semantic_type* yylval, scotch::parser::location_type* yylloc);
-}
 
+}
 
 
 %token MODULE
