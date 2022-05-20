@@ -1,0 +1,6 @@
+module Main;
+
+def main(i: i32): i32{
+    i = 26i;
+    return 0i;
+}

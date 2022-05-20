@@ -1,0 +1,6 @@
+module Main;
+
+def main(): i32{
+    let var: i64 = 10l;
+    return 0i;
+}

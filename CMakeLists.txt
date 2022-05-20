@@ -25,6 +25,8 @@ include(cmake/sanitizers.cmake)
 include(cmake/compile_commands.cmake)
 include(cmake/compiler_warnings.cmake)
 include(cmake/doxygen.cmake)
+include(cmake/targets.cmake)
 
 add_subdirectory(cmake_config/)
 add_subdirectory(src)
+add_subdirectory(test)

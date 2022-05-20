@@ -1,0 +1,9 @@
+module Main;
+
+def foo(): i32 {
+    return 0i;
+}
+
+def foo(): i32 {
+    return 1i;
+}

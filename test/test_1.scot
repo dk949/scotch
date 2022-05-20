@@ -1,8 +1,0 @@
-module Main;
-// Main function
-
-def main(): i32 {
-
-
-    return 10i;
-}

@@ -1,0 +1,7 @@
+module Main;
+
+def main(): i32 {
+    const var: i32 = 0i;
+    let var: i32 = 0i;
+    return 0i;
+}

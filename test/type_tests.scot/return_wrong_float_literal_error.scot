@@ -1,0 +1,5 @@
+module Main;
+
+def main(): f32{
+    return 20.0;
+}

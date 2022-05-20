@@ -54,8 +54,8 @@ function (enable_sanitizers project_name)
             STREQUAL
             ""
         )
-            target_compile_options(${project_name} PRIVATE -fsanitize=${LIST_OF_SANITIZERS})
-            target_link_options(${project_name} PRIVATE -fsanitize=${LIST_OF_SANITIZERS})
+            target_compile_options(${project_name} PUBLIC -fsanitize=${LIST_OF_SANITIZERS})
+            target_link_options(${project_name} PUBLIC -fsanitize=${LIST_OF_SANITIZERS})
         endif ()
     endif ()
 

@@ -1,0 +1,17 @@
+module Main;
+
+def func0(): i32 {
+    return 0i;
+}
+
+def func1(): i64 {
+    return 0;
+}
+
+def func2(): f32 {
+    return 0.0f;
+}
+
+def func3(): f64 {
+    return 0.0;
+}

@@ -1,0 +1,18 @@
+module Main;
+
+def main(): i32 {
+    const c0: i32 = 0i;
+    const c1: i64 = 0;
+    const c2: i64 = 0l;
+    const c3: f32 = 0.0f;
+    const c4: f64 = 0.0;
+    const c5: f64 = 0.0d;
+
+    let l0: i32 = 0i;
+    let l1: i64 = 0;
+    let l2: i64 = 0l;
+    let l3: f32 = 0.0f;
+    let l4: f64 = 0.0;
+    let l5: f64 = 0.0d;
+    return 0i;
+}

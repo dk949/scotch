@@ -1,0 +1,6 @@
+module Main;
+
+def main(i: i32): i32{
+    const i: i32 = 26i;
+    return 0i;
+}

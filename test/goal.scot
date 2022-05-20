@@ -1,51 +1,56 @@
-// a is copied, because it is trivially copyable
-def foo(a: int, b: int): int{
-    return a + b;
+
+// Functions
+
+// Normal function
+def func0(): i32 {
+    return 0i;
 }
 
-def bar(a: &int, b: int): int{
-    return a += b;
+// void function
+def func0(): void {
+
 }
 
-/* Error, a points to non mutable int
-def baz(a: *int, b: int): int{
-    return a += b;
-}
-*/
 
-
-// str taken by reference
-def helloRef(msg: *str){
-    print("hello", msg);
+// return type deduction
+def func0() {// deduced as i32
+    return 0i;
 }
 
-def helloMove(msg: str){
-    print("hello", msg);
+def func0() {// deduced to void
 }
 
-// str copied
-def helloVal(msg: +str) {
-    print("hello", msg);
+// Parameters (value semantics [at least for small types?])
+def func0(param0: i32, param1: i64) {
 }
+
+
+// Variables and builtin types types
 
 def main() {
-    const hello = "hello";
-    const world = "world";
+    // Constant declarations
+    const var0: i32 = 0i;
+    const var1: i64 = 0;
+    const var2: i64 = 0l;
+    const var3: f32 = 0.0f;
+    const var4: f64 = 0.0;
+    const var5: f64 = 0.0d;
 
-    print(hello, world);
+    // Mutable declaration
+    let var6: i32 = 0i;
 
-    for (let i = 0; i < 3; i++) {
-        print(i);
-    }
+    // Type deduction
+    const var7 = 25; // deduced as i64
 
-    let i: int = 3;
-    foo(i, 5); // returns 8
-    i.foo(5);  // same as above
+    // Strings
+    const var8 = "hello";
 
-    bar(i, 3) // i is 8
-    i.bar(3) // i is 8
+}
 
-    const j: float = 3.0;
-    const k: *float = j;
 
+// User defined datastructures
+
+struct S {
+    mem0: i32;
+    mem1: i64;
 }

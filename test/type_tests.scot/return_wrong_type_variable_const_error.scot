@@ -1,0 +1,6 @@
+module Main;
+
+def main(): i32{
+    const d: f64 = 20.0;
+    return d;
+}

@@ -1,0 +1,6 @@
+module Main;
+
+def main(i: i32, l: i64, f: f32, d: f64): i32 {
+    return 0i;
+}
+
