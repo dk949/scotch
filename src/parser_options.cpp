@@ -21,3 +21,7 @@ Pipeline ParserOptions::takePipeline() {
     m_pipeline.swap(ret);
     return std::move(ret.value());
 }
+
+void ParserOptions::clearPipeline() {
+    m_pipeline = std::nullopt;
+}

@@ -17,6 +17,7 @@ public:
 
     static void setPipeline(Pipeline &&);
     static Pipeline takePipeline();
+    static void clearPipeline();
 };
 
 #endif  // PARSER_OPTIONS_HPP
