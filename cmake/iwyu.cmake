@@ -1,4 +1,4 @@
-option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable static analysis with include-what-you-use" ON)
+option(ENABLE_INCLUDE_WHAT_YOU_USE "Enable static analysis with include-what-you-use" OFF)
 
 if (ENABLE_INCLUDE_WHAT_YOU_USE)
     find_program(INCLUDE_WHAT_YOU_USE include-what-you-use)
