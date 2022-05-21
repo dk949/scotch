@@ -11,7 +11,7 @@
   "vcpkg:reset": "rm -rf ./vcpkg ./vcpkg_installed",
 
 
-  "cxx:dbg:setup": "cmake -B build/debug -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=OFF",
+  "cxx:dbg:setup": "cmake -B build/debug -S . -DCMAKE_BUILD_TYPE=Debug -DENABLE_CACHE=ON -DENABLE_DOXYGEN=OFF",
   "cxx:dbg:build": "cmake --build build/debug -j 12",
   "cxx:dbg:clean": "make -C build/debug clean",
   "cxx:dbg:run": "./build/debug/bin/scotch ./test/test.scot -o build/bin/output.wat -vvv",
@@ -19,7 +19,7 @@
   "cxx:dbg:cleanbuild": "bldr cxx:dbg:reset cxx:dbg:setup cxx:dbg:build",
 
 
-  "cxx:rel:setup": "cmake -B build/release -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=OFF",
+  "cxx:rel:setup": "cmake -B build/release -S . -DCMAKE_BUILD_TYPE=Release -DENABLE_CACHE=ON -DENABLE_DOXYGEN=OFF",
   "cxx:rel:build": "cmake --build build/release -j 12",
   "cxx:rel:clean": "make -C build/release clean",
   "cxx:rel:run": "./build/release/bin/scotch ./test/test.scot -o build/bin/output.wat -vvv",

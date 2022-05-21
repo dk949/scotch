@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.18)
+include(cmake/setup_pkg.cmake)
 project(
-    scotch
-    VERSION 0.1.0
-    DESCRIPTION "A statically typed programming language compiling to WebAssembly."
+    ${THIS_PROJECT_NAME}
+    VERSION ${THIS_PROJECT_VERSION}
+    DESCRIPTION ${THIS_PROJECT_DESCRIPTION}
     HOMEPAGE_URL "https://github.com/dk949/scotch"
     LANGUAGES CXX
 )
-
 
 if(MSVC)
     message(FATAL_ERROR "MSVC is not supported due to the use of extensuions.\nSee the README for information on supported compilers and compiling on Windows.")

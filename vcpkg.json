@@ -1,6 +1,7 @@
 {
-  "name": "haul",
-  "version-string": "0.1.0",
+  "name": "scotch",
+  "version-string": "0.2.0",
+  "description": "A statically typed programming language compiling to WebAssembly.",
   "dependencies": [
     "fmt",
     "tl-expected",
