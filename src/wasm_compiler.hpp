@@ -44,9 +44,9 @@ private:
     };
 
 public:
-    [[nodiscard]] ErrorOr<void> typeCheck(const Program &);
-    [[nodiscard]] ErrorOr<std::string> compile(Program &&) const;
-    [[nodiscard]] constexpr std::string_view compilerType() const {
+    [[nodiscard]] ErrorOr<void> typeCheck() override;
+    [[nodiscard]] ErrorOr<std::string> compile() override;
+    [[nodiscard]] constexpr std::string_view compilerType() const override {
         return "WasmCompiler";
     }
 };

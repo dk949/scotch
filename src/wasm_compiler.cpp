@@ -84,9 +84,9 @@ ErrorOr<Ident> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr
     return tl::unexpected(Error {fmt::format("{}: Unexpected expression type {}", compilerType(), expr->exprType())});
 }
 
-ErrorOr<void> WasmCompiler::typeCheck(const Program &prog) {
-    m_symbolTable[prog.mod().name()] = Symbol {SymbolKind::Module, emptyType};
-    for (const auto &func : prog.mod().funcs()) {
+ErrorOr<void> WasmCompiler::typeCheck() {
+    m_symbolTable[m_program.mod().name()] = Symbol {SymbolKind::Module, emptyType};
+    for (const auto &func : m_program.mod().funcs()) {
         m_symbolTable[func.name()] = Symbol {SymbolKind::Function, func.ret()};
 
         for (const auto &arg : func.args()) {
@@ -183,8 +183,7 @@ ErrorOr<void> WasmCompiler::typeCheck(const Program &prog) {
         "(result {1})\n"
         "{3}"
         "{4}"
-        ")\n"
-        ,
+        ")\n",
         func.name(),
         func.ret().name(),
         TRY(compileArgs(func.args())),
@@ -206,6 +205,6 @@ ErrorOr<void> WasmCompiler::typeCheck(const Program &prog) {
     return fmt::format("(module\n${}\n{})", mod.name(), TRY(compileFuncs(mod.funcs())));
 }
 
-ErrorOr<std::string> WasmCompiler::compile(Program &&program) const {
-    return compileModule(program.mod());
+ErrorOr<std::string> WasmCompiler::compile() {
+    return compileModule(m_program.mod());
 }
