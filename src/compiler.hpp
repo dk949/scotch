@@ -2,15 +2,19 @@
 #define COMPILER_HPP
 
 
-#include "ast_fwd.hpp"
+#include "ast.hpp"
 #include "error.hpp"
 
 #include <string_view>
 
 class Compiler {
+protected:
+    Program m_program;
+
 public:
-    [[nodiscard]] virtual ErrorOr<void> typeCheck(const Program &) = 0;
-    [[nodiscard]] virtual ErrorOr<std::string> compile(Program &&) const = 0;
+    Compiler(Program);
+    [[nodiscard]] virtual ErrorOr<void> typeCheck() = 0;
+    [[nodiscard]] virtual ErrorOr<std::string> compile() = 0;
     [[nodiscard]] virtual constexpr std::string_view compilerType() const = 0;
     virtual ~Compiler() = default;
 };
