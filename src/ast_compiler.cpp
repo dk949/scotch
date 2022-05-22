@@ -4,6 +4,11 @@
 
 #include <fmt/format.h>
 
+
+ErrorOr<void> AstCompiler::typeCheck() {
+    return {};
+}
+
 ErrorOr<std::string> compileType(const Type &type) {
     return fmt::format("Type({}, {})", type.mod() == Mod::CONST ? "const" : "let", type.name().name());
 }
@@ -77,6 +82,6 @@ ErrorOr<std::string> compileModule(const Module &mod) {
     return out;
 }
 
-ErrorOr<std::string> AstCompiler::compile(Program &&program) const {
-    return compileModule(program.mod());
+ErrorOr<std::string> AstCompiler::compile() {
+    return compileModule(m_program.mod());
 }
