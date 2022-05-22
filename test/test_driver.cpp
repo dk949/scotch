@@ -7,7 +7,7 @@
 #include "test_io.hpp"
 #include "wasm_compiler.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
