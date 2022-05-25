@@ -1,10 +1,8 @@
 #ifndef TEST_IO_HPP
 #define TEST_IO_HPP
 
-#include "error_handler.hpp"
-#include "output.hpp"
-
-class TestOutput : public Output {
+#include "io.hpp"
+class TestOutput : public Io::Output {
     std::string *out;
     void output(const std::string &) override;
     [[nodiscard]] constexpr std::string_view outputType() const override {
@@ -13,7 +11,8 @@ class TestOutput : public Output {
 public:
     TestOutput(std::string *s);
 };
-class TestError : public ErrorHandler {
+
+class TestError : public Io::ErrorHandler {
     Error *err;
     void error(const Error &) override;
     [[nodiscard]] constexpr std::string_view errorHandlerType() const override {

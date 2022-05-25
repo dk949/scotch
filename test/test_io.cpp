@@ -1,5 +1,7 @@
 #include "test_io.hpp"
 
+#include "error.hpp"
+
 
 TestOutput::TestOutput(std::string *s)
         : out(s) { }
