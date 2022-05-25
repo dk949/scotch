@@ -6,40 +6,41 @@
 
 
 template<typename I>
-auto runArray(auto beginIter, auto endIter, I &&input, auto &&fn) {
+auto runArray(auto beginIter, auto endIter, const I &input, auto &&fn) {
     return std::accumulate(beginIter, endIter, ErrorOr<I>(std::move(input)), fn);
 }
 
-ErrorOr<std::string> Pipeline::runCompilation(Program &&program) {
+ErrorOr<std::string> Pipeline::runCompilation(const Program &program) {
     auto preprocessed = TRY(runArray(m_preprocessor.begin(),
         m_preprocessor.end(),
-        std::move(program),
+        program,
         [](ErrorOr<Program> &&a, const std::unique_ptr<Preprocessor> &b) -> ErrorOr<Program> {
             return b->preprocess(TRY(a));
         }));
+    m_compiler->setProgram(preprocessed);
 
-    TRY_VOID(m_compiler->typeCheck(preprocessed));
+    TRY_VOID(m_compiler->typeCheck());
 
-    auto compiled = TRY(m_compiler->compile(std::move(preprocessed)));
+    auto compiled = TRY(m_compiler->compile());
 
     return runArray(m_postprocessor.begin(),
         m_postprocessor.end(),
-        std::move(compiled),
+        compiled,
         [](ErrorOr<std::string> &&a, const std::unique_ptr<Postprocessor> &b) -> ErrorOr<std::string> {
             return b->postprocess(TRY(a));
         });
 }
 
-void Pipeline::outputResult(ErrorOr<std::string> &&in) {
+void Pipeline::outputResult(const ErrorOr<std::string> &in) {
     if (in) {
-        m_output->output(std::move(in.value()));
+        m_output->output(in.value());
     } else {
-        m_error->error(std::move(in.error()));
+        m_error->error(in.error());
     }
 }
 
-void Pipeline::run(Program &&prog) {
-    outputResult(runCompilation(std::move(prog)));
+void Pipeline::run(const Program &prog) {
+    outputResult(runCompilation(prog));
 }
 Pipeline::Pipeline(PtrVec<Preprocessor> &&preprocessor,
     Ptr<Compiler> &&compiler,

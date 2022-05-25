@@ -5,7 +5,7 @@
 #include "error.hpp"
 class ErrorHandler {
 public:
-    virtual void error(Error &&) = 0;
+    virtual void error(const Error &) = 0;
     [[nodiscard]] virtual constexpr std::string_view errorHandlerType() const = 0;
     virtual ~ErrorHandler() = default;
 };

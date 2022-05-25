@@ -6,7 +6,7 @@
 
 class TestOutput : public Output {
     std::string *out;
-    void output(std::string &&) override;
+    void output(const std::string &) override;
     [[nodiscard]] constexpr std::string_view outputType() const override {
         return "TestOutput";
     }
@@ -15,7 +15,7 @@ public:
 };
 class TestError : public ErrorHandler {
     Error *err;
-    void error(Error &&) override;
+    void error(const Error &) override;
     [[nodiscard]] constexpr std::string_view errorHandlerType() const override {
         return "TestError";
     }

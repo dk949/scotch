@@ -26,12 +26,12 @@ private:
     Ptr<Output> m_output;
     Ptr<ErrorHandler> m_error;
 
-    ErrorOr<std::string> runCompilation(Program &&);
-    void outputResult(ErrorOr<std::string> &&);
+    ErrorOr<std::string> runCompilation(const Program &);
+    void outputResult(const ErrorOr<std::string> &);
 
 public:
     Pipeline(PtrVec<Preprocessor> &&, Ptr<Compiler> &&, PtrVec<Postprocessor> &&, Ptr<Output> &&, Ptr<ErrorHandler> &&);
-    void run(Program &&);
+    void run(const Program &);
 };
 
 #endif  // PIPELINE_HPP

@@ -1,5 +1,5 @@
 #ifndef WASM_FORMATTER_HPP
-#define WASM_POST_PROC_HPP
+#define WASM_FORMATTER_HPP
 
 #include "post_processor.hpp"
 

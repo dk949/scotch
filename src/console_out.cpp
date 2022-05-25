@@ -2,6 +2,6 @@
 
 #include <fmt/format.h>
 
-void ConsoleOut::output(std::string &&str) {
+void ConsoleOut::output(const std::string &str) {
     fmt::print("{}\n", str);
 }

@@ -4,13 +4,13 @@
 TestOutput::TestOutput(std::string *s)
         : out(s) { }
 
-void TestOutput::output(std::string &&s) {
-    *out = std::move(s);
+void TestOutput::output(const std::string &s) {
+    *out = s;
 }
 
 TestError::TestError(Error *e)
         : err(e) { }
 
-void TestError::error(Error &&e) {
-    *err = std::move(e);
+void TestError::error(const Error &e) {
+    *err = e;
 }
