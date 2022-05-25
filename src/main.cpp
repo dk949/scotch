@@ -2,10 +2,10 @@
 #include "ast.hpp"
 #include "ast_compiler.hpp"
 #include "common.hpp"
-#include "console_error.hpp"
-#include "console_out.hpp"
+#include "console_io.hpp"
 #include "empty_post_proc.hpp"
 #include "empty_pre_proc.hpp"
+#include "io.hpp"
 #include "parser_interface.hpp"
 #include "parser_options.hpp"
 #include "wasm_compiler.hpp"
@@ -37,11 +37,12 @@ int main(int, char *argv[]) {
     else
         compiler = std::make_unique<WasmCompiler>();
 
-    Pipeline p {scotch::makeVector<std::unique_ptr<Preprocessor>>(std::make_unique<EmptyPreproc>()),
+    Pipeline p {
+        scotch::makeVector<std::unique_ptr<Preprocessor>>(std::make_unique<EmptyPreproc>()),
         std::move(compiler),
         scotch::makeVector<std::unique_ptr<Postprocessor>>(std::make_unique<WasmFormatter>()),
-        std::make_unique<ConsoleOut>(),
-        std::make_unique<ConsoleError>()};
+        Io::makeIo<ConsoleOut, ConsoleError>()
+    };
 
     ParserOptions::setPipeline(std::move(p));
     ParserInterface parser {&input};

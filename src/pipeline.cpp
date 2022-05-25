@@ -33,22 +33,17 @@ ErrorOr<std::string> Pipeline::runCompilation(const Program &program) {
 
 void Pipeline::outputResult(const ErrorOr<std::string> &in) {
     if (in) {
-        m_output->output(in.value());
+        m_io.output(in.value());
     } else {
-        m_error->error(in.error());
+        m_io.error(in.error());
     }
 }
 
 void Pipeline::run(const Program &prog) {
     outputResult(runCompilation(prog));
 }
-Pipeline::Pipeline(PtrVec<Preprocessor> &&preprocessor,
-    Ptr<Compiler> &&compiler,
-    PtrVec<Postprocessor> &&postprocessor,
-    Ptr<Output> &&output,
-    Ptr<ErrorHandler> &&error)
+Pipeline::Pipeline(PtrVec<Preprocessor> &&preprocessor, Ptr<Compiler> &&compiler, PtrVec<Postprocessor> &&postprocessor, Io &&io)
         : m_preprocessor(std::move(preprocessor))
         , m_compiler(std::move(compiler))
         , m_postprocessor(std::move(postprocessor))
-        , m_output(std::move(output))
-        , m_error(std::move(error)) { }
+        , m_io(std::move(io)) { }

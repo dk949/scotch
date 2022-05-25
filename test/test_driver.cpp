@@ -22,8 +22,7 @@ Pipeline makeTestPipeline(std::string &out, Error &err) {
         scotch::makeVector<std::unique_ptr<Preprocessor>>(std::make_unique<EmptyPreproc>()),
         std::make_unique<WasmCompiler>(),
         scotch::makeVector<std::unique_ptr<Postprocessor>>(std::make_unique<EmptyPostproc>()),
-        std::make_unique<TestOutput>(&out),
-        std::make_unique<TestError>(&err)};
+        Io::makeIo<TestOutput, TestError>(std::make_tuple(&out), std::make_tuple(&err))};
 }
 
 

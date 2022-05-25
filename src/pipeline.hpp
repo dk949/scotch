@@ -2,8 +2,7 @@
 #define PIPELINE_HPP
 #include "ast_fwd.hpp"
 #include "compiler.hpp"
-#include "error_handler.hpp"
-#include "output.hpp"
+#include "io.hpp"
 #include "post_processor.hpp"
 #include "pre_processor.hpp"
 
@@ -23,14 +22,13 @@ private:
     PtrVec<Preprocessor> m_preprocessor;
     Ptr<Compiler> m_compiler;
     PtrVec<Postprocessor> m_postprocessor;
-    Ptr<Output> m_output;
-    Ptr<ErrorHandler> m_error;
+    Io m_io;
 
     ErrorOr<std::string> runCompilation(const Program &);
     void outputResult(const ErrorOr<std::string> &);
 
 public:
-    Pipeline(PtrVec<Preprocessor> &&, Ptr<Compiler> &&, PtrVec<Postprocessor> &&, Ptr<Output> &&, Ptr<ErrorHandler> &&);
+    Pipeline(PtrVec<Preprocessor> &&, Ptr<Compiler> &&, PtrVec<Postprocessor> &&, Io &&);
     void run(const Program &);
 };
 
