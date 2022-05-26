@@ -3,3 +3,4 @@ compile_commands.json
 logs
 vcpkg
 vcpkg_installed
+.idea
