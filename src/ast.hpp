@@ -1,11 +1,13 @@
 #ifndef AST_HPP
 #define AST_HPP
-#include "ast_fwd.hpp"
 #include "type.hpp"
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
+
+enum class Mod { NONE, CONST, LET };
 
 class Ident {
     std::string PropertyGet(name)
@@ -174,7 +176,34 @@ public:
     Program() = default;
 };
 
+// Printing
 
-#include "printers.hpp"
+template<>
+struct fmt::formatter<Ident> : formatter<std::string> {
+    auto format(const Ident &id, format_context &ctx) {
+        return formatter<std::string>::format(id.name(), ctx);
+    }
+};
+
+template<>
+struct fmt::formatter<Mod> : formatter<std::string_view> {
+    template<typename FormatContext>
+    auto format(Mod mod, FormatContext &ctx) {
+        std::string name = "Invalid token";
+        switch (mod) {
+            case Mod::NONE:
+                name = "NONE";
+                break;
+            case Mod::CONST:
+                name = "CONST";
+                break;
+            case Mod::LET:
+                name = "LET";
+                break;
+        }
+        return formatter<string_view>::format(name, ctx);
+    }
+};
+
 
 #endif  // AST_HPP
