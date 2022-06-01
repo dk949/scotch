@@ -45,7 +45,8 @@ public:
 };
 
 
-struct Expr {
+class Expr {
+public:
     virtual ~Expr() = default;
     virtual constexpr std::string_view exprType() const = 0;
 };
