@@ -57,7 +57,7 @@ class Assign : public Expr {
 public:
     Assign(Ident target, std::shared_ptr<Expr> source);
     Assign() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Assign";
     }
 };
@@ -69,7 +69,7 @@ public:
     Declare(Var target, std::shared_ptr<Expr> source);
     Declare() = default;
 
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Declare";
     }
 };
@@ -79,7 +79,7 @@ class Return : public Expr {
 public:
     Return(std::shared_ptr<Expr> value);
     Return() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Return";
     }
 };
@@ -90,7 +90,7 @@ class Add : public Expr {
 public:
     Add(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs);
     Add() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Add";
     }
 };
@@ -100,7 +100,7 @@ class VarExpr : public Expr {
 public:
     VarExpr(Ident name);
     VarExpr() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "VarExpr";
     }
 };
@@ -110,7 +110,7 @@ class Int32 : public Expr {
 public:
     Int32(int64_t value);
     Int32() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Int32";
     }
 };
@@ -120,7 +120,7 @@ class Int64 : public Expr {
 public:
     Int64(int64_t value);
     Int64() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Int64";
     }
 };
@@ -130,7 +130,7 @@ struct Float32 : public Expr {
 public:
     Float32(double value);
     Float32() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Float32";
     }
 };
@@ -139,7 +139,7 @@ struct Float64 : public Expr {
 public:
     Float64(double value);
     Float64() = default;
-    std::string_view constexpr exprType() const override {
+    [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Float64";
     }
 };
