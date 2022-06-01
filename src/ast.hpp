@@ -105,7 +105,12 @@ public:
     }
 };
 
-class Int32 : public Expr {
+class BuiltInLiteral : public Expr {
+public:
+    [[nodiscard]] virtual Type toType() const = 0;
+};
+
+class Int32 : public BuiltInLiteral {
     int32_t PropertyGet(value)
 public:
     Int32(int64_t value);
@@ -113,9 +118,10 @@ public:
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Int32";
     }
+    [[nodiscard]] Type toType() const override;
 };
 
-class Int64 : public Expr {
+class Int64 : public BuiltInLiteral {
     int64_t PropertyGet(value)
 public:
     Int64(int64_t value);
@@ -123,9 +129,10 @@ public:
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Int64";
     }
+    [[nodiscard]] Type toType() const override;
 };
 
-struct Float32 : public Expr {
+class Float32 : public BuiltInLiteral {
     float PropertyGet(value)
 public:
     Float32(double value);
@@ -133,8 +140,9 @@ public:
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Float32";
     }
+    [[nodiscard]] Type toType() const override;
 };
-struct Float64 : public Expr {
+class Float64 : public BuiltInLiteral {
     double PropertyGet(value)
 public:
     Float64(double value);
@@ -142,6 +150,7 @@ public:
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Float64";
     }
+    [[nodiscard]] Type toType() const override;
 };
 
 class EmptyExpr : public Expr {

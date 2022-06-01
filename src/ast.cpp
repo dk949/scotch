@@ -55,6 +55,21 @@ Float64::Float64(double value)
         : m_value(value) { }
 
 
+Type Int32::toType() const {
+    return Type::fromBuiltinType(BuiltInType::i32);
+}
+Type Int64::toType() const {
+    return Type::fromBuiltinType(BuiltInType::i64);
+}
+
+Type Float32::toType() const {
+    return Type::fromBuiltinType(BuiltInType::f32);
+}
+Type Float64::toType() const {
+    return Type::fromBuiltinType(BuiltInType::f64);
+}
+
+
 
 FunctionDef::FunctionDef(Ident name, Type ret, std::vector<Var> args, std::vector<std::shared_ptr<Expr>> body)
         : m_name(std::move(name))
