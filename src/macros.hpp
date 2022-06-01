@@ -30,11 +30,21 @@ private:
 
 
 
+#ifdef NDEBUG
+#define DEV(VAR)
+#define BREAK()
+#define DBG(X) X
+#else
+#include <csignal>
+#define DEV(VAR) [[maybe_unused]] VAR;
+#define BREAK()  std::raise(SIGTRAP)
 #define DBG(X)                                         \
     ({                                                 \
         auto LABEL_(d, __LINE__) = (X);                \
         fmt::print(stderr, "{}", LABEL_(d, __LINE__)); \
         LABEL_(d, __LINE__);                           \
     })
+#endif
+
 
 #endif  // MACROS_HPP
