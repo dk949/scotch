@@ -32,12 +32,12 @@ public:
     Io(std::unique_ptr<Output> &&, std::unique_ptr<ErrorHandler> &&);
 
     void output(const std::string &);
-    [[nodiscard]] constexpr std::string_view outputType() const {
+    [[nodiscard]] inline std::string_view outputType() const {
         return m_output->outputType();
     }
 
     void error(const Error &);
-    [[nodiscard]] constexpr std::string_view errorHandlerType() const {
+    [[nodiscard]] inline std::string_view errorHandlerType() const {
         return m_output->outputType();
     }
 
