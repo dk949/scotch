@@ -12,6 +12,9 @@
 #include "ast_compiler.hpp"
 #include "parser_options.hpp"
 #include <iostream>
+#include "type_store.hpp"
+
+TypeStore ts;
 }
 
 %code requires{
@@ -72,6 +75,7 @@ int yylex(scotch::parser::semantic_type* yylval, scotch::parser::location_type* 
 %type<Program>                              program
 %type<std::shared_ptr<Return>>              return
 %type<std::shared_ptr<Expr>>                statement
+%type<std::vector<std::shared_ptr<Expr>>>   block
 %type<std::vector<std::shared_ptr<Expr>>>   statements
 %type<std::shared_ptr<Expr>>                valExpr
 
@@ -81,7 +85,7 @@ start       : program
                 auto program = $1;
 
                 auto pipeline = ParserOptions::takePipeline();
-                pipeline.run(std::move(program));
+                pipeline.run(program, ts);
             }
             ;
 
@@ -95,7 +99,10 @@ funcdefs    : { $$ = std::vector<FunctionDef>{}; }
             | funcdefs funcdef { $1.push_back($2); $$ = $1; }
             ;
 
-funcdef     : DEF ident LPAREN args RPAREN COLON ident LCURLY statements RCURLY { $$ = FunctionDef{$2, Type{Mod::LET, $7}, $4, $9}; }
+funcdef     : DEF ident LPAREN args RPAREN COLON ident block { $$ = FunctionDef{$2, ts.makeType(($7).name()), $4, $8}; }
+            ;
+
+block       : LCURLY statements RCURLY { $$ = $2;}
             ;
 
 args        : { $$ = std::vector<Var>{}; }
@@ -103,7 +110,7 @@ args        : { $$ = std::vector<Var>{}; }
             | args COMMA arg { $1.push_back($3); $$ = $1; }
             ;
 
-arg         : ident COLON ident { $$ = Var($1, Type(Mod::CONST, $3)); }
+arg         : ident COLON ident { $$ = Var(Mod::CONST, $1, ts.makeType(($3).name())); }
             ;
 
 statements  : { $$ = std::vector<std::shared_ptr<Expr>>{}; }
@@ -117,7 +124,10 @@ statement   : SEMICOLON {$$ = std::make_shared<EmptyExpr>();}
             | expression SEMICOLON {$$ = $1;}
             ;
 
-declaration : mod ident COLON ident ASSIGN expression { $$ = std::make_shared<Declare>(Var($2, Type($1, $4)), $6); }
+declaration : mod ident COLON ident ASSIGN expression {
+	    auto type = ts.makeType($4.name());
+	    $$ = std::make_shared<Declare>(Var($1, $2, type), $6);
+	    }
             ;
 
 assignment  : ident ASSIGN expression { $$ = std::make_shared<Assign>($1, $3);}

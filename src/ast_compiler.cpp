@@ -1,6 +1,9 @@
 #include "ast_compiler.hpp"
 
 #include "ast.hpp"
+#include "common.hpp"
+#include "macros.hpp"
+#include "type.hpp"
 
 #include <fmt/format.h>
 
@@ -10,11 +13,16 @@ ErrorOr<void> AstCompiler::typeCheck() {
 }
 
 ErrorOr<std::string> compileType(const Type &type) {
-    return fmt::format("Type({}, {})", type.mod() == Mod::CONST ? "const" : "let", type.name().name());
+    auto &var = type.type();
+    switch (var.index()) {
+        VARIANT_CASE(var, BuiltInType, arg, return fmt::format("Builtin({})", arg);)
+        VARIANT_CASE(var, UserType, arg, return fmt::format("UserType({})", arg.id);)
+        VARIANT_CASE(var, UnknownType, arg, return "UnknownType";)
+    }
 }
 
 ErrorOr<std::string> compileVar(const Var &var) {
-    return fmt::format("Var({}, {})", TRY(compileType(var.type())), var.name().name());
+    return fmt::format("Var({}, {})", var.mod(), TRY(compileType(var.type())), var.name().name());
 }
 
 ErrorOr<std::string> compileExpression(const std::shared_ptr<Expr> expr, std::string_view pre = "  ", std::string_view post = ",\n") {

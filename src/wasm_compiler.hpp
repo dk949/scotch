@@ -15,15 +15,16 @@ private:
         Variable,
     };
 
-    static inline Type emptyType = Type {};
+    static inline Type emptyType = Type::fromUnknownType();
     struct Symbol {
         SymbolKind kind;
         Type type;
     };
     std::unordered_map<Ident, Symbol> m_symbolTable;
+    std::unordered_map<Ident, Mod> m_modTable;
 
     [[nodiscard]] ErrorOr<void> getSymbolsFromExpression(const Expr *);
-    [[nodiscard]] ErrorOr<Ident> typeCheckExpr(std::string_view, const Expr *);
+    [[nodiscard]] ErrorOr<Type> typeCheckExpr(std::string_view, const Expr *);
 
     [[nodiscard]] ErrorOr<std::string> compileModule(const Module &) const;
     [[nodiscard]] ErrorOr<std::string> compileFuncs(const std::vector<FunctionDef> &) const;

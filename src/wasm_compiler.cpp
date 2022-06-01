@@ -2,6 +2,7 @@
 
 #include "ast.hpp"
 #include "macros.hpp"
+#include "type.hpp"
 
 #include <fmt/format.h>
 #include <ranges>
@@ -9,47 +10,49 @@
 ErrorOr<void> WasmCompiler::getSymbolsFromExpression(const Expr *expr) {
     if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
         m_symbolTable[declare->target().name()] = Symbol {SymbolKind::Variable, declare->target().type()};
+        m_modTable[declare->target().name()] = declare->target().mod();
     }
     return {};
 }
 
 
-ErrorOr<Ident> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr *expr) {
+ErrorOr<Type> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr *expr) {
     if (const auto *assign = dynamic_cast<const Assign *>(expr)) {
         if (!m_symbolTable.contains(assign->target())) {
             return tl::unexpected(Error {fmt::format("{} does not name a variable", assign->target())});
         }
         auto targetType = m_symbolTable.at(assign->target());
-        if (targetType.type.mod() == Mod::CONST) {
+        auto targetMod = m_modTable.at(assign->target());
+        if (targetMod == Mod::CONST) {
             return tl::unexpected(Error {fmt::format("cannot assign to const variable {}", assign->target())});
         }
         auto sourceType = TRY(typeCheckExpr(funcName, assign->source().get()));
-        if (targetType.type.name() != sourceType) {
+        if (targetType.type != sourceType) {
             return tl::unexpected(
                 Error {fmt::format("cannot assign the expressino of type {} to variable {} of type {}",
-                    sourceType,
+                    m_ts[sourceType],
                     assign->target(),
-                    targetType.type.name())});
+                    m_ts[targetType.type])});
         }
-        return targetType.type.name();
+        return targetType.type;
     }
     if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
         auto sourceType = TRY(typeCheckExpr(funcName, declare->source().get()));
-        if (declare->target().type().name() != sourceType) {
+        if (declare->target().type() != sourceType) {
             return tl::unexpected(
-                Error {fmt::format("cannot assign the expressino of type {} to variable {} of type {}",
-                    sourceType,
+                Error {fmt::format("cannot assign the expression of type {} to variable {} of type {}",
+                    m_ts[sourceType],
                     declare->target().name(),
-                    declare->target().type().name())});
+                    m_ts[declare->target().type()])});
         }
-        return declare->target().type().name();
+        return declare->target().type();
     }
     if (const auto *ret = dynamic_cast<const Return *>(expr)) {
         auto valueType = TRY(typeCheckExpr(funcName, ret->value().get()));
-        auto funcRet = m_symbolTable.at(Ident(funcName)).type.name();
+        auto funcRet = m_symbolTable.at(Ident(funcName)).type;
         if (funcRet != valueType) {
             return tl::unexpected(Error {
-                fmt::format("cannot return expression of type {} from function {} returning {}", valueType, funcName, funcRet)});
+                fmt::format("cannot return expression of type {} from function {} returning {}", m_ts[valueType], funcName, m_ts[funcRet])});
         }
         return valueType;
     }
@@ -57,8 +60,8 @@ ErrorOr<Ident> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr
         auto lhsType = TRY(typeCheckExpr(funcName, add->lhs().get()));
         auto rhsType = TRY(typeCheckExpr(funcName, add->rhs().get()));
         if (lhsType != rhsType) {
-            return tl::unexpected(
-                Error {fmt::format("cannot add expression of type {} to expression of type {}", lhsType, rhsType)});
+            return tl::unexpected(Error {
+                fmt::format("cannot add expression of type {} to expression of type {}", m_ts[lhsType], m_ts[rhsType])});
         }
         return lhsType;
     }
@@ -66,19 +69,10 @@ ErrorOr<Ident> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr
         if (!m_symbolTable.contains(varexpr->name())) {
             return tl::unexpected(Error {fmt::format("{} does not name a variable", varexpr->name())});
         }
-        return m_symbolTable.at(varexpr->name()).type.name();
+        return m_symbolTable.at(varexpr->name()).type;
     }
-    if (dynamic_cast<const Int32 *>(expr)) {
-        return "i32";
-    }
-    if (dynamic_cast<const Int64 *>(expr)) {
-        return "i64";
-    }
-    if (dynamic_cast<const Float32 *>(expr)) {
-        return "f32";
-    }
-    if (dynamic_cast<const Float64 *>(expr)) {
-        return "f64";
+    if (const auto *lit = dynamic_cast<const BuiltInLiteral *>(expr)) {
+        return lit->toType();
     }
 
     return tl::unexpected(Error {fmt::format("{}: Unexpected expression type {}", compilerType(), expr->exprType())});
@@ -91,6 +85,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
 
         for (const auto &arg : func.args()) {
             m_symbolTable[arg.name()] = Symbol {SymbolKind::Argument, arg.type()};
+            m_modTable[arg.name()] = Mod::CONST;
         }
 
         for (const auto &expr : func.body()) {
@@ -105,7 +100,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
 
 
 [[nodiscard]] ErrorOr<std::string> WasmCompiler::compileArg(const Var &arg) const {
-    return fmt::format("(param ${} {})", arg.name(), arg.type().name());
+    return fmt::format("(param ${} {})", arg.name(), m_ts[arg.type()]);
 }
 
 
@@ -158,7 +153,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
     std::string out;
     for (const auto &[name, symbol] : m_symbolTable) {
         if (symbol.kind == SymbolKind::Variable) {
-            fmt::format_to(std::back_inserter(out), "(local ${} {})\n", name, symbol.type.name());
+            fmt::format_to(std::back_inserter(out), "(local ${} {})\n", name, m_ts[symbol.type]);
         }
     }
     return out;
@@ -185,7 +180,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
         "{4}"
         ")\n",
         func.name(),
-        func.ret().name(),
+        m_ts[func.ret()],
         TRY(compileArgs(func.args())),
         TRY(compileVars()),
         TRY(compileBlock(func.name(), func.body())));

@@ -29,6 +29,12 @@ private:
     })
 
 
+#define VARIANT_CASE(VARIANT, T, VAR, B)           \
+    case scotch::variantIndex<TypeVariant, T>(): { \
+        auto &VAR = std::get<T>(VARIANT);          \
+        B break;                                   \
+    }
+
 
 #ifdef NDEBUG
 #define DEV(VAR)
