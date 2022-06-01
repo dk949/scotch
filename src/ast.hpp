@@ -1,13 +1,11 @@
 #ifndef AST_HPP
 #define AST_HPP
 #include "ast_fwd.hpp"
-#include "macros.hpp"
+#include "type.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
-
-enum class Mod { CONST, LET };
 
 class Ident {
     std::string PropertyGet(name)
@@ -28,19 +26,12 @@ struct std::hash<Ident> {
     }
 };
 
-class Type {
-    Mod PropertyGet(mod)
-    Ident PropertyGet(name)
-public:
-    Type(Mod mod, Ident name);
-    Type() = default;
-};
-
 class Var {
+    Mod PropertyGet(mod)
     Ident PropertyGet(name)
     Type PropertyGet(type)
 public:
-    Var(Ident name, Type type);
+    Var(Mod mod, Ident name, Type type);
     Var() = default;
 };
 
@@ -67,7 +58,6 @@ class Declare : public Expr {
     std::shared_ptr<Expr> PropertyGet(source)
 public:
     Declare(Var target, std::shared_ptr<Expr> source);
-    Declare() = default;
 
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Declare";

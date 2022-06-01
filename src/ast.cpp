@@ -14,12 +14,9 @@ Ident::operator std::string_view() const {
     return m_name;
 }
 
-Type::Type(Mod mod, Ident name)
+Var::Var(Mod mod, Ident name, Type type)
         : m_mod(mod)
-        , m_name(std::move(name)) { }
-
-Var::Var(Ident name, Type type)
-        : m_name(std::move(name))
+        , m_name(std::move(name))
         , m_type(type) { }
 
 
