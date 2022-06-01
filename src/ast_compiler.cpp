@@ -18,6 +18,8 @@ ErrorOr<std::string> compileType(const Type &type) {
         VARIANT_CASE(var, BuiltInType, arg, return fmt::format("Builtin({})", arg);)
         VARIANT_CASE(var, UserType, arg, return fmt::format("UserType({})", arg.id);)
         VARIANT_CASE(var, UnknownType, arg, return "UnknownType";)
+        default:
+            throw scotch::Unreachable(__func__);
     }
 }
 

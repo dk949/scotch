@@ -1,6 +1,5 @@
 #ifndef POST_PROCESSOR_HPP
 #define POST_PROCESSOR_HPP
-#include "ast_fwd.hpp"
 #include "error.hpp"
 
 class Postprocessor {

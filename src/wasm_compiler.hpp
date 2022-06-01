@@ -1,7 +1,6 @@
 #ifndef WASM_COMPILER_HPP
 #define WASM_COMPILER_HPP
 
-#include "ast.hpp"
 #include "compiler.hpp"
 
 #include <unordered_map>

@@ -1,7 +1,7 @@
 #ifndef PRE_PROCESSOR_HPP
 #define PRE_PROCESSOR_HPP
 
-#include "ast_fwd.hpp"
+#include "fwd.hpp"
 #include "error.hpp"
 
 

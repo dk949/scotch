@@ -1,6 +1,5 @@
 #ifndef AST_COMPILER_HPP
 #define AST_COMPILER_HPP
-#include "ast_fwd.hpp"
 #include "compiler.hpp"
 
 
