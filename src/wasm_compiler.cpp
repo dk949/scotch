@@ -35,6 +35,9 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr)
                     m_ts[targetType.type])});
         }
     } else if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
+        if (m_symbolTable.contains(declare->name())) {
+            return tl::unexpected(Error {fmt::format("Redeclaration of variable {}", declare->name())});
+        }
         auto sourceType = TRY(getType(funcName, declare->source().get()));
         expr->overallType() = sourceType;
         if (declare->declaredType() && (declare->declaredType() != sourceType)) {
