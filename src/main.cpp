@@ -23,7 +23,7 @@ std::optional<yyFlexLexer> lexer;
 
 
 int main(int, char *argv[]) {
-    const auto args = scotch::Args::parse(argv);
+    const auto args = Args::parse(argv);
 
     std::ifstream input(args.positionals().front().data());
     if (!input) {

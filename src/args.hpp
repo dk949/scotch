@@ -6,10 +6,9 @@
 #include <vector>
 
 
-namespace scotch {
 struct Args {
 public:
-    enum class Verbosity { NONE, SOME, MOST, ALL };
+    enum class Verbosity { None, Some, Most, All };
     using enum Verbosity;
 
 private:
@@ -26,7 +25,53 @@ public:
 
     static Args parse(char **argv);
 };
-}  // namespace scotch
 
+// Printing
+#include <fmt/format.h>
+template<>
+struct fmt::formatter<Args::Verbosity> : formatter<std::string_view> {
+    template<typename FormatContext>
+    auto format(Args::Verbosity verb, FormatContext &ctx) {
+        using enum Args::Verbosity;
+        std::string name = "Invalid Verbosiy level";
+        switch (verb) {
+            case None:
+                name = "None";
+                break;
+            case Some:
+                name = "Some";
+                break;
+            case Most:
+                name = "Most";
+                break;
+            case All:
+                name = "All";
+                break;
+        }
+        return formatter<string_view>::format(name, ctx);
+    }
+};
+
+template<>
+struct fmt::formatter<Args> : formatter<std::string> {
+    template<typename FormatContext>
+    auto format(Args args, FormatContext &ctx) {
+        return formatter<std::string>::format(fmt::format("({{\n"
+                                                          "\tpositionals: [{}]\n"
+                                                          "\toutput: {}\n"
+                                                          "\tverbosity: {}\n"
+                                                          "\tdumpTokens: {}\n"
+                                                          "\tdumpAst: {}\n"
+                                                          "\tdumpWat: {}\n"
+                                                          "}}",
+                                                  fmt::join(args.positionals(), ", "),
+                                                  args.output(),
+                                                  args.verbosity(),
+                                                  args.dumpTokens(),
+                                                  args.dumpAst(),
+                                                  args.dumpWat()),
+            ctx);
+    }
+};
 
 #endif  // ARGS_HPP

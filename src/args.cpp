@@ -6,7 +6,6 @@
 #include <vector>
 
 
-namespace scotch {
 
 Args::Args(std::vector<std::string_view> positionals, std::string_view output, Verbosity verb, bool tok, bool ast, bool wat)
         : m_positionals(std::move(positionals))
@@ -40,14 +39,14 @@ options:
     --dump-ast                  print ast created from the tokens
     --dump-wat                  print webassembly created from the ast
 )",
-        project::name);
+        scotch::project::name);
     exit(0);
 }
 
 
 
 void version() {
-    fmt::print("{}: v{}", project::name, project::version::full);
+    fmt::print("{}: v{}", scotch::project::name, scotch::project::version::full);
     exit(0);
 }
 
@@ -59,7 +58,7 @@ void version() {
 Args Args::parse(char **argv) {
     std::string_view output;
     std::vector<std::string_view> positionals;
-    Verbosity verb = NONE;
+    Verbosity verb = None;
     bool tok = false;
     bool ast = false;
     bool wat = false;
@@ -89,15 +88,15 @@ Args Args::parse(char **argv) {
 
             case scotch::hash("--verbose"):
             case scotch::hash("-v"):
-                Do(verb = Verbosity::SOME;);
+                Do(verb = Verbosity::Some;);
 
             case scotch::hash("--very-verbose"):
             case scotch::hash("-vv"):
-                Do(verb = Verbosity::MOST;);
+                Do(verb = Verbosity::Most;);
 
             case scotch::hash("--very-very-verbose"):
             case scotch::hash("-vvv"):
-                Do(verb = Verbosity::ALL;);
+                Do(verb = Verbosity::All;);
 
             case scotch::hash("--dump-tokens"):
                 Do(tok = true;);
@@ -121,5 +120,3 @@ Args Args::parse(char **argv) {
     }
     return Args(positionals, output, verb, tok, ast, wat);
 }
-
-}  // namespace scotch
