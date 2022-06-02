@@ -9,6 +9,17 @@ public:                                                      \
     }                                                        \
 private:
 
+#define PropertyGetSet(NAME)                                 \
+    m_##NAME;                                                \
+public:                                                      \
+    [[nodiscard]] inline const auto &NAME() const noexcept { \
+        return m_##NAME;                                     \
+    }                                                        \
+    [[nodiscard]] inline auto &NAME() noexcept {             \
+        return m_##NAME;                                     \
+    }                                                        \
+private:
+
 
 #define MERGE_(a, b) a##b
 #define LABEL_(a, b) MERGE_(a, b)
