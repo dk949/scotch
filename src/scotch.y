@@ -124,12 +124,8 @@ statement   : SEMICOLON {$$ = std::make_shared<EmptyExpr>();}
             | expression SEMICOLON {$$ = $1;}
             ;
 
-declaration : mod ident COLON ident ASSIGN expression {
-	    // TODO: add version with no explicit type
-	    // FIXME: why is this being copied?
-	    auto type = ts.makeType($4.name());
-	    $$ = std::make_shared<Declare>($1, $2, type, $6);
-	    }
+declaration : mod ident COLON ident ASSIGN expression { $$ = std::make_shared<Declare>($1, $2, ts.makeType($4.name()), $6);}
+            | mod ident ASSIGN expression { $$ = std::make_shared<Declare>($1, $2, std::nullopt, $4);}
             ;
 
 assignment  : ident ASSIGN expression { $$ = std::make_shared<Assign>($1, $3);}
