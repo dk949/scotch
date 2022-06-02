@@ -23,8 +23,8 @@ ErrorOr<std::string> compileType(const Type &type) {
     }
 }
 
-ErrorOr<std::string> compileVar(const Var &var) {
-    return fmt::format("Var({}, {})", var.mod(), TRY(compileType(var.type())), var.name().name());
+ErrorOr<std::string> compileArg(const Arg &arg) {
+    return fmt::format("Arg({}, {})", TRY(compileType(arg.type())), arg.name().name());
 }
 
 ErrorOr<std::string> compileExpression(const std::shared_ptr<Expr> expr, std::string_view pre = "  ", std::string_view post = ",\n") {
@@ -37,8 +37,10 @@ ErrorOr<std::string> compileExpression(const std::shared_ptr<Expr> expr, std::st
 
     } else if (Declare *declare = dynamic_cast<Declare *>(expr.get())) {
         fmt::format_to(std::back_inserter(out),
-            "Declare({}, {})",
-            TRY(compileVar(declare->target())),
+            "Declare({}, {}, {}, {})",
+            declare->mod(),
+            declare->name(),
+            declare->declaredType() ? TRY(compileType(*declare->declaredType())) : "(?)",
             TRY(compileExpression(declare->source(), "", "")));
 
     } else if (Return *ret = dynamic_cast<Return *>(expr.get())) {
@@ -70,7 +72,7 @@ ErrorOr<std::string> compileFunc(const FunctionDef &func) {
     auto out = fmt::format("Function({}, Args(", func.name().name());
     int notFirst = 0;
     for (const auto &var : func.args()) {
-        fmt::format_to(std::back_inserter(out), "{}{}", notFirst++ ? ", " : "", TRY(compileVar(var)));
+        fmt::format_to(std::back_inserter(out), "{}{}", notFirst++ ? ", " : "", TRY(compileArg(var)));
     }
 
     fmt::format_to(std::back_inserter(out), "), {}, Body(", TRY(compileType(func.ret())));

@@ -61,8 +61,8 @@ int yylex(scotch::parser::semantic_type* yylval, scotch::parser::location_type* 
 %left AND
 %precedence NOT
 
-%type<Var>                                  arg
-%type<std::vector<Var>>                     args
+%type<Arg>                                  arg
+%type<std::vector<Arg>>                     args
 %type<std::shared_ptr<Expr>>                binExpr
 %type<std::shared_ptr<Declare>>             declaration
 %type<std::shared_ptr<Assign>>              assignment
@@ -105,12 +105,12 @@ funcdef     : DEF ident LPAREN args RPAREN COLON ident block { $$ = FunctionDef{
 block       : LCURLY statements RCURLY { $$ = $2;}
             ;
 
-args        : { $$ = std::vector<Var>{}; }
-            | arg { $$ = std::vector<Var>{$1}; }
+args        : { $$ = std::vector<Arg>{}; }
+            | arg { $$ = std::vector<Arg>{$1}; }
             | args COMMA arg { $1.push_back($3); $$ = $1; }
             ;
 
-arg         : ident COLON ident { $$ = Var(Mod::CONST, $1, ts.makeType(($3).name())); }
+arg         : ident COLON ident { $$ = Arg($1, ts.makeType(($3).name())); }
             ;
 
 statements  : { $$ = std::vector<std::shared_ptr<Expr>>{}; }
@@ -125,8 +125,10 @@ statement   : SEMICOLON {$$ = std::make_shared<EmptyExpr>();}
             ;
 
 declaration : mod ident COLON ident ASSIGN expression {
+	    // TODO: add version with no explicit type
+	    // FIXME: why is this being copied?
 	    auto type = ts.makeType($4.name());
-	    $$ = std::make_shared<Declare>(Var($1, $2, type), $6);
+	    $$ = std::make_shared<Declare>($1, $2, type, $6);
 	    }
             ;
 

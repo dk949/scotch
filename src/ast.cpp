@@ -14,9 +14,8 @@ Ident::operator std::string_view() const {
     return m_name;
 }
 
-Var::Var(Mod mod, Ident name, Type type)
-        : m_mod(mod)
-        , m_name(std::move(name))
+Arg::Arg(Ident name, Type type)
+        : m_name(std::move(name))
         , m_type(type) { }
 
 
@@ -25,8 +24,10 @@ Assign::Assign(Ident target, std::shared_ptr<Expr> source)
         : m_target(std::move(target))
         , m_source(std::move(source)) { }
 
-Declare::Declare(Var target, std::shared_ptr<Expr> source)
-        : m_target(std::move(target))
+Declare::Declare(Mod mod, Ident name, std::optional<Type> declaredType, std::shared_ptr<Expr> source)
+        : m_mod(mod)
+        , m_name(std::move(name))
+        , m_declaredType(std::move(declaredType))
         , m_source(std::move(source)) { }
 
 Return::Return(std::shared_ptr<Expr> value)
@@ -68,7 +69,7 @@ Type Float64::toType() const {
 
 
 
-FunctionDef::FunctionDef(Ident name, Type ret, std::vector<Var> args, std::vector<std::shared_ptr<Expr>> body)
+FunctionDef::FunctionDef(Ident name, Type ret, std::vector<Arg> args, std::vector<std::shared_ptr<Expr>> body)
         : m_name(std::move(name))
         , m_ret(std::move(ret))
         , m_args(std::move(args))
@@ -80,4 +81,3 @@ Module::Module(Ident name, std::vector<FunctionDef> funcs)
 
 Program::Program(Module mod)
         : m_mod(std::move(mod)) { }
-

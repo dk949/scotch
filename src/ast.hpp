@@ -29,16 +29,12 @@ struct std::hash<Ident> {
     }
 };
 
-// TODO: Get rid of Var
-//  Add Mod, Ident and optional<Type> to Declare
-//  make Arg which has Ident and Type
-class Var {
-    Mod PropertyGet(mod)
+class Arg {
     Ident PropertyGet(name)
     Type PropertyGet(type)
 public:
-    Var(Mod mod, Ident name, Type type);
-    Var() = default;
+    Arg(Ident name, Type type);
+    Arg() = default;
 };
 
 
@@ -61,10 +57,12 @@ public:
 };
 
 class Declare : public Expr {
-    Var PropertyGet(target)
+    Mod PropertyGet(mod)
+    Ident PropertyGet(name)
+    std::optional<Type> PropertyGet(declaredType)
     std::shared_ptr<Expr> PropertyGet(source)
 public:
-    Declare(Var target, std::shared_ptr<Expr> source);
+    Declare(Mod mod, Ident name, std::optional<Type> declaredType, std::shared_ptr<Expr> source);
 
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "Declare";
@@ -159,10 +157,10 @@ class EmptyExpr : public Expr {
 class FunctionDef {
     Ident PropertyGet(name)
     Type PropertyGet(ret)
-    std::vector<Var> PropertyGet(args)
+    std::vector<Arg> PropertyGet(args)
     std::vector<std::shared_ptr<Expr>> PropertyGet(body)
 public:
-    FunctionDef(Ident name, Type ret, std::vector<Var> args, std::vector<std::shared_ptr<Expr>> body);
+    FunctionDef(Ident name, Type ret, std::vector<Arg> args, std::vector<std::shared_ptr<Expr>> body);
     FunctionDef() = default;
 };
 
