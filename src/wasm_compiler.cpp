@@ -8,14 +8,14 @@
 #include <ranges>
 
 
-ErrorOr<Type> WasmCompiler::getType(std::string_view funcname, Expr *expr) {
+ErrorOr<Type> WasmCompiler::getType(Expr *expr) {
     auto &t = expr->overallType();
     if (!t)
-        TRY_VOID(typeCheckExpr(funcname, expr));
+        TRY_VOID(typeCheckExpr(expr));
     return *t;
 }
 
-ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr) {
+ErrorOr<void> WasmCompiler::typeCheckExpr(Expr *expr) {
     if (const auto *assign = dynamic_cast<const Assign *>(expr)) {
         if (!m_symbolTable.contains(assign->target())) {
             return tl::unexpected(Error {fmt::format("{} does not name a variable", assign->target())});
@@ -25,7 +25,7 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr)
         if (targetMod == Mod::CONST) {
             return tl::unexpected(Error {fmt::format("cannot assign to const variable {}", assign->target())});
         }
-        auto sourceType = TRY(getType(funcName, assign->source().get()));
+        auto sourceType = TRY(getType(assign->source().get()));
         expr->overallType() = sourceType;
         if (targetType.type != sourceType) {
             return tl::unexpected(
@@ -38,7 +38,7 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr)
         if (m_symbolTable.contains(declare->name())) {
             return tl::unexpected(Error {fmt::format("Redeclaration of variable {}", declare->name())});
         }
-        auto sourceType = TRY(getType(funcName, declare->source().get()));
+        auto sourceType = TRY(getType(declare->source().get()));
         expr->overallType() = sourceType;
         if (declare->declaredType() && (declare->declaredType() != sourceType)) {
             return tl::unexpected(
@@ -50,17 +50,17 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr)
         m_symbolTable[declare->name()] = Symbol {.kind = SymbolKind::Variable, .type = sourceType};
         m_modTable[declare->name()] = declare->mod();
     } else if (const auto *ret = dynamic_cast<const Return *>(expr)) {
-        auto valueType = TRY(getType(funcName, ret->value().get()));
+        auto valueType = TRY(getType(ret->value().get()));
         expr->overallType() = valueType;
         // TODO: std::string_view m_currentFunc; // holds name of the currently processed function
-        auto funcRet = m_symbolTable.at(Ident(funcName)).type;
+        auto funcRet = m_symbolTable.at(m_currentFunc).type;
         if (funcRet != valueType) {
             return tl::unexpected(Error {
-                fmt::format("cannot return expression of type {} from function {} returning {}", m_ts[valueType], funcName, m_ts[funcRet])});
+                fmt::format("cannot return expression of type {} from function {} returning {}", m_ts[valueType], m_currentFunc, m_ts[funcRet])});
         }
     } else if (const auto *add = dynamic_cast<const Add *>(expr)) {
-        auto lhsType = TRY(getType(funcName, add->lhs().get()));
-        auto rhsType = TRY(getType(funcName, add->rhs().get()));
+        auto lhsType = TRY(getType(add->lhs().get()));
+        auto rhsType = TRY(getType(add->rhs().get()));
         expr->overallType() = lhsType;
         if (lhsType != rhsType) {
             return tl::unexpected(Error {
@@ -80,10 +80,23 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr)
     return {};
 }
 
+
+ErrorOr<void> WasmCompiler::checkFunctionInTable(const FunctionDef &func) {
+    if (std::find_if(std::begin(m_symbolTable), std::end(m_symbolTable), [&func](auto &&a) {
+            return a.first == func.name() && a.second.kind == SymbolKind::Function;
+        }) != std::end(m_symbolTable)) {
+        return tl::unexpected {Error {fmt::format("redeclaration of function {}", func.name())}};
+    }
+
+    return {};
+}
+
 ErrorOr<void> WasmCompiler::typeCheck() {
     m_symbolTable[m_program.mod().name()] = Symbol {SymbolKind::Module, emptyType};
     for (const auto &func : m_program.mod().funcs()) {
+        TRY_VOID(checkFunctionInTable(func));
         m_symbolTable[func.name()] = Symbol {SymbolKind::Function, func.ret()};
+        m_currentFunc = func.name();
 
         for (const auto &arg : func.args()) {
             m_symbolTable[arg.name()] = Symbol {SymbolKind::Argument, arg.type()};
@@ -91,8 +104,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
         }
 
         for (const auto &expr : func.body()) {
-            // TRY_VOID(getSymbolsFromExpression(expr.get()));
-            TRY_VOID(typeCheckExpr(func.name(), expr.get()));
+            TRY_VOID(typeCheckExpr(expr.get()));
         }
     }
 
@@ -114,20 +126,20 @@ ErrorOr<void> WasmCompiler::typeCheck() {
     return out;
 }
 
-[[nodiscard]] ErrorOr<std::string> WasmCompiler::compileEpxr(std::string_view funcName, const Expr *expr) const {
+[[nodiscard]] ErrorOr<std::string> WasmCompiler::compileEpxr(const Expr *expr) const {
     if (const auto *assign = dynamic_cast<const Assign *>(expr)) {
-        return fmt::format("{}\n(local.set ${})\n", TRY(compileEpxr(funcName, assign->source().get())), assign->target());
+        return fmt::format("{}\n(local.set ${})\n", TRY(compileEpxr(assign->source().get())), assign->target());
     }
     if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
-        return fmt::format("{}\n(local.set ${})\n", TRY(compileEpxr(funcName, declare->source().get())), declare->name());
+        return fmt::format("{}\n(local.set ${})\n", TRY(compileEpxr(declare->source().get())), declare->name());
     }
     if (const auto *ret = dynamic_cast<const Return *>(expr)) {
-        return fmt::format("{}\nreturn\n", TRY(compileEpxr(funcName, ret->value().get())));
+        return fmt::format("{}\nreturn\n", TRY(compileEpxr(ret->value().get())));
     }
     if (const auto *add = dynamic_cast<const Add *>(expr)) {
         return fmt::format("{}\n{}\n{}.add",
-            TRY(compileEpxr(funcName, add->lhs().get())),
-            TRY(compileEpxr(funcName, add->rhs().get())),
+            TRY(compileEpxr(add->lhs().get())),
+            TRY(compileEpxr(add->rhs().get())),
             expr->overallType().value());
     }
     if (const auto *varexpr = dynamic_cast<const VarExpr *>(expr)) {
@@ -159,11 +171,10 @@ ErrorOr<void> WasmCompiler::typeCheck() {
     return out;
 }
 
-[[nodiscard]] ErrorOr<std::string>
-    WasmCompiler::compileBlock(std::string_view funcName, const std::vector<std::shared_ptr<Expr>> &block) const {
+[[nodiscard]] ErrorOr<std::string> WasmCompiler::compileBlock(const std::vector<std::shared_ptr<Expr>> &block) const {
     std::string out;
     for (const auto &stmt : block) {
-        fmt::format_to(std::back_inserter(out), "{}", TRY(compileEpxr(funcName, stmt.get())));
+        fmt::format_to(std::back_inserter(out), "{}", TRY(compileEpxr(stmt.get())));
     }
     return out;
 }
@@ -183,7 +194,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
         m_ts[func.ret()],
         TRY(compileArgs(func.args())),
         TRY(compileVars()),
-        TRY(compileBlock(func.name(), func.body())));
+        TRY(compileBlock(func.body())));
 
     return out;
 }
