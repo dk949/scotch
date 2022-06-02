@@ -23,7 +23,8 @@ private:
     std::unordered_map<Ident, Mod> m_modTable;
 
     [[nodiscard]] ErrorOr<void> getSymbolsFromExpression(const Expr *);
-    [[nodiscard]] ErrorOr<Type> typeCheckExpr(std::string_view, const Expr *);
+    [[nodiscard]] ErrorOr<void> typeCheckExpr(std::string_view, Expr *);
+    [[nodiscard]] ErrorOr<Type> getType(std::string_view, Expr *);
 
     [[nodiscard]] ErrorOr<std::string> compileModule(const Module &) const;
     [[nodiscard]] ErrorOr<std::string> compileFuncs(const std::vector<FunctionDef> &) const;

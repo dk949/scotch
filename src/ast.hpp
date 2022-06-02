@@ -3,6 +3,7 @@
 #include "type.hpp"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -28,6 +29,9 @@ struct std::hash<Ident> {
     }
 };
 
+// TODO: Get rid of Var
+//  Add Mod, Ident and optional<Type> to Declare
+//  make Arg which has Ident and Type
 class Var {
     Mod PropertyGet(mod)
     Ident PropertyGet(name)
@@ -39,6 +43,7 @@ public:
 
 
 class Expr {
+    std::optional<Type> PropertyGetSet(overallType)
 public:
     virtual ~Expr() = default;
     virtual constexpr std::string_view exprType() const = 0;

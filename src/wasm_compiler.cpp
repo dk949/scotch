@@ -7,6 +7,14 @@
 #include <fmt/format.h>
 #include <ranges>
 
+
+ErrorOr<Type> WasmCompiler::getType(std::string_view funcname, Expr *expr) {
+    auto &t = expr->overallType();
+    if (!t)
+        TRY_VOID(typeCheckExpr(funcname, expr));
+    return *t;
+}
+
 ErrorOr<void> WasmCompiler::getSymbolsFromExpression(const Expr *expr) {
     if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
         m_symbolTable[declare->target().name()] = Symbol {SymbolKind::Variable, declare->target().type()};
@@ -16,7 +24,7 @@ ErrorOr<void> WasmCompiler::getSymbolsFromExpression(const Expr *expr) {
 }
 
 
-ErrorOr<Type> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr *expr) {
+ErrorOr<void> WasmCompiler::typeCheckExpr(std::string_view funcName, Expr *expr) {
     if (const auto *assign = dynamic_cast<const Assign *>(expr)) {
         if (!m_symbolTable.contains(assign->target())) {
             return tl::unexpected(Error {fmt::format("{} does not name a variable", assign->target())});
@@ -26,7 +34,8 @@ ErrorOr<Type> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr 
         if (targetMod == Mod::CONST) {
             return tl::unexpected(Error {fmt::format("cannot assign to const variable {}", assign->target())});
         }
-        auto sourceType = TRY(typeCheckExpr(funcName, assign->source().get()));
+        auto sourceType = TRY(getType(funcName, assign->source().get()));
+        expr->overallType() = sourceType;
         if (targetType.type != sourceType) {
             return tl::unexpected(
                 Error {fmt::format("cannot assign the expressino of type {} to variable {} of type {}",
@@ -34,10 +43,9 @@ ErrorOr<Type> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr 
                     assign->target(),
                     m_ts[targetType.type])});
         }
-        return targetType.type;
-    }
-    if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
-        auto sourceType = TRY(typeCheckExpr(funcName, declare->source().get()));
+    } else if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
+        auto sourceType = TRY(getType(funcName, declare->source().get()));
+        expr->overallType() = sourceType;
         if (declare->target().type() != sourceType) {
             return tl::unexpected(
                 Error {fmt::format("cannot assign the expression of type {} to variable {} of type {}",
@@ -45,37 +53,37 @@ ErrorOr<Type> WasmCompiler::typeCheckExpr(std::string_view funcName, const Expr 
                     declare->target().name(),
                     m_ts[declare->target().type()])});
         }
-        return declare->target().type();
-    }
-    if (const auto *ret = dynamic_cast<const Return *>(expr)) {
-        auto valueType = TRY(typeCheckExpr(funcName, ret->value().get()));
+        m_symbolTable[declare->target().name()] = Symbol {.kind = SymbolKind::Variable, .type = sourceType};
+        m_modTable[declare->target().name()] = declare->target().mod();
+    } else if (const auto *ret = dynamic_cast<const Return *>(expr)) {
+        auto valueType = TRY(getType(funcName, ret->value().get()));
+        expr->overallType() = valueType;
+        // TODO: std::string_view m_currentFunc; // holds name of the currently processed function
         auto funcRet = m_symbolTable.at(Ident(funcName)).type;
         if (funcRet != valueType) {
             return tl::unexpected(Error {
                 fmt::format("cannot return expression of type {} from function {} returning {}", m_ts[valueType], funcName, m_ts[funcRet])});
         }
-        return valueType;
-    }
-    if (const auto *add = dynamic_cast<const Add *>(expr)) {
-        auto lhsType = TRY(typeCheckExpr(funcName, add->lhs().get()));
-        auto rhsType = TRY(typeCheckExpr(funcName, add->rhs().get()));
+    } else if (const auto *add = dynamic_cast<const Add *>(expr)) {
+        auto lhsType = TRY(getType(funcName, add->lhs().get()));
+        auto rhsType = TRY(getType(funcName, add->rhs().get()));
+        expr->overallType() = lhsType;
         if (lhsType != rhsType) {
             return tl::unexpected(Error {
                 fmt::format("cannot add expression of type {} to expression of type {}", m_ts[lhsType], m_ts[rhsType])});
         }
-        return lhsType;
-    }
-    if (const auto *varexpr = dynamic_cast<const VarExpr *>(expr)) {
+    } else if (const auto *varexpr = dynamic_cast<const VarExpr *>(expr)) {
         if (!m_symbolTable.contains(varexpr->name())) {
             return tl::unexpected(Error {fmt::format("{} does not name a variable", varexpr->name())});
         }
-        return m_symbolTable.at(varexpr->name()).type;
+        expr->overallType() = m_symbolTable.at(varexpr->name()).type;
+    } else if (const auto *lit = dynamic_cast<const BuiltInLiteral *>(expr)) {
+        auto type = lit->toType();
+        expr->overallType() = type;
+    } else {
+        return tl::unexpected(Error {fmt::format("{}: Unexpected expression type {}", compilerType(), expr->exprType())});
     }
-    if (const auto *lit = dynamic_cast<const BuiltInLiteral *>(expr)) {
-        return lit->toType();
-    }
-
-    return tl::unexpected(Error {fmt::format("{}: Unexpected expression type {}", compilerType(), expr->exprType())});
+    return {};
 }
 
 ErrorOr<void> WasmCompiler::typeCheck() {
@@ -89,8 +97,8 @@ ErrorOr<void> WasmCompiler::typeCheck() {
         }
 
         for (const auto &expr : func.body()) {
-            TRY_VOID(getSymbolsFromExpression(expr.get()));
-            TRY(typeCheckExpr(func.name(), expr.get()));
+            // TRY_VOID(getSymbolsFromExpression(expr.get()));
+            TRY_VOID(typeCheckExpr(func.name(), expr.get()));
         }
     }
 
