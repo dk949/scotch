@@ -46,6 +46,7 @@ TestFiles openTestFiles(fs::path testdir) {
 void runTests(TestFiles &&testFiles) {
     for (auto &[path, i] : testFiles) {
         INFO("Test " << path << '\n');
+        const auto pathStr = path.string();
         std::string out;
         Error err;
 
@@ -53,9 +54,15 @@ void runTests(TestFiles &&testFiles) {
         ParserOptions::setPipeline(makeTestPipeline(out, err));
         ParserInterface parser {&i};
         int res = parser.parse();
-        if (path.string().find("error") != out.npos) {
-            CHECK(res != 0);
-            CHECK(!err.msg.empty());
+        if (pathStr.ends_with("error")) {
+            if (pathStr.ends_with("parse.error")) {
+                CHECK(res != 0);
+            } else if (pathStr.ends_with("compile.error")) {
+                CHECK(!err.msg.empty());
+            }else{
+                INFO("Invalid test");
+                CHECK(false);
+            }
         } else {
             CHECK(res == 0);
             CHECK(err.msg.empty());
