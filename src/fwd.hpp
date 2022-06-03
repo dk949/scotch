@@ -20,7 +20,7 @@ class Int64;
 class Module;
 class Program;
 class Return;
-class Var;
+class Arg;
 class VarExpr;
 enum class Mod;
 
