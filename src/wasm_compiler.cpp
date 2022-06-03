@@ -140,7 +140,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
         return fmt::format("{}\n{}\n{}.add",
             TRY(compileEpxr(add->lhs().get())),
             TRY(compileEpxr(add->rhs().get())),
-            expr->overallType().value());
+            std::get<BuiltInType>(expr->overallType().value().type()));
     }
     if (const auto *varexpr = dynamic_cast<const VarExpr *>(expr)) {
         return fmt::format("(local.get ${})", varexpr->name());
