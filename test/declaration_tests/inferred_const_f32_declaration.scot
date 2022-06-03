@@ -1,0 +1,6 @@
+module Main;
+
+def main(): i32{
+    const var = 10.0f;
+    return 0i;
+}
