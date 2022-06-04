@@ -75,7 +75,7 @@ struct fmt::formatter<UserType> : formatter<size_t> {
 template<>
 struct fmt::formatter<UnknownType> : formatter<string_view> {
     template<typename FormatContext>
-    auto format(UnknownType type, FormatContext &ctx) {
+    auto format(UnknownType, FormatContext &ctx) {
         return formatter<string_view>::format("?", ctx);
     }
 };
