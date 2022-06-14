@@ -105,6 +105,17 @@ public:
     [[nodiscard]] virtual Type toType() const = 0;
 };
 
+class Bool : public BuiltInLiteral {
+    bool PropertyGet(value)
+public:
+    Bool(bool value);
+    Bool() = default;
+    [[nodiscard]] std::string_view constexpr exprType() const override {
+        return "Bool";
+    }
+    [[nodiscard]] Type toType() const override;
+};
+
 class Int32 : public BuiltInLiteral {
     int32_t PropertyGet(value)
 public:

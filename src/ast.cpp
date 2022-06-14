@@ -40,6 +40,9 @@ Add::Add(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs)
 VarExpr::VarExpr(Ident name)
         : m_name(std::move(name)) { }
 
+Bool::Bool(bool value)
+        : m_value(value) { }
+
 Int32::Int32(int64_t value)
         : m_value(static_cast<int32_t>(value)) { }
 
@@ -52,6 +55,9 @@ Float32::Float32(double value)
 Float64::Float64(double value)
         : m_value(value) { }
 
+Type Bool::toType() const {
+    return Type::fromBuiltinType(BuiltInType::boolean);
+}
 
 Type Int32::toType() const {
     return Type::fromBuiltinType(BuiltInType::i32);
