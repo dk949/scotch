@@ -6,7 +6,7 @@
 #include <string_view>
 #include <variant>
 
-enum class BuiltInType { i32, i64, f32, f64, _max };
+enum class BuiltInType { boolean, i32, i64, f32, f64, _max };
 struct UserType {
     size_t id;
     bool operator==(const UserType &) const = default;
@@ -45,6 +45,9 @@ struct fmt::formatter<BuiltInType> : formatter<std::string_view> {
     auto format(BuiltInType type, FormatContext &ctx) {
         std::string name = "Invalid type";
         switch (type) {
+            case BuiltInType::boolean:
+                name = "boolean";
+                break;
             case BuiltInType::i32:
                 name = "i32";
                 break;
