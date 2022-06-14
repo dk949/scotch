@@ -4,7 +4,6 @@
 
 void scotch::parser::error(const location_type &loc, const std::string &msg) {
     std::cerr << loc.begin.line << ':' << loc.begin.column << ':' << msg << '\n';
-    //exit(1);
 }
 
 std::optional<yyFlexLexer> ParserInterface::lexer = std::nullopt;
