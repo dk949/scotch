@@ -30,9 +30,9 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(Expr *expr) {
         if (targetType.type != sourceType) {
             return tl::unexpected(
                 Error {fmt::format("cannot assign the expressino of type {} to variable {} of type {}",
-                    m_ts[sourceType],
+                    m_ts.string(sourceType),
                     assign->target(),
-                    m_ts[targetType.type])});
+                    m_ts.string(targetType.type))});
         }
     } else if (const auto *declare = dynamic_cast<const Declare *>(expr)) {
         if (m_symbolTable.contains(declare->name())) {
@@ -43,20 +43,22 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(Expr *expr) {
         if (declare->declaredType() && (declare->declaredType() != sourceType)) {
             return tl::unexpected(
                 Error {fmt::format("cannot assign the expression of type {} to variable {} of type {}",
-                    m_ts[sourceType],
+                    m_ts.string(sourceType),
                     declare->name(),
-                    m_ts[*declare->overallType()])});
+                    m_ts.string(*declare->overallType()))});
         }
         m_symbolTable[declare->name()] = Symbol {.kind = SymbolKind::Variable, .type = sourceType};
         m_modTable[declare->name()] = declare->mod();
     } else if (const auto *ret = dynamic_cast<const Return *>(expr)) {
         auto valueType = TRY(getType(ret->value().get()));
         expr->overallType() = valueType;
-        // TODO: std::string_view m_currentFunc; // holds name of the currently processed function
         auto funcRet = m_symbolTable.at(m_currentFunc).type;
         if (funcRet != valueType) {
-            return tl::unexpected(Error {
-                fmt::format("cannot return expression of type {} from function {} returning {}", m_ts[valueType], m_currentFunc, m_ts[funcRet])});
+            return tl::unexpected(
+                Error {fmt::format("cannot return expression of type {} from function {} returning {}",
+                    m_ts.string(valueType),
+                    m_currentFunc,
+                    m_ts.string(funcRet))});
         }
     } else if (const auto *add = dynamic_cast<const Add *>(expr)) {
         auto lhsType = TRY(getType(add->lhs().get()));
@@ -64,7 +66,7 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(Expr *expr) {
         expr->overallType() = lhsType;
         if (lhsType != rhsType) {
             return tl::unexpected(Error {
-                fmt::format("cannot add expression of type {} to expression of type {}", m_ts[lhsType], m_ts[rhsType])});
+                fmt::format("cannot add expression of type {} to expression of type {}", m_ts.string(lhsType), m_ts.string(rhsType))});
         }
     } else if (const auto *varexpr = dynamic_cast<const VarExpr *>(expr)) {
         if (!m_symbolTable.contains(varexpr->name())) {
@@ -114,7 +116,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
 
 
 [[nodiscard]] ErrorOr<std::string> WasmCompiler::compileArg(const Arg &arg) const {
-    return fmt::format("(param ${} {})", arg.name(), m_ts[arg.type()]);
+    return fmt::format("(param ${} {})", arg.name(), TRY(m_ts[arg.type()].asBuiltin()));
 }
 
 
@@ -145,6 +147,10 @@ ErrorOr<void> WasmCompiler::typeCheck() {
     if (const auto *varexpr = dynamic_cast<const VarExpr *>(expr)) {
         return fmt::format("(local.get ${})", varexpr->name());
     }
+    // FIXME: use repr
+    if (const auto *boolean = dynamic_cast<const Bool *>(expr)) {
+        return fmt::format("(i32.const {})", +boolean->value());
+    }
     if (const auto *int32 = dynamic_cast<const Int32 *>(expr)) {
         return fmt::format("(i32.const {})", int32->value());
     }
@@ -165,7 +171,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
     std::string out;
     for (const auto &[name, symbol] : m_symbolTable) {
         if (symbol.kind == SymbolKind::Variable) {
-            fmt::format_to(std::back_inserter(out), "(local ${} {})\n", name, m_ts[symbol.type]);
+            fmt::format_to(std::back_inserter(out), "(local ${} {})\n", name, TRY(m_ts[symbol.type].asBuiltin()));
         }
     }
     return out;
@@ -191,7 +197,7 @@ ErrorOr<void> WasmCompiler::typeCheck() {
         "{4}"
         ")\n",
         func.name(),
-        m_ts[func.ret()],
+        TRY(m_ts[func.ret()].asBuiltin()),
         TRY(compileArgs(func.args())),
         TRY(compileVars()),
         TRY(compileBlock(func.body())));
