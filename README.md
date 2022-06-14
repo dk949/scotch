@@ -12,9 +12,4 @@ See [INSTALL.md](docs/INSTALL.md)
 
 ## Goals
 
-* [x] Generate [WebAssembly](https://webassembly.org/) from source code.
-* [ ] Turing completeness.
-* [ ] User defined types
-* [ ] Multiple modules
-* [ ] [JavaScript](https://www.javascript.com/) integration.
-* [ ] [TypeScript](https://www.typescriptlang.org/) integration.
+See [Features](docs/features/README.md) for a detailed overview of project goals.
