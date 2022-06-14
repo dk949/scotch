@@ -44,13 +44,13 @@ int yylex(scotch::parser::semantic_type* yylval, scotch::parser::location_type* 
 %token SEMICOLON
 %token COMMA
 %token ASSIGN
-%token TRUE
-%token FALSE
 %token <std::string> IDENT
 %token <long long> Int64
 %token <long long> Int32
 %token <double> Float32
 %token <double> Float64
+%token <bool> TRUE
+%token <bool> FALSE
 
 
 %left EQUAL
@@ -141,9 +141,11 @@ expression  : binExpr
 binExpr     : expression PLUS expression { $$ = std::make_shared<Add>($1, $3);}
             ;
 
-valExpr     : ident { $$ = std::make_shared<VarExpr>($1);}
-            | Int32   { $$ = std::make_shared<Int32>($1);  }
-            | Int64   { $$ = std::make_shared<Int64>($1);  }
+valExpr     : ident     { $$ = std::make_shared<VarExpr>($1);}
+            | TRUE      { $$ = std::make_shared<Bool>(true);  }
+            | FALSE     { $$ = std::make_shared<Bool>(false);  }
+            | Int32     { $$ = std::make_shared<Int32>($1);  }
+            | Int64     { $$ = std::make_shared<Int64>($1);  }
             | Float32   { $$ = std::make_shared<Float32>($1);  }
             | Float64   { $$ = std::make_shared<Float64>($1);  }
             ;
