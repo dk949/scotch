@@ -73,6 +73,9 @@ int yylex(scotch::parser::semantic_type* yylval, scotch::parser::location_type* 
 %type<Mod>                                  mod
 %type<Module>                               module
 %type<Program>                              program
+%type<std::shared_ptr<If>>                  if
+%type<std::vector<std::shared_ptr<Expr>>>   else
+%type<std::shared_ptr<Condition>>           condition
 %type<std::shared_ptr<Return>>              return
 %type<std::shared_ptr<Expr>>                statement
 %type<std::vector<std::shared_ptr<Expr>>>   block
@@ -121,6 +124,7 @@ statement   : SEMICOLON {$$ = std::make_shared<EmptyExpr>();}
             | declaration SEMICOLON { $$ = $1;}
             | assignment SEMICOLON { $$ = $1;}
             | return SEMICOLON {$$ = $1;}
+            | condition {$$ = $1;}
             | expression SEMICOLON {$$ = $1;}
             ;
 
@@ -132,6 +136,16 @@ assignment  : ident ASSIGN expression { $$ = std::make_shared<Assign>($1, $3);}
             ;
 
 return      : RETURN expression { $$ = std::make_shared<Return>($2); }
+            ;
+
+condition   : if { $$ = static_cast<std::shared_ptr<Condition>>($1); }
+            | if else { $$ = static_cast<std::shared_ptr<Condition>>(std::make_shared<IfElse>(*($1.get()), $2)); }
+            ;
+
+if          : IF LPAREN expression RPAREN block { $$ = std::make_shared<If>($3, $5); }
+            ;
+
+else        : ELSE block { $$ = $2; }
             ;
 
 expression  : binExpr

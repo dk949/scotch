@@ -18,8 +18,6 @@ Arg::Arg(Ident name, Type type)
         : m_name(std::move(name))
         , m_type(type) { }
 
-
-
 Assign::Assign(Ident target, std::shared_ptr<Expr> source)
         : m_target(std::move(target))
         , m_source(std::move(source)) { }
@@ -32,6 +30,15 @@ Declare::Declare(Mod mod, Ident name, std::optional<Type> declaredType, std::sha
 
 Return::Return(std::shared_ptr<Expr> value)
         : m_value(std::move(value)) { }
+
+If::If(std::shared_ptr<Expr> conditon, std::vector<std::shared_ptr<Expr>> body)
+        : m_conditon(std::move(conditon))
+        , m_body(std::move(body)) { }
+
+IfElse::IfElse(If ifBody, std::vector<std::shared_ptr<Expr>> elseBody)
+        : m_ifBody(std::move(ifBody))
+        , m_elseBody(std::move(elseBody)) { }
+
 
 Add::Add(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs)
         : m_lhs(std::move(lhs))

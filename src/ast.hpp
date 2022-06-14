@@ -79,6 +79,33 @@ public:
     }
 };
 
+class Condition : public Expr { };
+
+
+class If : public Condition {
+    // TODO: if-init
+    std::shared_ptr<Expr> PropertyGet(conditon)
+    std::vector<std::shared_ptr<Expr>> PropertyGet(body)
+public:
+    If(std::shared_ptr<Expr> conditon, std::vector<std::shared_ptr<Expr>> body);
+    If() = default;
+    [[nodiscard]] std::string_view constexpr exprType() const override {
+        return "If";
+    }
+};
+
+class IfElse : public Condition {
+    // TODO: if-init
+    If PropertyGet(ifBody)
+    std::vector<std::shared_ptr<Expr>> PropertyGet(elseBody)
+public:
+    IfElse(If ifBody, std::vector<std::shared_ptr<Expr>> elseBody);
+    IfElse() = default;
+    [[nodiscard]] std::string_view constexpr exprType() const override {
+        return "IfElse";
+    }
+};
+
 class Add : public Expr {
     std::shared_ptr<Expr> PropertyGet(lhs)
     std::shared_ptr<Expr> PropertyGet(rhs)
