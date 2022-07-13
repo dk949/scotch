@@ -60,6 +60,8 @@ ErrorOr<void> WasmCompiler::typeCheckExpr(Expr *expr) {
                     m_currentFunc,
                     m_ts.string(funcRet))});
         }
+    } else if (auto *cond = dynamic_cast<Condition *>(expr)) {
+        const auto *conditionType = TRY(getType(cond->conditon()));
     } else if (const auto *add = dynamic_cast<const Add *>(expr)) {
         auto lhsType = TRY(getType(add->lhs().get()));
         auto rhsType = TRY(getType(add->rhs().get()));
