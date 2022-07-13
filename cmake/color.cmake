@@ -1,8 +1,0 @@
-option(ENABLE_ALWAYS_COLOR "Always oyutput in color (GNU/Clang only)." YES)
-if (ENABLE_ALWAYS_COLOR)
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        add_compile_options(-fdiagnostics-color=always)
-    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        add_compile_options(-fcolor-diagnostics)
-    endif ()
-endif ()

@@ -23,8 +23,8 @@ def func(): f32
 def foo(): i64 {
     return 42;
 }
-// Equivalent to the above
-def bar(): i64 => 42;
+-- braces are optional, as is the semicolon at the end
+def bar(): i64 42;
 ```
 
 ## Parameters

@@ -1,6 +1,6 @@
 # Features
 
-Scotch uses `//` for single line comments and does not have multi-line comments.
+Scotch uses `--` for single line comments and does not have multi-line comments.
 
 * [Functions](functions/README.md)
 * [Variables](variables/README.md)
