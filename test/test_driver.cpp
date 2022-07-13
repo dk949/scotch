@@ -59,12 +59,13 @@ void runTests(TestFiles &&testFiles) {
                 CHECK(res != 0);
             } else if (pathStr.ends_with("compile.error")) {
                 CHECK(!err.msg.empty());
-            }else{
+            } else {
                 INFO("Invalid test");
                 CHECK(false);
             }
         } else {
             CHECK(res == 0);
+            UNSCOPED_INFO("Compiler error message = " << err.msg);
             CHECK(err.msg.empty());
         }
     }
@@ -80,6 +81,9 @@ TEST_CASE("functions") {
 }
 
 TEST_CASE("parameters") {
-    TestFiles testFiles = openTestFiles("parameter_tests");
     runTests(openTestFiles("parameter_tests"));
+}
+
+TEST_CASE("condition") {
+    runTests(openTestFiles("if_tests"));
 }

@@ -1,0 +1,10 @@
+module Main;
+
+
+def main(): i32 {
+    if(true) {
+        return 10;
+    }else {
+        return 42;
+    }
+}

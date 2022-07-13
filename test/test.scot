@@ -1,0 +1,8 @@
+module Main;
+
+
+def main(): boolean{
+
+    const b = true;
+    return b;
+}
