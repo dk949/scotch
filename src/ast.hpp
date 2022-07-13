@@ -79,14 +79,22 @@ public:
     }
 };
 
-class Condition : public Expr { };
+class Condition : public Expr {
+public:
+    [[nodiscard]] virtual Expr *conditon() const = 0;
+    [[nodiscard]] virtual const std::vector<std::shared_ptr<Expr>> *ifBody() const = 0;
+    [[nodiscard]] virtual const std::vector<std::shared_ptr<Expr>> *elseBody() const = 0;
+};
 
 
 class If : public Condition {
     // TODO: if-init
-    std::shared_ptr<Expr> PropertyGet(conditon)
-    std::vector<std::shared_ptr<Expr>> PropertyGet(body)
+    std::shared_ptr<Expr> m_conditon;
+    std::vector<std::shared_ptr<Expr>> m_body;
 public:
+    [[nodiscard]] Expr *conditon() const override;
+    [[nodiscard]] const std::vector<std::shared_ptr<Expr>> *ifBody() const override;
+    [[nodiscard]] const std::vector<std::shared_ptr<Expr>> *elseBody() const override;
     If(std::shared_ptr<Expr> conditon, std::vector<std::shared_ptr<Expr>> body);
     If() = default;
     [[nodiscard]] std::string_view constexpr exprType() const override {
@@ -96,10 +104,13 @@ public:
 
 class IfElse : public Condition {
     // TODO: if-init
-    If PropertyGet(ifBody)
-    std::vector<std::shared_ptr<Expr>> PropertyGet(elseBody)
+    If m_if;
+    std::vector<std::shared_ptr<Expr>> m_elseBody;
 public:
-    IfElse(If ifBody, std::vector<std::shared_ptr<Expr>> elseBody);
+    [[nodiscard]] Expr *conditon() const override;
+    [[nodiscard]] const std::vector<std::shared_ptr<Expr>> *ifBody() const override;
+    [[nodiscard]] const std::vector<std::shared_ptr<Expr>> *elseBody() const override;
+    IfElse(If if_, std::vector<std::shared_ptr<Expr>> elseBody);
     IfElse() = default;
     [[nodiscard]] std::string_view constexpr exprType() const override {
         return "IfElse";

@@ -35,10 +35,29 @@ If::If(std::shared_ptr<Expr> conditon, std::vector<std::shared_ptr<Expr>> body)
         : m_conditon(std::move(conditon))
         , m_body(std::move(body)) { }
 
-IfElse::IfElse(If ifBody, std::vector<std::shared_ptr<Expr>> elseBody)
-        : m_ifBody(std::move(ifBody))
+const Expr *If::conditon() const {
+    return m_conditon.get();
+}
+const std::vector<std::shared_ptr<Expr>> *If::ifBody() const {
+    return &m_body;
+}
+const std::vector<std::shared_ptr<Expr>> *If::elseBody() const {
+    return nullptr;
+}
+
+IfElse::IfElse(If if_, std::vector<std::shared_ptr<Expr>> elseBody)
+        : m_if(std::move(if_))
         , m_elseBody(std::move(elseBody)) { }
 
+const Expr *IfElse::conditon() const {
+    return m_if.conditon();
+}
+const std::vector<std::shared_ptr<Expr>> *IfElse::ifBody() const {
+    return m_if.ifBody();
+}
+const std::vector<std::shared_ptr<Expr>> *IfElse::elseBody() const {
+    return &m_elseBody;
+}
 
 Add::Add(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs)
         : m_lhs(std::move(lhs))
