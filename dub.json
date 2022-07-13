@@ -1,0 +1,21 @@
+{
+  "name": "scotch",
+  "description": "A minimal D application.",
+  "homepage": "https://github.com/dk949/scotch",
+  "authors": [
+    "dk949"
+  ],
+  "copyright": "Copyright © 2022, dk949",
+  "dependencies": {
+    "pegged": "~>0.4.6",
+    "scotch:grammar": "*"
+  },
+  "license": "BSD-3-Clause",
+  "subPackages": [
+    "grammargen",
+    "grammar"
+  ],
+  "preGenerateCommands": [
+    "dub --root=grammargen"
+  ]
+}

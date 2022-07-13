@@ -1,0 +1,8 @@
+{
+  "name": "grammar",
+  "targetType": "library",
+  "sourcePaths": ["."],
+  "dependencies": {
+    "pegged": "~>0.4.6"
+  }
+}

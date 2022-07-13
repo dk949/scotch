@@ -1,0 +1,9 @@
+{
+  "name": "grammargen",
+  "extraDependencyFiles": [
+    "source/scot.pegd"
+  ],
+  "dependencies": {
+    "pegged": "~>0.4.6"
+  }
+}

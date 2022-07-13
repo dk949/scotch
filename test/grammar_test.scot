@@ -1,0 +1,236 @@
+--[X] Module
+--[X] ModuleDeclaration
+--[X] ImportList
+--[X] ImportBlock
+--[X] GlobalData
+--[X] FunctionDefinition
+--[X] ParameterList
+--[X] Parameter
+--[X] TypeAnnotation
+--[X] ErrAnnotation
+--[X] NamespacedID
+--[X] BareID
+--[X] ExpressionStatement
+--[X] Expression
+--[X] PrimaryExpression
+--[X] PostfixExpression
+--[X] UnaryExpression
+--[X] UnaryOperator
+--[X] ExponentExpression
+--[X] TimesExpression
+--[X] PlusExpression
+--[X] RelationalExpression
+--[X] EqualityExpression
+--[X] LogicalANDExpression
+--[X] LogicalORExpression
+--[X] LowestPriorityOpExpression
+--[X] VariableDefinition
+--[X] VariableDeclaration
+--[X] Mod
+--[X] ControlFlow
+--[X] Return
+--[X] Fail
+--[X] Break
+--[X] Continue
+--[X] Conditionals
+--[X] IfExpression
+--[X] CaseExpression
+--[X] CaseVariantList
+--[X] CaseVariant
+--[X] CaseVariantValue
+--[X] CaseVariantPrimaryValue
+--[X] CaseVariantAndValue
+--[X] CaseVariantOrValue
+--[X] CaseVariantName
+--[X] TOKEN
+--[X] MODULE
+--[X] IMPORT
+--[X] DEF
+--[X] ERR
+--[X] RETURN
+--[X] FAIL
+--[X] BREAK
+--[X] CONTINUE
+--[X] STATIC
+--[X] CONST
+--[X] LET
+--[X] TRUE
+--[X] FALSE
+--[X] IF
+--[X] ELSE
+--[X] CASE
+--[X] Underscore
+--[X] SEP
+--[X] OPERATOR
+--[X] NOT
+--[X] POWER
+--[X] ROOT
+--[X] LOG
+--[X] TIMES
+--[X] DIVIDE
+--[X] MODULO
+--[X] PLUS
+--[X] MINUS
+--[X] LESS
+--[X] GREATER
+--[X] EQUAL
+--[X] AND
+--[X] OR
+--[X] Literal
+--[X] StringLiteral
+--[X] CharLiteral
+--[X] BoolLiteral
+--[X] LambdaLiteral
+--[X] LambdaArgs
+--[X] SectionLiteral
+--[X] DQChar
+--[X] EscapeSequence
+--[X] Integer
+--[X] Sign
+--[X] Spacing
+--[X] Comment
+module Main;
+
+import std::string, std::io;
+import mylib;
+
+static someGlobal: std::string = "hello";
+static otherGlobal = 23;
+
+
+def main(): std::string err std::error::Error {
+    -- every type of number literal
+    const _42i  =  42i;
+    const _p42i  = +42i;
+    const _m42i  = -42i;
+
+    const _42l  =  42l;
+    const _p42l  = +42l;
+    const _m42l  = -42l;
+
+    const _42   =  42;
+    const _p42   = +42;
+    const _m42   = -42;
+
+    const  _42_f =  42.f;
+    const _p42_f = +42.f;
+    const _m42_f = -42.f;
+
+    const  _42_0f=  42.0f;
+    const _p42_0f= +42.0f;
+    const _m42_0f= -42.0f;
+
+    const  _42_d =  42.d;
+    const _p42_d = +42.d;
+    const _m42_d = -42.d;
+
+    const  _42_0d=  42.0d;
+    const _p42_0d= +42.0d;
+    const _m42_0d= -42.0d;
+
+    const  _42_0 =  42.0;
+    const _p42_0 = +42.0;
+    const _m42_0 = -42.0;
+
+    -- char literal
+    const a: char =  'a';
+    const sq: char = '\'';
+    const bs: char = '\\';
+    const _a: char = '\a';
+    const _b: char = '\b';
+    const _f: char = '\f';
+    const _n: char = '\n';
+    const _r: char = '\r';
+    const _t: char = '\t';
+    const _v: char = '\v';
+
+
+    -- string literal
+    const hello: std::string = "hello";
+    let excapes = "\"\\\a\b\f\n\r\t\v";
+
+
+    -- section literal
+
+    const pow = (**);
+    const root = (//);
+    const log = (%%);
+    const times = (*);
+    const div = (/);
+    const mod = (%);
+    const plus = (+);
+    const minus = (-);
+
+    const lesseq = (<=);
+    const llesseq = ((12 + 6)<=);
+    const rlesseq = (<=(12 + 6));
+    const less = (<);
+    const lless = ((12 + 6)<);
+    const rless = (<(12 + 6));
+    const gteq = (>=);
+    const lgteq = ((12 + 6)>=);
+    const rgteq = (>=(12 + 6));
+    const gt = (>);
+    const lgt = ((12 + 6)>);
+    const rgt = (>(12 + 6));
+    const equal = (==);
+    const lequal = ((12 + 6)==);
+    const requal = (==(12 + 6));
+    const noteq = (!=);
+    const lnoteq = ((12 + 6)!=);
+    const rnoteq = (!=(12 + 6));
+
+    const not = (!);
+    const and = (&&);
+    const or = (||);
+
+    -- lambda literal
+    const empty = ()                                => {};
+    const nobracket = a                             => {const b = a - 7;return a;};
+    const nobracketta = a: std::string              => {const b = a - 7;return;};
+    const bracketcomma = (a, b,)                    => a + b;
+    const bracket = (a, b)                          => a + b;
+    const brackettacomma = (a: i32, b:std::string,) => a + b;
+    const bracketta = (a: i32, b:std::string)       => a + b;
+
+    -- case
+    case(value::val + 7) {
+        10 ** 15 // 45 %% 2 * (17 - 3) / 4 % 101 + 16 - 12 -> {
+            std::io::print("about 7.88");
+            break 7.88;
+        },
+        10 -> continue,
+        const val = (>100) -> 100,
+        const val2: std::thing = (10<) & (<15) | (50<) & ~ (==55) -> 0,
+    };
+
+    const ts = case(27) { 27 -> 27, _ -> 0};
+
+    -- if
+    if(some::func() > 1
+        || some::other("hello") < 1
+        || mylib::func() <= 1
+        || mylib::other("hello")>= 1){
+        std::io::print("ok");
+        break;
+        std::io::print("unreachable");
+    };
+
+    if(!(const res = some::important::func(23 - 16))
+        && res != 47
+        || res == 3){
+        std::io::print("all good");
+    } else {
+        fail mylib::makeError();
+    };
+
+    const ifval = if(true) 45;
+    const ifval2 = if(false) 0 else 1;
+    const minusifval = -ifval;
+    const plusifval = +ifval;
+
+    return (27 - 48).toString();
+}
+
+def foo() err std::error::Error 45
+def bar() err std::error::Error 45;
