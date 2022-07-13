@@ -8,7 +8,9 @@ find_path(INCLUDE_DIRS "fmt/format.h")
 
 flex_target(lexer "${CMAKE_SOURCE_DIR}/src/scotch.l" ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
 
-bison_target(parser "${CMAKE_SOURCE_DIR}/src/scotch.y" ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
+bison_target(
+    parser "${CMAKE_SOURCE_DIR}/src/scotch.y" ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp COMPILE_FLAGS "-Wcounterexamples"
+)
 
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/main.cpp")
