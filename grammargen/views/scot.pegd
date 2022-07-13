@@ -1,0 +1,272 @@
+################################ Scotch Grammar ################################
+
+# Things to note:
+#
+#   Expressions and statements
+#     Almost everything is an expression, hence has a type.
+#     Expressions are divided into two categories:
+#       `Expression`
+#          "returns" a non-void type.
+#          Result of the expression must be used (see `_`).
+#          Examples include
+#            `"hello"` // Literal (string literal in this case)
+#            `1 + 1` // arithmetic expression
+#       `ExpressionStatement`
+#         "returns" a type (possibly void).
+#         Even when returned type is non-void, result doe not have to be used.
+#         Examples include:
+#           `const i = 45`Declaration expression
+#     Some elements of the language are considered `ExpressionStatement`s in the grammar,
+#     but are actually expressions in the language (this may be a sign of poor design...).
+#     These are:
+#       Non void functions.
+#       Compound statements with non-void argument to `break` (see `break`).
+#         This also includes `for` loops, `while` loops and `if`s
+
+# Non goals: List of things I would like to avoid
+#   Bitwise operators:
+#     These things can be done using functions, no point wasting an operator on
+#     something that is used so infrequently.
+#   Assignment expression:
+#     Causes a lot of bugs, especially if it's result is used as a condition
+#     (in `if` or `while`). Instead declaration is made to be an expression.
+
+
+Scotch:
+
+Module < ModuleDeclaration ImportBlock? (FunctionDefinition / GlobalData)* endOfInput
+
+ModuleDeclaration < MODULE BareID SEP
+ImportList < IMPORT NamespacedID (',' NamespacedID)* ','?
+ImportBlock < (ImportList SEP)+
+
+
+# TODO: make it so statics don't have to be immediately initialised
+GlobalData < STATIC BareID TypeAnnotation? '=' Expression SEP
+
+
+# Function definition
+FunctionDefinition < DEF BareID '(' ParameterList? ')' TypeAnnotation? ErrAnnotation? Expression SEP?
+
+ParameterList < Parameter (',' Parameter)* ','?
+Parameter < BareID TypeAnnotation?
+
+TypeAnnotation < ':' NamespacedID
+ErrAnnotation < ERR NamespacedID
+
+
+NamespacedID <- (BareID ("::" BareID)*)
+                                          # XXX: Underscore can appear anywhere a BareID can.
+BareID <- (!(TOKEN ![a-zA-Z0-9_]) identifier) / Underscore
+
+# Expressions
+
+
+ExpressionStatement <  SEP / Expression SEP
+
+Expression < / LowestPriorityOpExpression
+             / VariableDefinition
+             / ControlFlow
+             / Conditionals
+
+PrimaryExpression < / '{' '}'
+                    / '{' ExpressionStatement+ '}'
+                    / '(' Expression ')'
+                    / Literal
+                    / NamespacedID
+
+PostfixExpression < PrimaryExpression   (
+                                            / '(' ')'
+                                            / '(' Expression (',' Expression)* ','? ')'
+                                            / '.' NamespacedID
+                                        )*
+
+UnaryExpression <   / PostfixExpression
+                    / UnaryOperator UnaryExpression
+
+UnaryOperator < [-+!]
+
+ExponentExpression          < UnaryExpression (("**" / "//" / "%%" ) ExponentExpression)*
+TimesExpression             < ExponentExpression ([*%/] TimesExpression)*
+PlusExpression              < TimesExpression ([-+] PlusExpression)*
+RelationalExpression        < PlusExpression (("<=" / ">=" / "<" / ">") RelationalExpression)*
+EqualityExpression          < RelationalExpression (("==" / "!=") EqualityExpression)*
+LogicalANDExpression        < EqualityExpression ("&&" LogicalANDExpression)*
+LogicalORExpression         < LogicalANDExpression ("||" LogicalORExpression)*
+
+
+#XXX: This is an alias, which allows more operators to be insereted at the end
+LowestPriorityOpExpression < LogicalORExpression
+
+
+VariableDefinition < VariableDeclaration '=' Expression
+VariableDeclaration < Mod BareID TypeAnnotation?
+
+Mod < CONST / LET
+
+# Control flow
+
+ControlFlow < Return / Fail / Break / Continue
+Return      < RETURN Expression?
+Fail        < FAIL Expression
+Break       < BREAK Expression?
+Continue    < CONTINUE
+
+
+# Conditionals
+
+Conditionals < IfExpression / CaseExpression
+
+IfExpression < IF '(' Expression ')' Expression (ELSE Expression)?
+
+CaseExpression < CASE '(' Expression ')' '{' CaseVariantList '}'
+
+CaseVariantList < CaseVariant ( ',' CaseVariant )* ','?
+
+CaseVariant < CaseVariantName? CaseVariantValue '->' Expression
+
+CaseVariantValue < CaseVariantOrValue
+
+CaseVariantPrimaryValue < CASE_NOT? (
+                                        / LowestPriorityOpExpression
+                                        / '(' CaseVariantValue ')'
+                                    )
+
+CaseVariantAndValue < CaseVariantPrimaryValue ( CASE_AND CaseVariantAndValue )*
+CaseVariantOrValue  < CaseVariantAndValue     ( CASE_OR  CaseVariantOrValue  )*
+
+
+CaseVariantName < CONST BareID TypeAnnotation? '='
+
+# Tokens
+
+TOKEN  <- / MODULE
+          / DEF
+          / ERR
+          / RETURN
+          / FAIL
+          / BREAK
+          / CONTINUE
+          / STATIC
+          / CONST
+          / LET
+          / TRUE
+          / FALSE
+          / IF
+          / ELSE
+          / CASE
+          / Underscore
+
+MODULE   <- :"module"
+IMPORT   <- :"import"
+DEF      <- :"def"
+ERR      <- :"err"
+RETURN   <- "return"
+FAIL     <- "fail"
+BREAK    <- "break"
+CONTINUE <- "continue"
+STATIC   <- "static"
+CONST    <- "const"
+LET      <- "let"
+TRUE     <- "true"
+FALSE    <- "false"
+IF       <- :"if"
+ELSE     <- :"else"
+CASE     <- :"case"
+
+# Named symbols
+
+Underscore      <- "_"
+SEP             <- :";"
+
+# Operators
+
+OPERATOR <-         / MATH_OPERATOR
+                    / COMP_OPERATOR
+                    / LOGIC_OPERATOR
+
+MATH_OPERATOR <-    / POWER
+                    / ROOT
+                    / LOG
+                    / TIMES
+                    / DIVIDE
+                    / MODULO
+                    / PLUS
+                    / MINUS
+
+COMP_OPERATOR <-    / LESS_EQ
+                    / LESS
+                    / GREATER_EQ
+                    / GREATER
+                    / EQUAL
+                    / NOT_EQUAL
+
+LOGIC_OPERATOR <-   / NOT
+                    / AND
+                    / OR
+
+CASE_NOT   <- "~"
+CASE_AND   <- "&"
+CASE_OR    <- "|"
+NOT        <- "!"
+POWER      <- "**"
+ROOT       <- "//"
+LOG        <- "%%"
+TIMES      <- "*"
+DIVIDE     <- "/"
+MODULO     <- "%"
+PLUS       <- "+"
+MINUS      <- "-"
+LESS_EQ    <- "<="
+LESS       <- "<"
+GREATER_EQ <- ">="
+GREATER    <- ">"
+EQUAL      <- "=="
+NOT_EQUAL  <- "!="
+AND        <- "&&"
+OR         <- "||"
+
+# Literals
+
+Literal <-  / BoolLiteral
+            / StringLiteral
+            / CharLiteral
+            / Float32Literal
+            / Float64Literal
+            / Int32Literal
+            / Int64Literal
+            / LambdaLiteral
+            / SectionLiteral
+
+StringLiteral <~ doublequote (DQChar)* doublequote
+# TODO: why is ''' not a valid char literal?? There is no empty char literal,
+# so it should not be ambiguous.
+CharLiteral <~ quote (!quote (EscapeSequence / .)) quote
+Int32Literal <~ Sign? Integer 'i'
+Int64Literal <~ Sign? Integer 'l'?
+Float32Literal <~ Sign? Integer '.' (Integer 'f' / 'f')
+Float64Literal <~ Sign? Integer '.' (Integer 'd' / 'd' / Integer)
+BoolLiteral <- TRUE / FALSE
+
+LambdaLiteral < LambdaArgs '=>' Expression
+LambdaArgs    < / Parameter
+                / '(' ParameterList? ')'
+
+
+SectionLiteral <    / '(' COMP_OPERATOR UnaryExpression ')'
+                    / '(' UnaryExpression COMP_OPERATOR ')'
+                    / '(' OPERATOR ')'
+
+DQChar <- EscapeSequence / !doublequote .
+EscapeSequence <~ backslash ( quote / doublequote / backslash / [abfnrtv] )
+
+Integer <~ digit+
+Sign <- "-" / "+"
+
+# Misc
+
+Spacing <~ (space / endOfLine / Comment)*
+Comment <~ "--" (!endOfLine .)* endOfLine
+
+# XXX: This is a place holder. It will nemevr match anything
+WillNotMatch <- !. .
