@@ -37,7 +37,9 @@ Scotch:
 Module < ModuleDeclaration ImportBlock? (FunctionDefinition / GlobalData)* endOfInput
 
 ModuleDeclaration < MODULE BareID SEP
-ImportList < IMPORT NamespacedID (',' NamespacedID)* ','?
+ImportSpecifier < "::" ( '*' / '{' NamespacedID (',' NamespacedID)* ','? '}' )
+ImportName  < NamespacedID ? ImportSpecifier
+ImportList  < IMPORT ImportName (',' ImportName)* ','?
 ImportBlock < (ImportList SEP)+
 
 
