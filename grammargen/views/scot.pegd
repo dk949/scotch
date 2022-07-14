@@ -38,7 +38,7 @@ Module < ModuleDeclaration ImportBlock? (FunctionDefinition / GlobalData)* endOf
 
 ModuleDeclaration < MODULE BareID SEP
 ImportSpecifier < "::" ( '*' / '{' NamespacedID (',' NamespacedID)* ','? '}' )
-ImportName  < NamespacedID ? ImportSpecifier
+ImportName  < NamespacedID ImportSpecifier?
 ImportList  < IMPORT ImportName (',' ImportName)* ','?
 ImportBlock < (ImportList SEP)+
 
@@ -70,6 +70,7 @@ Expression < / LowestPriorityOpExpression
              / VariableDefinition
              / ControlFlow
              / Conditionals
+             / CatchExpression
 
 PrimaryExpression < / '{' '}'
                     / '{' ExpressionStatement+ '}'
@@ -140,6 +141,11 @@ CaseVariantOrValue  < CaseVariantAndValue     ( CASE_OR  CaseVariantOrValue  )*
 
 CaseVariantName < CONST BareID TypeAnnotation? '='
 
+# Catch
+
+
+CatchExpression < CATCH '(' Expression ')' Expression (ELSE Expression)?
+
 # Tokens
 
 TOKEN  <- / MODULE
@@ -157,6 +163,7 @@ TOKEN  <- / MODULE
           / IF
           / ELSE
           / CASE
+          / CATCH
           / Underscore
 
 MODULE   <- :"module"
@@ -175,6 +182,7 @@ FALSE    <- "false"
 IF       <- :"if"
 ELSE     <- :"else"
 CASE     <- :"case"
+CATCH    <- :"catch"
 
 # Named symbols
 
