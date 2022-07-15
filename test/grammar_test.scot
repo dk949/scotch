@@ -1,5 +1,7 @@
 --[X] Module
 --[X] ModuleDeclaration
+--[X] ImportName
+--[X] ImportSpecifier
 --[X] ImportList
 --[X] ImportBlock
 --[X] GlobalData
@@ -42,6 +44,7 @@
 --[X] CaseVariantAndValue
 --[X] CaseVariantOrValue
 --[X] CaseVariantName
+--[X] CatchExpression
 --[X] TOKEN
 --[X] MODULE
 --[X] IMPORT
@@ -59,6 +62,7 @@
 --[X] IF
 --[X] ELSE
 --[X] CASE
+--[X] CATCH
 --[X] Underscore
 --[X] SEP
 --[X] OPERATOR
@@ -93,6 +97,8 @@ module Main;
 
 import std::string, std::io;
 import mylib;
+import aaaa::{bbb::ccc, ddd};
+import eeeee::*;
 
 static someGlobal: std::string = "hello";
 static otherGlobal = 23;
@@ -228,6 +234,21 @@ def main(): std::string err std::error::Error {
     const ifval2 = if(false) 0 else 1;
     const minusifval = -ifval;
     const plusifval = +ifval;
+
+    const var = catch(mylib::someError()) 42;
+    const var2 = catch(mylib::someError())
+        fail mylib::makeError();
+    const var3 = catch(const e = mylib::someError()){
+        if(e == mylib::Error::A)
+            fail mylib::makeError()
+        else
+            break 42;
+    };
+    const var3 =
+        catch(const e = mylib::someError())
+            1
+        else
+            2;
 
     return (27 - 48).toString();
 }
