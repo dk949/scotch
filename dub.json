@@ -15,7 +15,10 @@
     "grammargen",
     "grammar"
   ],
-  "preGenerateCommands": [
+  "preGenerateCommands-posix": [
+    "make --makefile=Makefile.grammar"
+  ],
+  "preGenerateCommands-windows": [
     "dub --root=grammargen"
   ]
 }

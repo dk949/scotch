@@ -1,0 +1,11 @@
+all: grammar/scot.d
+
+grammargen/grammargen: grammargen/source/app.d
+	dub build --root=grammargen
+
+grammar/scot.d: grammargen/views/scot.pegd grammargen/grammargen
+	./grammargen/grammargen
+
+clean:
+	 rm -rf $(addprefix grammar/,$(shell cat grammar/.gitignore))
+	 rm -rf $(addprefix grammargen/,$(shell cat grammargen/.gitignore))
