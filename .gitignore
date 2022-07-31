@@ -4,7 +4,7 @@
 *.obj
 .dub
 .idea
-/scotch
+scotch
 __dummy.html
 build
 compile_commands.json
