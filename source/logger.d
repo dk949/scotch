@@ -80,8 +80,8 @@ class Logger {
         return m_color ? Color.Reset : "";
     }
 
-    mixin(propGet("Verbosity level"));
-    mixin(propGet("bool color"));
+    mixin propGet!(Verbosity, "level");
+    mixin propGet!(bool, "color");
     // TODO: file logging
 
     @trusted

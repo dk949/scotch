@@ -17,7 +17,8 @@ class CliException : Exception {
 }
 
 class ExitException : Exception {
-    mixin(propGet("int exitCode"));
+    mixin propGet!(int, "exitCode");
+
     @nogc @safe nothrow
     this(int exitCode, string msg = null) {
         super(msg);

@@ -17,14 +17,14 @@ struct Args {
         HTML
     }
 
-    mixin(propGet("Backend backend"));
-    mixin(propGet("string inputFile"));
-    mixin(propGet("string outputFile"));
-    mixin(propGet("bool color"));
-    mixin(propGet("Verbosity verbosity"));
-    mixin(propGet("bool dumpTokens"));
-    mixin(propGet("CstDumpType dumpCst"));
-    mixin(propGet("bool dumpAst"));
+    mixin propGet!(Backend, "backend");
+    mixin propGet!(string, "inputFile");
+    mixin propGet!(string, "outputFile");
+    mixin propGet!(bool, "color");
+    mixin propGet!(Verbosity, "verbosity");
+    mixin propGet!(bool, "dumpTokens");
+    mixin propGet!(CstDumpType, "dumpCst");
+    mixin propGet!(bool, "dumpAst");
 
     this(string[] args) {
         bool ver;
