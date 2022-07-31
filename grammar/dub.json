@@ -1,7 +1,7 @@
 {
   "name": "grammar",
   "targetType": "library",
-  "sourcePaths": ["."],
+  "sourceFiles": ["scot.d"],
   "dependencies": {
     "pegged": "~>0.4.6"
   }
