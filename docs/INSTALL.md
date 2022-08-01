@@ -6,6 +6,8 @@
   * Tested on DMD 2.100.0
 * DUB
   * Tested with version 1.29
+* make
+  * Only required on POSIX systems
 
 ## Runtime dependencies
 
@@ -13,10 +15,14 @@ A JavaScript runtime is needed to execute generates code.
 
 ## Building
 
-Use DUB to build the project with
+Build the project either with DUB
 
 ``` sh
 dub build
 ```
 
-Note: on first build you may get a link error, simply rerun the above command.
+or with make
+
+``` sh
+make build
+```
