@@ -1,9 +1,9 @@
-all: grammar/scot.d
+all: grammar/scot/package.d
 
 grammargen/grammargen: grammargen/source/app.d
 	dub build --root=grammargen
 
-grammar/scot.d: grammargen/views/scot.pegd grammargen/grammargen
+grammar/scot/package.d: grammargen/views/scot.pegd grammargen/grammargen
 	./grammargen/grammargen
 
 clean:

@@ -1,12 +1,14 @@
+DUB ?= dub
+
 build:
-	dub build
+	$(DUB) build
 
 test:
-	dub test
+	$(DUB) test
 
 clean:
-	dub --root=grammar clean
-	dub --root=grammargen clean
-	dub clean
-	$(MAKE) -f Makefile.grammar clean
+	$(DUB) --root=grammar clean
+	$(DUB) --root=grammargen clean
+	$(DUB) clean
+	+$(MAKE) -f Makefile.grammar clean
 	rm -rf $(shell cat .gitignore)
