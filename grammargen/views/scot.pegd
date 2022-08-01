@@ -1,37 +1,5 @@
 ################################ Scotch Grammar ################################
 
-# Things to note:
-#
-#   Expressions and statements
-#     Almost everything is an expression, hence has a type.
-#     Expressions are divided into two categories:
-#       `Expression`
-#          "returns" a non-void type.
-#          Result of the expression must be used (see `_`).
-#          Examples include
-#            `"hello"` // Literal (string literal in this case)
-#            `1 + 1` // arithmetic expression
-#       `ExpressionStatement`
-#         "returns" a type (possibly void).
-#         Even when returned type is non-void, result doe not have to be used.
-#         Examples include:
-#           `const i = 45`Declaration expression
-#     Some elements of the language are considered `ExpressionStatement`s in the grammar,
-#     but are actually expressions in the language (this may be a sign of poor design...).
-#     These are:
-#       Non void functions.
-#       Compound statements with non-void argument to `break` (see `break`).
-#         This also includes `for` loops, `while` loops and `if`s
-
-# Non goals: List of things I would like to avoid
-#   Bitwise operators:
-#     These things can be done using functions, no point wasting an operator on
-#     something that is used so infrequently.
-#   Assignment expression:
-#     Causes a lot of bugs, especially if it's result is used as a condition
-#     (in `if` or `while`). Instead declaration is made to be an expression.
-
-
 Scotch:
 
 Module < ModuleDeclaration ImportBlock? (FunctionDefinition / GlobalData)* endOfInput
