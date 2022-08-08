@@ -1,5 +1,7 @@
 module utils;
 
+public import utils.stack;
+
 /**
  * Declares a private member variable `m_name` and a public memebr function
  * `name` returning it.
@@ -35,14 +37,19 @@ mixin template propGet(alias T, string name) {
     // dfmt on
 }
 
-string usingEnum(E)(string vis = "public") {
-    import std.traits: EnumMembers;
-    import std.conv: to;
+/// Works like C++ std::declval.
+T declval(T)();
 
-    string o;
-    static foreach (mem; EnumMembers!E) {
-        o ~= (vis ~ " alias " ~ mem.to!string ~ " = " ~ E.stringof ~ "." ~ mem.to!string ~ ";");
-    }
-    return o;
+/// Not implemented
+void notImplemented(string msg = null) {
+    assert(0, "Not implemented" ~ (msg ? " " ~ msg : ""));
 }
 
+/// unreachable
+void unreachable(string msg = null) {
+    assert(0, "Unreachable" ~ (msg ? " " ~ msg : ""));
+}
+
+template ident(T) {
+    T delegate(T) ident = (T t) => t;
+}
