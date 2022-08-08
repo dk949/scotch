@@ -16,12 +16,12 @@ GlobalData < STATIC BareID TypeAnnotation? '=' Expression SEP
 
 
 # Function definition
-FunctionDefinition < DEF BareID '(' ParameterList? ')' TypeAnnotation? ErrAnnotation? Expression SEP?
+FunctionDefinition < DEF BareID :'(' ParameterList? :')' TypeAnnotation? ErrAnnotation? Expression SEP?
 
 ParameterList < Parameter (',' Parameter)* ','?
 Parameter < BareID TypeAnnotation?
 
-TypeAnnotation < ':' NamespacedID
+TypeAnnotation < :':' NamespacedID
 ErrAnnotation < ERR NamespacedID
 
 
