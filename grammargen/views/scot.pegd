@@ -40,7 +40,9 @@ Expression < / LowestPriorityOpExpression
              / Conditionals
              / CatchExpression
 
-PrimaryExpression < / '{' '}'
+EmptyExpression < '{' '}'
+
+PrimaryExpression < / EmptyExpression
                     / '{' ExpressionStatement+ '}'
                     / '(' Expression ')'
                     / Literal
