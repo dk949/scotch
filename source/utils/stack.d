@@ -64,20 +64,18 @@ unittest {
     assert(s.empty);
 }
 
-
 unittest {
     alias S = Stack!int;
 
     auto s = S();
 
-
     s.push(10);
     s.push(11);
     s.push(12);
 
-    int[]arr;
+    int[] arr;
 
-    foreach(elem; s){
+    foreach (elem; s) {
         arr ~= elem;
     }
     assert(arr == [12, 11, 10]);

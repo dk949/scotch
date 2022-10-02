@@ -193,7 +193,7 @@ class Frontend {
     out (r; r !is null) {
         // Case introduces a new scope (?)
         m_currentScope = new Scope(m_currentScope);
-        auto case_ = new Case(parseExpression(cst[0]),parseCaseVariants(cst[1]));
+        auto case_ = new Case(parseExpression(cst[0]), parseCaseVariants(cst[1]));
         m_currentScope = m_currentScope.outer;
         return case_;
     }
@@ -240,7 +240,7 @@ class Frontend {
         cst.assertNumChild(1);
     }
     out (r; r !is null) {
-                return parseCaseOrValue(cst[0]);
+        return parseCaseOrValue(cst[0]);
     }
 
     private Expr parseCaseOrValue(ref const(ParseTree) cst)

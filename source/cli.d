@@ -12,6 +12,7 @@ Backend selectBackend(Args.Backend back) {
     final switch (back) {
         case Args.Backend.JS:
             import backend.js;
+
             return new Js();
         case Args.Backend.LLVM:
             throw new CliException("LLVM backend is not yet supported");

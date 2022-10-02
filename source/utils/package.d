@@ -8,8 +8,7 @@ public import utils.stack;
 public import utils.set;
 
 void append(T, Args...)(ref T a, auto ref Args args)
-if (isInstanceOf!(Appender, T))
-{
+if (isInstanceOf!(Appender, T)) {
     foreach (arg; args) {
         a.put(arg);
     }
