@@ -1,3 +1,7 @@
 module Main;
 
 def main(): void { }
+
+def main(): void {
+    return;
+}
