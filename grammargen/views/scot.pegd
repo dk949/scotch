@@ -25,7 +25,7 @@ TypeAnnotation < :':' NamespacedID
 ErrAnnotation < ERR NamespacedID
 
 
-NamespacedID <- (BareID ("::" BareID)*)
+NamespacedID <- (BareID (:"::" BareID)*)
                                           # XXX: Underscore can appear anywhere a BareID can.
 BareID <- (!(TOKEN ![a-zA-Z0-9_]) identifier) / Underscore
 
@@ -216,14 +216,14 @@ Literal <-  / BoolLiteral
             / LambdaLiteral
             / SectionLiteral
 
-StringLiteral <~ doublequote (DQChar)* doublequote
+StringLiteral <~ :doublequote (DQChar)* :doublequote
 # TODO: why is ''' not a valid char literal?? There is no empty char literal,
 # so it should not be ambiguous.
-CharLiteral <~ quote (!quote (EscapeSequence / .)) quote
+CharLiteral <~ :quote (!quote (EscapeSequence / .)) :quote
 Int32Literal <~ Sign? Integer 'i'
 Int64Literal <~ Sign? Integer 'l'?
 Float32Literal <~ Sign? Integer '.' (Integer 'f' / 'f')
-Float64Literal <~ Sign? Integer '.' (Integer 'd' / 'd' / Integer)
+Float64Literal <~ Sign? Integer '.' (Integer 'd' / 'd' / ~Integer)
 BoolLiteral <- TRUE / FALSE
 
 LambdaLiteral < LambdaArgs '=>' Expression
