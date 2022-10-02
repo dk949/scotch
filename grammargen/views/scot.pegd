@@ -238,10 +238,11 @@ SectionLiteral <    / '(' COMP_OPERATOR UnaryExpression ')'
                     / '(' OPERATOR ')'
 
 DQChar <- EscapeSequence / !doublequote .
-EscapeSequence <~ backslash ( quote / doublequote / backslash / [abfnrtv] )
+EscapeSequence <~ backslash ( quote / doublequote / backslash / [0abtnvfr] )
 
 Integer <~ digit+
-Sign <- "-" / "+"
+Sign <- '-' / '+'
+
 
 # Misc
 
