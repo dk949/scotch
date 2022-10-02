@@ -250,6 +250,11 @@ def main(): std::string err std::error::Error {
         else
             2;
 
+    {
+        -- Empty :(
+    }
+    ; -- also empty
+
     return (27 - 48).toString();
 }
 
